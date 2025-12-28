@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>2026 Beast Dashboard</title>
+<title>Better You</title>
 
 <style>
 :root{
@@ -106,7 +106,7 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
 </head>
 
 <body>
-<header><h1>2026 Beast Dashboard — 4 Pillars + Rank Gate + Weekly Boss Fight + Streaks + Size Gate + Tilt + Apex + Quota + WoW</h1></header>
+<header><h1>Better You</h1></header>
 
 <div class="wrap">
   <div class="card">
@@ -157,30 +157,12 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
       </div>
 
       <div class="twoCol" style="margin-top:10px">
-        <div class="streakCard">
-          <div class="small">Trading clean days</div>
-          <b id="wkTradeClean">0</b>
-        </div>
-        <div class="streakCard">
-          <div class="small">Dial 120+ days</div>
-          <b id="wkDial120">0</b>
-        </div>
-        <div class="streakCard">
-          <div class="small">Body days</div>
-          <b id="wkBodyDays">0</b>
-        </div>
-        <div class="streakCard">
-          <div class="small">Family days</div>
-          <b id="wkFamilyDays">0</b>
-        </div>
-        <div class="streakCard">
-          <div class="small">Habit mornings</div>
-          <b id="wkHabitYes">0</b>
-        </div>
-        <div class="streakCard">
-          <div class="small">Relationship avg (1–5)</div>
-          <b id="wkRelAvg">—</b>
-        </div>
+        <div class="streakCard"><div class="small">Trading clean days</div><b id="wkTradeClean">0</b></div>
+        <div class="streakCard"><div class="small">Dial 120+ days</div><b id="wkDial120">0</b></div>
+        <div class="streakCard"><div class="small">Body days</div><b id="wkBodyDays">0</b></div>
+        <div class="streakCard"><div class="small">Family days</div><b id="wkFamilyDays">0</b></div>
+        <div class="streakCard"><div class="small">Habit mornings</div><b id="wkHabitYes">0</b></div>
+        <div class="streakCard"><div class="small">Relationship avg (1–5)</div><b id="wkRelAvg">—</b></div>
       </div>
 
       <div id="bossPass" class="bannerOk" style="display:none;">
@@ -189,18 +171,16 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
       </div>
       <div id="bossFail" class="banner" style="display:none;">
         <div class="warn">BOSS FAILED</div>
-        <div class="small">
-          Penalty rule: next Monday starts with <b>Trading Halted</b> until you log your first clean trading day.
-        </div>
+        <div class="small">Penalty: next Monday starts with <b>Trading Halted</b> until you log your first clean trading day.</div>
       </div>
 
       <div class="btnRow">
-        <button onclick="awardWeeklyBonus()">Claim Weekly Bonus (if cleared)</button>
-        <button class="secondary" onclick="setRelationshipRating(5)">Rel = 5</button>
-        <button class="secondary" onclick="setRelationshipRating(4)">Rel = 4</button>
-        <button class="secondary" onclick="setRelationshipRating(3)">Rel = 3</button>
-        <button class="secondary" onclick="setRelationshipRating(2)">Rel = 2</button>
-        <button class="secondary" onclick="setRelationshipRating(1)">Rel = 1</button>
+        <button data-action="awardWeeklyBonus">Claim Weekly Bonus (if cleared)</button>
+        <button class="secondary" data-action="setRel" data-rel="5">Rel = 5</button>
+        <button class="secondary" data-action="setRel" data-rel="4">Rel = 4</button>
+        <button class="secondary" data-action="setRel" data-rel="3">Rel = 3</button>
+        <button class="secondary" data-action="setRel" data-rel="2">Rel = 2</button>
+        <button class="secondary" data-action="setRel" data-rel="1">Rel = 1</button>
       </div>
       <div class="small" id="relTodayText" style="margin-top:8px"></div>
     </div>
@@ -213,9 +193,7 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
         <div class="streakCard"><div class="small">Cold plunge streak</div><b id="stPlunge">0</b></div>
         <div class="streakCard"><div class="small">Habit-free morning streak</div><b id="stHabitFree">0</b></div>
       </div>
-      <div class="small" style="margin-top:8px">
-        Streaks boost XP (automatically) but don’t punish you when broken. The punishment is your own rules (halt/penalty).
-      </div>
+      <div class="small" style="margin-top:8px">Streaks boost XP; breaking them doesn’t erase progress. Your rules supply the “burn.”</div>
     </div>
 
     <div class="grid">
@@ -233,12 +211,12 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
         </div>
         <hr/>
         <div class="btnRow">
-          <button class="danger" onclick="markHabitYesNow()">Habit = YES (halts trading)</button>
-          <button class="secondary" onclick="markHabitNo()">Habit = NO (today)</button>
-          <button class="danger" onclick="markTiltYes()">Tilt = YES (halt now + discipline XP)</button>
-          <button class="secondary" onclick="markTiltNo()">Tilt = NO</button>
-          <button class="secondary" onclick="toggleTradeHaltToday()">Toggle: Halt Today</button>
-          <button class="secondary" onclick="toggleTradeHaltNext()">Toggle: Halt Next Day</button>
+          <button class="danger" data-action="habitYesNow">Habit = YES (halts trading)</button>
+          <button class="secondary" data-action="habitNo">Habit = NO (today)</button>
+          <button class="danger" data-action="tiltYes">Tilt = YES (halt now + discipline XP)</button>
+          <button class="secondary" data-action="tiltNo">Tilt = NO</button>
+          <button class="secondary" data-action="toggleHaltToday">Toggle: Halt Today</button>
+          <button class="secondary" data-action="toggleHaltNext">Toggle: Halt Next Day</button>
         </div>
         <div class="small" id="traderLockText" style="margin-top:8px"></div>
       </div>
@@ -255,11 +233,11 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
         </div>
         <hr/>
         <div class="btnRow">
-          <button onclick="logBody('coldPlunge',25)">Cold plunge (+25)</button>
-          <button onclick="logBody('lift',40)">Lift (+40)</button>
-          <button onclick="logBody('diet',30)">Diet compliant (+30)</button>
-          <button onclick="logBody('bedBy9',25)">In bed cutoff (+25)</button>
-          <button onclick="logBody('habitAvoided',50)">Habit avoided (+50)</button>
+          <button data-action="logBody" data-tag="coldPlunge" data-xp="25">Cold plunge (+25)</button>
+          <button data-action="logBody" data-tag="lift" data-xp="40">Lift (+40)</button>
+          <button data-action="logBody" data-tag="diet" data-xp="30">Diet compliant (+30)</button>
+          <button data-action="logBody" data-tag="bedBy9" data-xp="25">In bed cutoff (+25)</button>
+          <button data-action="logBody" data-tag="habitAvoided" data-xp="50">Habit avoided (+50)</button>
         </div>
       </div>
 
@@ -275,10 +253,10 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
         </div>
         <hr/>
         <div class="btnRow">
-          <button onclick="logCloser('dial2h',50)">2h dialing (+50)</button>
-          <button onclick="logCloser('deal',25)">Deal closed (+25)</button>
-          <button onclick="logCloser('sourced',15)">Self-sourced (+15)</button>
-          <button onclick="logCloser('noTrial',15)">No-trial (+15)</button>
+          <button data-action="logCloser" data-tag="dial2h" data-xp="50">2h dialing (+50)</button>
+          <button data-action="logCloser" data-tag="deal" data-xp="25">Deal closed (+25)</button>
+          <button data-action="logCloser" data-tag="sourced" data-xp="15">Self-sourced (+15)</button>
+          <button data-action="logCloser" data-tag="noTrial" data-xp="15">No-trial (+15)</button>
         </div>
       </div>
 
@@ -294,11 +272,11 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
         </div>
         <hr/>
         <div class="btnRow">
-          <button onclick="logFamily('spouseNoPhone',40)">Spouse time no phone (+40)</button>
-          <button onclick="logFamily('kidsEngaged',30)">Kids engaged (+30)</button>
-          <button onclick="logFamily('helpedUnasked',20)">Helped unasked (+20)</button>
-          <button onclick="logFamily('calm',20)">Calm under stress (+20)</button>
-          <button onclick="logFamily('weeklyDate',100)">Weekly date/leadership (+100)</button>
+          <button data-action="logFamily" data-tag="spouseNoPhone" data-xp="40">Spouse time no phone (+40)</button>
+          <button data-action="logFamily" data-tag="kidsEngaged" data-xp="30">Kids engaged (+30)</button>
+          <button data-action="logFamily" data-tag="helpedUnasked" data-xp="20">Helped unasked (+20)</button>
+          <button data-action="logFamily" data-tag="calm" data-xp="20">Calm under stress (+20)</button>
+          <button data-action="logFamily" data-tag="weeklyDate" data-xp="100">Weekly date/leadership (+100)</button>
         </div>
       </div>
 
@@ -357,9 +335,9 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
           <input id="inDdBuf" type="number" step="0.01" placeholder="e.g. 4200"/>
 
           <div class="btnRow">
-            <button onclick="saveTradingDay()">Save Day</button>
-            <button class="secondary" onclick="jumpToToday()">Jump to Today</button>
-            <button class="secondary" onclick="deleteTradingDay()">Delete This Day</button>
+            <button data-action="saveTradingDay">Save Day</button>
+            <button class="secondary" data-action="jumpToToday">Jump to Today</button>
+            <button class="secondary" data-action="deleteTradingDay">Delete This Day</button>
           </div>
 
           <div class="small" style="margin-top:10px">
@@ -455,8 +433,8 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
           <div class="small" style="margin-top:10px">Monthly Quota ($)</div>
           <input id="inQuota" type="number" step="0.01" placeholder="76000"/>
           <div class="btnRow">
-            <button onclick="saveQuota()">Save Quota</button>
-            <button class="secondary" onclick="setQuota76000()">Set $76,000</button>
+            <button data-action="saveQuota">Save Quota</button>
+            <button class="secondary" data-action="setQuota76000">Set $76,000</button>
           </div>
 
           <hr/>
@@ -466,8 +444,8 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
           <div class="small" style="margin-top:10px">Minutes Dialed (today)</div>
           <input id="inDialMins" type="number" min="0" placeholder="120"/>
           <div class="btnRow">
-            <button onclick="saveDialing()">Save Dialing</button>
-            <button class="secondary" onclick="markDialed120()">Mark 120</button>
+            <button data-action="saveDialing">Save Dialing</button>
+            <button class="secondary" data-action="markDialed120">Mark 120</button>
           </div>
         </div>
 
@@ -524,8 +502,8 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
           <input id="inDealNotes" placeholder="Client / product / short note"/>
 
           <div class="btnRow">
-            <button onclick="addDeal()">Add Deal</button>
-            <button class="secondary" onclick="jumpSalesToday()">Jump to Today</button>
+            <button data-action="addDeal">Add Deal</button>
+            <button class="secondary" data-action="jumpSalesToday">Jump to Today</button>
           </div>
         </div>
 
@@ -553,10 +531,10 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
   <div id="apex" class="tabcontent">
     <div class="card">
       <div class="titleRow">
-        <div class="h2">🏦 Apex Payout Tracker (high-level)</div>
+        <div class="h2">🏦 Apex Payout Tracker</div>
         <span class="badge"><strong>Goal:</strong> $<span id="apexGoalLabel">500,000</span></span>
       </div>
-      <div class="small">This is not for daily PnL. It’s to keep your brain focused on payouts, not gambling.</div>
+      <div class="small">Track payouts, not dopamine PnL.</div>
 
       <hr/>
 
@@ -576,12 +554,12 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
           <div class="small" style="margin-top:10px">Next Eligible Payout Date</div>
           <input id="inApexNext" type="date"/>
 
-          <div class="small" style="margin-top:10px">Notes (policy / reminders)</div>
-          <input id="inApexNotes" placeholder="e.g. 5 payout policy, next payout window..."/>
+          <div class="small" style="margin-top:10px">Notes</div>
+          <input id="inApexNotes" placeholder="policy reminders"/>
 
           <div class="btnRow">
-            <button onclick="saveApex()">Save</button>
-            <button class="secondary" onclick="setApexGoal500()">Set Goal $500k</button>
+            <button data-action="saveApex">Save</button>
+            <button class="secondary" data-action="setApexGoal500">Set Goal $500k</button>
           </div>
         </div>
 
@@ -597,10 +575,6 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
             <div class="pill"><strong>Next eligible:</strong> <span id="apexNextLabel">—</span></div>
             <div class="pill"><strong>Notes:</strong> <span id="apexNotesLabel">—</span></div>
           </div>
-          <div class="bannerOk" style="margin-top:10px">
-            <div class="ok">Rule</div>
-            <div class="small">Your only job is to keep the system clean enough to collect payouts. Everything else is noise.</div>
-          </div>
         </div>
       </div>
     </div>
@@ -615,13 +589,7 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
       </div>
 
       <div class="small">
-        Unlock conditions (daily):
-        <ul style="margin:6px 0 0 18px;padding:0">
-          <li>Trading is <b>not halted</b> today</li>
-          <li>If you logged trading today → violations must be <b>0</b></li>
-          <li>Dialing minutes today ≥ <b>120</b></li>
-          <li>Family today XP &gt; <b>0</b></li>
-        </ul>
+        Unlock (daily): trading not halted • violations=0 if logged • dialing ≥120 • family XP >0
       </div>
 
       <div id="wowLockBanner" class="banner" style="display:none;">
@@ -631,7 +599,7 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
 
       <div id="wowUnlockBanner" class="bannerOk" style="display:none;">
         <div class="ok">UNLOCKED — 30 MINUTES MAX</div>
-        <div class="small">Start the timer. When it hits 0, stop. No side quests.</div>
+        <div class="small">Start timer. When it hits 0, stop.</div>
       </div>
 
       <hr/>
@@ -641,9 +609,9 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
           <div class="h2">Timer</div>
           <div class="timer" id="wowTimer">30:00</div>
           <div class="btnRow">
-            <button onclick="startWow()">Start</button>
-            <button class="secondary" onclick="pauseWow()">Pause</button>
-            <button class="secondary" onclick="resetWow()">Reset 30:00</button>
+            <button data-action="startWow">Start</button>
+            <button class="secondary" data-action="pauseWow">Pause</button>
+            <button class="secondary" data-action="resetWow">Reset 30:00</button>
           </div>
         </div>
 
@@ -667,13 +635,13 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
       <div class="small">This lives on your device. Export weekly.</div>
       <hr/>
       <div class="btnRow">
-        <button onclick="exportData()">Export JSON</button>
-        <button class="secondary" onclick="document.getElementById('importBox').focus()">Import JSON</button>
-        <button class="danger" onclick="hardResetAll()">Hard Reset All</button>
+        <button data-action="exportData">Export JSON</button>
+        <button class="secondary" data-action="focusImport">Import JSON</button>
+        <button class="danger" data-action="hardResetAll">Hard Reset All</button>
       </div>
       <div class="small" style="margin-top:10px">Paste JSON here to restore:</div>
       <textarea id="importBox" rows="8" placeholder="Paste exported JSON here"></textarea>
-      <div class="btnRow"><button class="secondary" onclick="importData()">Restore Now</button></div>
+      <div class="btnRow"><button class="secondary" data-action="importData">Restore Now</button></div>
     </div>
   </div>
 
@@ -681,16 +649,12 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
 
 <script>
 /* =========================
-   STORAGE (kept SAME to preserve your existing data)
+   STORAGE (same key = keep data)
    ========================= */
-const KEY = "beastDashboard_v6"; // DO NOT change if you want persistence
+const KEY = "beastDashboard_v6";
 const todayKey = () => new Date().toDateString();
 const monthKey = (d=new Date()) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-const dayName = (d)=> ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()];
 
-/* =========================
-   DEFAULTS + SAFE MIGRATION
-   ========================= */
 const defaults = {
   lastDate: null,
   pillars: {
@@ -709,23 +673,15 @@ const defaults = {
   trading: { selectedDate:null, dailyLogs:{} },
   sales: { quotaByMonth:{}, dialingByDate:{}, deals:[] },
   wow: { remainingSec: 30*60, running:false, lastTick:null },
-  daily: {
-    // dateStr: { tags:{}, pillarActions:{}, relationshipRating:null, habitYes:false }
-    byDate: {}
-  },
-  weekly: {
-    // weekKey: { bonusClaimed:false, passed:null } // passed computed; stored for penalty
-    byWeek: {}
-  },
-  apex: {
-    goal: 500000,
-    ytd: 0,
-    payoutCount: 0,
-    nextEligible: "",
-    notes: ""
-  }
+  daily: { byDate: {} },
+  weekly: { byWeek: {} },
+  apex: { goal: 500000, ytd: 0, payoutCount: 0, nextEligible: "", notes: "" }
 };
 
+function structuredCloneSafe(obj){
+  try { return structuredClone(obj); }
+  catch { return JSON.parse(JSON.stringify(obj)); }
+}
 function deepMerge(target, source){
   for(const k in source){
     if(source[k] && typeof source[k] === "object" && !Array.isArray(source[k])){
@@ -739,10 +695,10 @@ function deepMerge(target, source){
 }
 
 let state = (() => {
-  try { return JSON.parse(localStorage.getItem(KEY)) || structuredClone(defaults); }
-  catch { return structuredClone(defaults); }
+  try { return JSON.parse(localStorage.getItem(KEY)) || structuredCloneSafe(defaults); }
+  catch { return structuredCloneSafe(defaults); }
 })();
-state = deepMerge(state, structuredClone(defaults));
+state = deepMerge(state, structuredCloneSafe(defaults));
 
 function save(){ localStorage.setItem(KEY, JSON.stringify(state)); render(); }
 
@@ -751,43 +707,28 @@ function ensureTodayDaily(){
   if(!state.daily.byDate[d]) state.daily.byDate[d] = { tags:{}, pillarActions:{}, relationshipRating:null, habitYes:false };
   return state.daily.byDate[d];
 }
-
-/* =========================
-   DAY RESET
-   ========================= */
 function resetIfNewDay(){
   const t = todayKey();
   if(state.lastDate !== t){
-    // carry over next-day halt
     state.locks.tradingHaltedToday = !!state.locks.tradingHaltedNext;
     state.locks.tradingHaltedNext = false;
-
-    // daily habit flags
     state.locks.habitYesToday = false;
     state.locks.tiltYesToday = false;
 
-    // reset daily XP
     for(const k of Object.keys(state.pillars)) state.pillars[k].todayXP = 0;
 
-    // reset WoW
     state.wow.remainingSec = 30*60;
     state.wow.running = false;
     state.wow.lastTick = null;
 
-    // default selected date
     state.trading.selectedDate = t;
-
-    // ensure daily bucket
     ensureTodayDaily();
 
-    // Monday penalty activation if last week failed
     const now = new Date();
-    if(now.getDay() === 1){ // Monday
+    if(now.getDay() === 1){
       const prevWeekKey = getWeekKey(addDays(now, -7));
       const prev = state.weekly.byWeek[prevWeekKey];
-      if(prev && prev.passed === false){
-        state.locks.weekPenaltyActive = true;
-      }
+      if(prev && prev.passed === false) state.locks.weekPenaltyActive = true;
     }
 
     state.lastDate = t;
@@ -796,39 +737,25 @@ function resetIfNewDay(){
 }
 resetIfNewDay();
 
-/* =========================
-   XP / LEVELS
-   ========================= */
 function needForLevel(lvl){ return 100 * lvl; }
-
 function addXP(pillar, amount, opts={ bypassFreeze:false }){
   resetIfNewDay();
-
   if(pillar === "trader" && state.locks.tradingHaltedToday && !opts.bypassFreeze){
     alert("Trader XP is frozen because trading is halted today.");
     return;
   }
-
   const p = state.pillars[pillar];
   p.xp += amount;
   p.todayXP += amount;
-
   while(p.xp >= needForLevel(p.lvl)){
     p.xp -= needForLevel(p.lvl);
     p.lvl += 1;
   }
-
-  // Record daily actions (for weekly + streaks)
   const day = ensureTodayDaily();
   if(!day.pillarActions[pillar]) day.pillarActions[pillar] = 0;
   day.pillarActions[pillar] += 1;
-
   save();
 }
-
-/* =========================
-   SPECIFIC LOGGERS (so we can streak them)
-   ========================= */
 function tagToday(tag){
   const day = ensureTodayDaily();
   day.tags[tag] = true;
@@ -838,9 +765,6 @@ function logBody(tag, xp){ tagToday(tag); addXP("body", xp); }
 function logCloser(tag, xp){ tagToday(tag); addXP("closer", xp); }
 function logFamily(tag, xp){ tagToday(tag); addXP("family", xp); }
 
-/* =========================
-   RANK GATE
-   ========================= */
 function avgLevel(){
   const lvls = Object.values(state.pillars).map(p=>p.lvl);
   return lvls.reduce((a,b)=>a+b,0) / lvls.length;
@@ -864,47 +788,32 @@ function computeRank(){
   return { rank: Math.max(1,target), gated:false, target, minReq, weakest };
 }
 
-/* =========================
-   HABIT / TILT / HALTS
-   ========================= */
-function markHabitYesNow(){
+function habitYesNow(){
   resetIfNewDay();
   state.locks.habitYesToday = true;
   state.locks.tradingHaltedToday = true;
-
   const day = ensureTodayDaily();
   day.habitYes = true;
-
   save();
 }
-function markHabitNo(){
+function habitNo(){
   resetIfNewDay();
   state.locks.habitYesToday = false;
   ensureTodayDaily().habitYes = false;
   save();
 }
-
-function markTiltYes(){
+function tiltYes(){
   resetIfNewDay();
-  // award discipline XP BEFORE halting (bypass freeze)
   addXP("trader", 25, { bypassFreeze:true });
   state.locks.tiltYesToday = true;
   state.locks.tradingHaltedToday = true;
   tagToday("tilt");
   save();
 }
-function markTiltNo(){
-  resetIfNewDay();
-  state.locks.tiltYesToday = false;
-  save();
-}
+function tiltNo(){ resetIfNewDay(); state.locks.tiltYesToday = false; save(); }
+function toggleHaltToday(){ resetIfNewDay(); state.locks.tradingHaltedToday = !state.locks.tradingHaltedToday; save(); }
+function toggleHaltNext(){ resetIfNewDay(); state.locks.tradingHaltedNext = !state.locks.tradingHaltedNext; save(); }
 
-function toggleTradeHaltToday(){ resetIfNewDay(); state.locks.tradingHaltedToday = !state.locks.tradingHaltedToday; save(); }
-function toggleTradeHaltNext(){ resetIfNewDay(); state.locks.tradingHaltedNext = !state.locks.tradingHaltedNext; save(); }
-
-/* =========================
-   TRADING LOGS + STATS
-   ========================= */
 function parseNum(id, fallback=0){
   const v = document.getElementById(id).value;
   if(v === "" || v === null || v === undefined) return fallback;
@@ -926,4 +835,836 @@ function saveTradingDay(){
   const ddRaw = document.getElementById("inDdBuf").value;
   const ddBuf = (ddRaw === "" ? null : Number(ddRaw));
 
-  const net = gross
+  const net = grossProfit - grossLoss;
+  const halted = (ddBuf !== null && ddBuf < 2000);
+
+  const prev = state.trading.dailyLogs[d] || {};
+  const xpAwarded = !!prev.xpAwarded;
+
+  state.trading.dailyLogs[d] = { wins, losses, grossProfit, grossLoss, vios, ddBuf, net, halted, xpAwarded };
+
+  if(d === todayKey() && halted) state.locks.tradingHaltedToday = true;
+
+  if(d === todayKey() && state.locks.weekPenaltyActive){
+    if(vios === 0 && !halted){
+      state.locks.weekPenaltyActive = false;
+    } else {
+      state.locks.tradingHaltedToday = true;
+    }
+  }
+
+  const log = state.trading.dailyLogs[d];
+  if(!log.xpAwarded){
+    const isToday = (d === todayKey());
+    const tradingLockedThatDay = isToday ? state.locks.tradingHaltedToday : false;
+    if(!tradingLockedThatDay && !halted && vios === 0){
+      addXP("trader", 50);
+      log.xpAwarded = true;
+    } else {
+      log.xpAwarded = true;
+    }
+  }
+  save();
+}
+function deleteTradingDay(){
+  const d = getSelectedTradingDate();
+  if(!state.trading.dailyLogs[d]) return;
+  if(!confirm("Delete this trading day log?")) return;
+  delete state.trading.dailyLogs[d];
+  save();
+}
+function jumpToToday(){ setSelectedTradingDate(todayKey()); }
+
+function getSortedTradingLogs(){
+  return Object.entries(state.trading.dailyLogs)
+    .map(([date, v]) => ({ date, ...v }))
+    .sort((a,b) => new Date(a.date) - new Date(b.date));
+}
+function fmtMoney(n){
+  const sign = n < 0 ? "-" : "";
+  const abs = Math.abs(n);
+  return sign + abs.toLocaleString(undefined,{maximumFractionDigits:2});
+}
+function computeEquitySeries(logs){
+  let eq = 0;
+  return logs.map(l => (eq += (Number(l.net)||0), { x:l.date, y:eq }));
+}
+function computeTradingStats(logs){
+  if(!logs.length){
+    return { equity:0, equitySeries:[], winRate:0, pf:0, expectancy:0, avgWin:0, avgLoss:0, mdd:0, days:0, trades:0, green:0, red:0, best:0, worst:0 };
+  }
+  const equitySeries = computeEquitySeries(logs);
+  const equity = equitySeries[equitySeries.length-1].y;
+
+  let totalWins=0,totalLosses=0,totalTrades=0,gp=0,gl=0,green=0,red=0;
+  let best=-Infinity,worst=Infinity;
+
+  for(const l of logs){
+    const w = Number(l.wins)||0;
+    const lo = Number(l.losses)||0;
+    const gpp = Number(l.grossProfit)||0;
+    const gll = Number(l.grossLoss)||0;
+    const net = Number(l.net)||0;
+
+    totalWins += w; totalLosses += lo; totalTrades += (w+lo);
+    gp += gpp; gl += gll;
+
+    if(net > 0) green++; else if(net < 0) red++;
+    if(net > best) best = net;
+    if(net < worst) worst = net;
+  }
+
+  const winRate = totalTrades ? (totalWins/totalTrades) : 0;
+  const avgWin = totalWins ? (gp/totalWins) : 0;
+  const avgLoss = totalLosses ? (gl/totalLosses) : 0;
+  const pf = gl > 0 ? (gp/gl) : (gp > 0 ? 99 : 0);
+  const expectancy = totalTrades ? ((winRate*avgWin) - ((1-winRate)*avgLoss)) : 0;
+
+  let peak = -Infinity, mdd = 0;
+  for(const p of equitySeries){
+    if(p.y > peak) peak = p.y;
+    const dd = peak - p.y;
+    if(dd > mdd) mdd = dd;
+  }
+
+  return {
+    equity, equitySeries, winRate, pf, expectancy, avgWin, avgLoss,
+    mdd, days:logs.length, trades:totalTrades,
+    green, red, best:(best===-Infinity?0:best), worst:(worst===Infinity?0:worst)
+  };
+}
+
+function drawChart(points){
+  const canvas = document.getElementById("equityChart");
+  const ctx = canvas.getContext("2d");
+
+  const cssW = canvas.clientWidth || 900;
+  const cssH = canvas.clientHeight || 260;
+  const dpr = window.devicePixelRatio || 1;
+
+  canvas.width = Math.floor(cssW * dpr);
+  canvas.height = Math.floor(cssH * dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+
+  ctx.clearRect(0,0,cssW,cssH);
+
+  const padL=46,padR=14,padT=14,padB=34;
+
+  if(!points.length){
+    ctx.fillStyle="rgba(232,234,243,.7)";
+    ctx.font="14px system-ui";
+    ctx.fillText("No trading data yet. Log your first day.", padL, cssH/2);
+    return;
+  }
+
+  const ys = points.map(p=>p.y);
+  const minY = Math.min(...ys), maxY = Math.max(...ys);
+  const rangeY = (maxY-minY) || 1;
+
+  ctx.strokeStyle="rgba(255,255,255,.06)";
+  ctx.lineWidth=1;
+  for(let i=1;i<=3;i++){
+    const y = padT + i*((cssH-padT-padB)/4);
+    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(cssW-padR,y); ctx.stroke();
+  }
+
+  ctx.strokeStyle="rgba(255,255,255,.14)";
+  ctx.beginPath();
+  ctx.moveTo(padL,padT); ctx.lineTo(padL,cssH-padB); ctx.lineTo(cssW-padR,cssH-padB);
+  ctx.stroke();
+
+  ctx.fillStyle="rgba(232,234,243,.75)";
+  ctx.font="12px system-ui";
+  ctx.fillText("Days", cssW-padR-34, cssH-10);
+  ctx.save(); ctx.translate(14, cssH/2); ctx.rotate(-Math.PI/2); ctx.fillText("Equity ($)", 0, 0); ctx.restore();
+
+  ctx.fillStyle="rgba(232,234,243,.65)";
+  ctx.font="11px system-ui";
+  const fmt = (n)=> (n<0? "-" : "") + Math.abs(n).toLocaleString(undefined,{maximumFractionDigits:0});
+  ctx.fillText(fmt(maxY), padL+6, padT+10);
+  ctx.fillText(fmt(minY), padL+6, cssH-padB-6);
+
+  const plotW = (cssW-padL-padR), plotH = (cssH-padT-padB);
+  ctx.strokeStyle="rgba(123,108,255,.95)";
+  ctx.lineWidth=2.5;
+  ctx.beginPath();
+  points.forEach((p,i)=>{
+    const x = padL + i*(plotW/Math.max(1,points.length-1));
+    const y = (cssH-padB) - ((p.y-minY)/rangeY)*plotH;
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+}
+
+function getMonthLabel(d){ return d.toLocaleString(undefined,{month:"long",year:"numeric"}); }
+function buildCalendar(forDate=new Date()){
+  const cal = document.getElementById("calendar");
+  cal.innerHTML = "";
+  const y = forDate.getFullYear(), m = forDate.getMonth();
+  document.getElementById("calMonthLabel").textContent = getMonthLabel(forDate);
+
+  const first = new Date(y,m,1);
+  const last = new Date(y,m+1,0);
+  const startDow = first.getDay();
+  const daysInMonth = last.getDate();
+
+  for(let i=0;i<startDow;i++){
+    const div=document.createElement("div");
+    div.className="calDay";
+    div.style.opacity="0.25";
+    div.innerHTML=`<div class="d">&nbsp;</div>`;
+    cal.appendChild(div);
+  }
+
+  for(let day=1; day<=daysInMonth; day++){
+    const d = new Date(y,m,day);
+    const dateStr = d.toDateString();
+    const log = state.trading.dailyLogs[dateStr];
+
+    let bg="rgba(255,255,255,.02)", border="rgba(255,255,255,.10)";
+    if(log){
+      const net=Number(log.net)||0, vios=Number(log.vios)||0, halted=!!log.halted;
+      if(halted){ bg="rgba(96,165,250,.18)"; border="rgba(96,165,250,.35)"; }
+      else if(vios>0){ bg="rgba(251,191,36,.22)"; border="rgba(251,191,36,.35)"; }
+      else if(net>0){ bg="rgba(74,222,128,.22)"; border="rgba(74,222,128,.35)"; }
+      else if(net<0){ bg="rgba(251,113,133,.22)"; border="rgba(251,113,133,.35)"; }
+      else { bg="rgba(255,255,255,.05)"; }
+    }
+
+    const div=document.createElement("div");
+    div.className="calDay";
+    div.style.background=bg;
+    div.style.borderColor=border;
+
+    const netText = log ? (log.net>=0 ? `+$${fmtMoney(log.net)}` : `-$${fmtMoney(Math.abs(log.net))}`) : "";
+    div.innerHTML = `<div class="d">${day}</div><div class="v">${netText}</div>`;
+    div.addEventListener("click", () => setSelectedTradingDate(dateStr));
+    cal.appendChild(div);
+  }
+}
+
+function fillTradingInputsFromDate(dateStr){
+  const log = state.trading.dailyLogs[dateStr] || null;
+  document.getElementById("editDateLabel").textContent = dateStr;
+  document.getElementById("selectedDateLabel").textContent = dateStr;
+
+  if(log){
+    document.getElementById("inWins").value = log.wins ?? 0;
+    document.getElementById("inLosses").value = log.losses ?? 0;
+    document.getElementById("inGrossProfit").value = log.grossProfit ?? 0;
+    document.getElementById("inGrossLoss").value = log.grossLoss ?? 0;
+    document.getElementById("inVios").value = log.vios ?? 0;
+    document.getElementById("inDdBuf").value = (log.ddBuf === null || log.ddBuf === undefined) ? "" : log.ddBuf;
+  } else {
+    document.getElementById("inWins").value = "";
+    document.getElementById("inLosses").value = "";
+    document.getElementById("inGrossProfit").value = "";
+    document.getElementById("inGrossLoss").value = "";
+    document.getElementById("inVios").value = "";
+    document.getElementById("inDdBuf").value = "";
+  }
+}
+
+function isCleanTradeDay(dateStr){
+  const log = state.trading.dailyLogs[dateStr];
+  if(!log) return false;
+  return Number(log.vios||0) === 0 && !log.halted;
+}
+function didDial120(dateStr){
+  return Number(state.sales.dialingByDate[dateStr]||0) >= 120;
+}
+function didColdPlunge(dateStr){
+  const d = state.daily.byDate[dateStr];
+  return !!(d && d.tags && d.tags.coldPlunge);
+}
+function isHabitFreeMorning(dateStr){
+  const d = state.daily.byDate[dateStr];
+  if(!d) return false;
+  return d.habitYes !== true;
+}
+function computeStreak(checkFn){
+  let streak = 0;
+  let d = new Date();
+  for(let i=0;i<365;i++){
+    const ds = d.toDateString();
+    if(checkFn(ds)) streak++;
+    else break;
+    d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+
+function addDays(d, n){
+  const x = new Date(d);
+  x.setDate(x.getDate() + n);
+  return x;
+}
+function startOfWeekMon(date=new Date()){
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = (day === 0 ? -6 : 1 - day);
+  d.setDate(d.getDate() + diff);
+  d.setHours(0,0,0,0);
+  return d;
+}
+function getWeekKey(date=new Date()){
+  const s = startOfWeekMon(date);
+  return `${s.getFullYear()}-${String(s.getMonth()+1).padStart(2,'0')}-${String(s.getDate()).padStart(2,'0')}`;
+}
+function weekRangeLabels(date=new Date()){
+  const s = startOfWeekMon(date);
+  const e = addDays(s, 6);
+  const fmt = (x)=> x.toLocaleDateString(undefined,{month:"short",day:"numeric"});
+  return `${fmt(s)}–${fmt(e)}`;
+}
+function computeWeeklyStats(date=new Date()){
+  const start = startOfWeekMon(date);
+  let tradeClean=0, dial120=0, bodyDays=0, familyDays=0, habitYes=0;
+  let relSum=0, relCount=0;
+
+  for(let i=0;i<7;i++){
+    const ds = addDays(start, i).toDateString();
+    if(isCleanTradeDay(ds)) tradeClean++;
+    if(didDial120(ds)) dial120++;
+
+    const day = state.daily.byDate[ds];
+    if(day && day.pillarActions){
+      if((day.pillarActions.body||0) > 0) bodyDays++;
+      if((day.pillarActions.family||0) > 0) familyDays++;
+    }
+    if(day && day.habitYes === true) habitYes++;
+
+    if(day && typeof day.relationshipRating === "number"){
+      relSum += day.relationshipRating;
+      relCount++;
+    }
+  }
+  const relAvg = relCount ? (relSum/relCount) : null;
+  const passed =
+    (tradeClean >= 3) &&
+    (dial120 >= 5) &&
+    (bodyDays >= 5) &&
+    (familyDays >= 5) &&
+    (habitYes === 0);
+  return { tradeClean, dial120, bodyDays, familyDays, habitYes, relAvg, passed };
+}
+function awardWeeklyBonus(){
+  resetIfNewDay();
+  const wk = getWeekKey(new Date());
+  if(!state.weekly.byWeek[wk]) state.weekly.byWeek[wk] = { bonusClaimed:false, passed:null };
+
+  const stats = computeWeeklyStats(new Date());
+  state.weekly.byWeek[wk].passed = stats.passed;
+
+  if(!stats.passed){ alert("Not cleared yet."); save(); return; }
+  if(state.weekly.byWeek[wk].bonusClaimed){ alert("Already claimed for this week."); return; }
+
+  addXP("trader", 100, { bypassFreeze:true });
+  addXP("body", 100);
+  addXP("closer", 100);
+  addXP("family", 100);
+
+  state.weekly.byWeek[wk].bonusClaimed = true;
+  save();
+}
+function setRelationshipRating(n){
+  resetIfNewDay();
+  ensureTodayDaily().relationshipRating = n;
+  save();
+}
+
+function computeSizeGate(){
+  const logs = getSortedTradingLogs().slice().reverse();
+  const last3 = [];
+  for(const l of logs){
+    last3.push(l);
+    if(last3.length === 3) break;
+  }
+  if(last3.length < 3) return { unlocked:false, reason:"Need 3 logged days to qualify." };
+  const ok = last3.every(l => Number(l.vios||0)===0 && !l.halted);
+  return ok ? { unlocked:true, reason:"Last 3 logged days are clean." } :
+              { unlocked:false, reason:"Locked: last 3 logged days must be clean (no vios, no halt)." };
+}
+
+/* SALES */
+function getQuotaForCurrentMonth(){
+  const mk = monthKey(new Date());
+  const q = state.sales.quotaByMonth[mk];
+  return (typeof q === "number" && Number.isFinite(q) && q > 0) ? q : 76000;
+}
+function saveQuota(){
+  const mk = monthKey(new Date());
+  const v = Number(document.getElementById("inQuota").value || 0);
+  if(!Number.isFinite(v) || v <= 0) return alert("Enter a valid quota number.");
+  state.sales.quotaByMonth[mk] = v;
+  save();
+}
+function setQuota76000(){ document.getElementById("inQuota").value = 76000; saveQuota(); }
+function getDialMinutesToday(){ return Number(state.sales.dialingByDate[todayKey()] || 0); }
+function saveDialing(){
+  const mins = Number(document.getElementById("inDialMins").value || 0);
+  state.sales.dialingByDate[todayKey()] = Math.max(0, Math.floor(mins));
+  if(state.sales.dialingByDate[todayKey()] >= 120) tagToday("dial120");
+  save();
+}
+function markDialed120(){ document.getElementById("inDialMins").value = 120; saveDialing(); }
+
+function addDeal(){
+  const d = document.getElementById("dealDateLabel").textContent || todayKey();
+  const amt = Number(document.getElementById("inDealAmt").value || 0);
+  if(!Number.isFinite(amt) || amt <= 0) return alert("Enter a valid deal amount.");
+  const source = document.getElementById("inDealSource").value;
+  const trial = document.getElementById("inDealTrial").value;
+  const notes = (document.getElementById("inDealNotes").value || "").trim();
+  state.sales.deals.push({ dateStr:d, amt, source, trial, notes });
+  document.getElementById("inDealAmt").value="";
+  document.getElementById("inDealNotes").value="";
+  save();
+}
+function deleteDeal(idx){
+  if(!confirm("Delete this deal?")) return;
+  state.sales.deals.splice(idx,1);
+  save();
+}
+function jumpSalesToday(){ document.getElementById("dealDateLabel").textContent = todayKey(); save(); }
+
+function isSameMonth(dateStr, mk){
+  const d = new Date(dateStr);
+  return monthKey(d) === mk;
+}
+function businessDaysRemainingInMonth(fromDate=new Date()){
+  const y=fromDate.getFullYear(), m=fromDate.getMonth();
+  const last = new Date(y,m+1,0).getDate();
+  let count=0;
+  for(let day=fromDate.getDate(); day<=last; day++){
+    const d = new Date(y,m,day);
+    const dow=d.getDay();
+    if(dow!==0 && dow!==6) count++;
+  }
+  return Math.max(1,count);
+}
+
+/* APEX */
+function setApexGoal500(){ document.getElementById("inApexGoal").value = 500000; saveApex(); }
+function saveApex(){
+  state.apex.goal = Number(document.getElementById("inApexGoal").value || 500000);
+  state.apex.ytd = Number(document.getElementById("inApexYtd").value || 0);
+  state.apex.payoutCount = Number(document.getElementById("inApexCount").value || 0);
+  state.apex.nextEligible = (document.getElementById("inApexNext").value || "");
+  state.apex.notes = (document.getElementById("inApexNotes").value || "").trim();
+  save();
+}
+
+/* WOW */
+function getTradingLogForDate(dateStr){ return state.trading.dailyLogs[dateStr] || null; }
+function computeWowUnlock(){
+  const tday = todayKey();
+  const dial = getDialMinutesToday();
+  const famToday = state.pillars.family.todayXP || 0;
+  const log = getTradingLogForDate(tday);
+  const vios = log ? Number(log.vios || 0) : 0;
+
+  const tradingOk = !state.locks.tradingHaltedToday;
+  const viosOk = log ? (vios === 0) : true;
+  const dialOk = dial >= 120;
+  const famOk = famToday > 0;
+
+  const unlocked = tradingOk && viosOk && dialOk && famOk;
+
+  const reasons=[];
+  if(!tradingOk) reasons.push("Trading is halted today.");
+  if(log && !viosOk) reasons.push("Trading violations logged today.");
+  if(!dialOk) reasons.push("Dialing minutes today < 120.");
+  if(!famOk) reasons.push("No Family XP today.");
+
+  return { unlocked, reasons, dial, vios, famToday, tradingOk };
+}
+let wowInterval = null;
+
+function renderWowTimerOnly(){
+  const mm = String(Math.floor(state.wow.remainingSec/60)).padStart(2,'0');
+  const ss = String(state.wow.remainingSec%60).padStart(2,'0');
+  document.getElementById("wowTimer").textContent = `${mm}:${ss}`;
+}
+function tickWow(){
+  if(!state.wow.running) return;
+  const now = Date.now();
+  const last = state.wow.lastTick || now;
+  const deltaSec = Math.floor((now-last)/1000);
+  if(deltaSec <= 0) return;
+  state.wow.remainingSec = Math.max(0, state.wow.remainingSec - deltaSec);
+  state.wow.lastTick = now;
+  if(state.wow.remainingSec <= 0){
+    state.wow.running = false;
+    state.wow.lastTick = null;
+  }
+  localStorage.setItem(KEY, JSON.stringify(state));
+  renderWowTimerOnly();
+}
+function startWow(){
+  const gate = computeWowUnlock();
+  if(!gate.unlocked){ alert("WoW is locked. Fix requirements first."); return; }
+  if(state.wow.remainingSec <= 0) return;
+  state.wow.running = true;
+  state.wow.lastTick = Date.now();
+  localStorage.setItem(KEY, JSON.stringify(state));
+  if(!wowInterval) wowInterval = setInterval(tickWow, 300);
+}
+function pauseWow(){ state.wow.running=false; state.wow.lastTick=null; localStorage.setItem(KEY, JSON.stringify(state)); render(); }
+function resetWow(){ state.wow.remainingSec=30*60; state.wow.running=false; state.wow.lastTick=null; localStorage.setItem(KEY, JSON.stringify(state)); render(); }
+
+/* BACKUP */
+function exportData(){
+  const json = JSON.stringify(state, null, 2);
+  navigator.clipboard?.writeText(json).then(()=>alert("Export copied to clipboard. Paste into Notes/Drive."))
+    .catch(()=>prompt("Copy this JSON:", json));
+}
+function importData(){
+  const txt = (document.getElementById("importBox").value || "").trim();
+  if(!txt) return alert("Paste JSON first.");
+  try{ state = deepMerge(JSON.parse(txt), structuredCloneSafe(defaults)); save(); alert("Restored."); }
+  catch{ alert("Invalid JSON."); }
+}
+function hardResetAll(){
+  if(!confirm("Wipe ALL data? This cannot be undone.")) return;
+  localStorage.removeItem(KEY);
+  state = structuredCloneSafe(defaults);
+  save();
+}
+
+/* WOW render */
+function renderWow(){
+  const gate = computeWowUnlock();
+  document.getElementById("wowChkTrading").textContent = gate.tradingOk ? "ALLOWED" : "HALTED";
+  document.getElementById("wowChkVios").textContent = String(gate.vios ?? 0);
+  document.getElementById("wowChkDial").textContent = String(gate.dial ?? 0);
+  document.getElementById("wowChkFam").textContent = String(gate.famToday ?? 0);
+
+  const locked = !gate.unlocked;
+  document.getElementById("wowLockBanner").style.display = locked ? "block" : "none";
+  document.getElementById("wowUnlockBanner").style.display = locked ? "none" : "block";
+
+  if(locked){
+    document.getElementById("wowStatus").textContent = "LOCKED";
+    document.getElementById("wowLockReason").textContent = gate.reasons.join(" ");
+    document.getElementById("pillWow").innerHTML = `<strong>WoW (30m):</strong> <span class="warn">LOCKED</span>`;
+  } else {
+    document.getElementById("wowStatus").textContent = "UNLOCKED";
+    document.getElementById("wowLockReason").textContent = "";
+    document.getElementById("pillWow").innerHTML = `<strong>WoW (30m):</strong> <span class="ok">UNLOCKED</span>`;
+  }
+  renderWowTimerOnly();
+}
+
+/* SALES render */
+function renderSales(){
+  const now = new Date();
+  const mk = monthKey(now);
+  document.getElementById("salesMonthLabel").textContent = now.toLocaleString(undefined,{month:"long",year:"numeric"});
+  document.getElementById("dealDateLabel").textContent = todayKey();
+
+  const quota = getQuotaForCurrentMonth();
+  document.getElementById("inQuota").value = quota;
+  document.getElementById("mtdGoal").textContent = quota.toLocaleString(undefined,{maximumFractionDigits:0});
+  document.getElementById("inDialMins").value = getDialMinutesToday();
+
+  let mtd=0,sourced=0,inbound=0,noTrial=0,trial=0,deals=0;
+  state.sales.deals.forEach(d=>{
+    if(!isSameMonth(d.dateStr,mk)) return;
+    deals++; mtd += d.amt;
+    if(d.source==="sourced") sourced += d.amt; else inbound += d.amt;
+    if(d.trial==="no") noTrial += d.amt; else trial += d.amt;
+  });
+
+  document.getElementById("mtdClosed").textContent = mtd.toLocaleString(undefined,{maximumFractionDigits:0});
+  document.getElementById("mtdSourced").textContent = sourced.toLocaleString(undefined,{maximumFractionDigits:0});
+  document.getElementById("mtdInbound").textContent = inbound.toLocaleString(undefined,{maximumFractionDigits:0});
+  document.getElementById("mtdNoTrial").textContent = noTrial.toLocaleString(undefined,{maximumFractionDigits:0});
+  document.getElementById("mtdTrial").textContent = trial.toLocaleString(undefined,{maximumFractionDigits:0});
+  document.getElementById("mtdDeals").textContent = deals;
+
+  let dialMtd=0;
+  Object.entries(state.sales.dialingByDate).forEach(([dateStr,mins])=>{
+    if(isSameMonth(dateStr,mk)) dialMtd += Number(mins)||0;
+  });
+  document.getElementById("mtdDial").textContent = dialMtd;
+  document.getElementById("dealMtdQuick").textContent = mtd.toLocaleString(undefined,{maximumFractionDigits:0});
+
+  const pct = quota>0 ? Math.max(0,Math.min(100,(mtd/quota)*100)) : 0;
+  document.getElementById("quotaBar").style.width = pct + "%";
+
+  const remaining = Math.max(0, quota - mtd);
+  const bdays = businessDaysRemainingInMonth(now);
+  document.getElementById("paceToday").textContent = (remaining/bdays).toLocaleString(undefined,{maximumFractionDigits:0});
+
+  const tbody = document.getElementById("dealTable");
+  tbody.innerHTML = "";
+  state.sales.deals
+    .map((d,i)=>({ ...d, idx:i }))
+    .filter(d=>isSameMonth(d.dateStr,mk))
+    .sort((a,b)=> new Date(b.dateStr)-new Date(a.dateStr))
+    .forEach(d=>{
+      const tr=document.createElement("tr");
+      tr.innerHTML = `
+        <td>${d.dateStr}</td>
+        <td>$${fmtMoney(d.amt)}</td>
+        <td>${d.source}</td>
+        <td>${d.trial==="no" ? "no-trial" : "trial"}</td>
+        <td>${(d.notes||"").slice(0,50)}</td>
+        <td><button class="danger" data-action="deleteDeal" data-idx="${d.idx}">Del</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+}
+
+/* APEX render */
+function renderApex(){
+  document.getElementById("inApexGoal").value = state.apex.goal ?? 500000;
+  document.getElementById("inApexYtd").value = state.apex.ytd ?? 0;
+  document.getElementById("inApexCount").value = state.apex.payoutCount ?? 0;
+  document.getElementById("inApexNext").value = state.apex.nextEligible ?? "";
+  document.getElementById("inApexNotes").value = state.apex.notes ?? "";
+
+  const goal = Number(state.apex.goal||500000);
+  const ytd = Number(state.apex.ytd||0);
+  const pct = goal>0 ? Math.max(0,Math.min(100,(ytd/goal)*100)) : 0;
+
+  document.getElementById("apexBar").style.width = pct + "%";
+  document.getElementById("apexGoalLabel").textContent = goal.toLocaleString();
+  document.getElementById("apexGoalLabel2").textContent = goal.toLocaleString();
+  document.getElementById("apexYtdLabel").textContent = ytd.toLocaleString(undefined,{maximumFractionDigits:0});
+  document.getElementById("apexCountLabel").textContent = String(state.apex.payoutCount||0);
+  document.getElementById("apexNextLabel").textContent = state.apex.nextEligible ? state.apex.nextEligible : "—";
+  document.getElementById("apexNotesLabel").textContent = state.apex.notes ? state.apex.notes : "—";
+}
+
+function renderWeeklyAndStreaks(){
+  const wkKey = getWeekKey(new Date());
+  if(!state.weekly.byWeek[wkKey]) state.weekly.byWeek[wkKey] = { bonusClaimed:false, passed:null };
+
+  const stats = computeWeeklyStats(new Date());
+  state.weekly.byWeek[wkKey].passed = stats.passed;
+
+  document.getElementById("weekLabel").textContent = weekRangeLabels(new Date());
+  document.getElementById("wkTradeClean").textContent = stats.tradeClean;
+  document.getElementById("wkDial120").textContent = stats.dial120;
+  document.getElementById("wkBodyDays").textContent = stats.bodyDays;
+  document.getElementById("wkFamilyDays").textContent = stats.familyDays;
+  document.getElementById("wkHabitYes").textContent = stats.habitYes;
+  document.getElementById("wkRelAvg").textContent = (stats.relAvg === null) ? "—" : stats.relAvg.toFixed(2);
+
+  const claimed = !!state.weekly.byWeek[wkKey].bonusClaimed;
+  document.getElementById("bossPass").style.display = (stats.passed) ? "block" : "none";
+  document.getElementById("bossFail").style.display = (!stats.passed) ? "block" : "none";
+  if(stats.passed && claimed){
+    document.getElementById("bossPass").querySelector(".small").textContent = "Weekly bonus claimed. Keep the machine running.";
+  }
+
+  const rt = ensureTodayDaily().relationshipRating;
+  document.getElementById("relTodayText").textContent = rt ? `Today’s relationship rating: ${rt}/5` : "Today’s relationship rating: not set.";
+
+  document.getElementById("stCleanTrade").textContent = computeStreak(isCleanTradeDay);
+  document.getElementById("stDial").textContent = computeStreak(didDial120);
+  document.getElementById("stPlunge").textContent = computeStreak(didColdPlunge);
+  document.getElementById("stHabitFree").textContent = computeStreak(isHabitFreeMorning);
+}
+
+function setBar(barId, lvl, xp){
+  const need = needForLevel(lvl);
+  const pct = Math.max(0, Math.min(100, (xp/need)*100));
+  document.getElementById(barId).style.width = pct + "%";
+  return need;
+}
+
+function renderTrading(){
+  document.getElementById("lockOverlay").style.display = state.locks.tradingHaltedToday ? "block" : "none";
+
+  const sel = getSelectedTradingDate();
+  fillTradingInputsFromDate(sel);
+
+  const logs = getSortedTradingLogs();
+  const stats = computeTradingStats(logs);
+
+  document.getElementById("equityNow").textContent = fmtMoney(stats.equity);
+  document.getElementById("statWr").textContent = (stats.winRate*100).toFixed(1) + "%";
+  document.getElementById("statPf").textContent = (stats.pf||0).toFixed(2);
+  document.getElementById("statExp").textContent = fmtMoney(stats.expectancy||0);
+  document.getElementById("statAvgWin").textContent = fmtMoney(stats.avgWin||0);
+  document.getElementById("statAvgLoss").textContent = fmtMoney(stats.avgLoss||0);
+  document.getElementById("statMdd").textContent = fmtMoney(stats.mdd||0);
+  document.getElementById("statGreen").textContent = stats.green || 0;
+  document.getElementById("statRed").textContent = stats.red || 0;
+  document.getElementById("statBest").textContent = fmtMoney(stats.best||0);
+  document.getElementById("statWorst").textContent = fmtMoney(stats.worst||0);
+  document.getElementById("statDays").textContent = stats.days || 0;
+  document.getElementById("statTrades").textContent = stats.trades || 0;
+
+  drawChart(stats.equitySeries || []);
+  buildCalendar(new Date());
+
+  const tbody = document.getElementById("logTable");
+  tbody.innerHTML = "";
+  logs.slice().reverse().forEach(l=>{
+    const ddTxt = (l.ddBuf === null || l.ddBuf === undefined) ? "" : "$"+fmtMoney(l.ddBuf);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${l.date}</td>
+      <td>${l.wins||0}</td>
+      <td>${l.losses||0}</td>
+      <td>$${fmtMoney(l.grossProfit||0)}</td>
+      <td>$${fmtMoney(l.grossLoss||0)}</td>
+      <td>$${fmtMoney(l.net||0)}</td>
+      <td>${l.vios||0}</td>
+      <td>${ddTxt}</td>
+      <td>${l.halted ? "YES" : ""}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  const sg = computeSizeGate();
+  document.getElementById("sizeGateBox").style.display = sg.unlocked ? "none" : "block";
+  document.getElementById("sizeGateOk").style.display = sg.unlocked ? "block" : "none";
+  document.getElementById("sizeGateText").textContent = sg.reason;
+}
+
+function render(){
+  resetIfNewDay();
+
+  const r = computeRank();
+  document.getElementById("overallRank").textContent = r.rank;
+  document.getElementById("rankGateText").innerHTML = r.gated
+    ? `<span class="warn">GATED</span> — weakest pillar <b>${r.weakest}</b>, needs <b>${r.minReq}</b>.`
+    : `<span class="ok">UNLOCKED</span> — rank can progress.`;
+
+  document.getElementById("pillTradeToday").innerHTML =
+    `<strong>Trading Today:</strong> ${state.locks.tradingHaltedToday ? '<span class="warn">HALTED</span>' : '<span class="ok">ALLOWED</span>'}`;
+  document.getElementById("pillTradeNext").innerHTML =
+    `<strong>Trading Next Day:</strong> ${state.locks.tradingHaltedNext ? '<span class="warn">HALTED</span>' : '<span class="ok">ALLOWED</span>'}`;
+  document.getElementById("pillPenalty").innerHTML =
+    `<strong>Penalty:</strong> ${state.locks.weekPenaltyActive ? '<span class="warn">ACTIVE</span>' : '<span class="ok">NONE</span>'}`;
+  document.getElementById("pillTilt").innerHTML =
+    `<strong>Tilt:</strong> ${state.locks.tiltYesToday ? '<span class="warn">YES</span>' : '<span class="ok">NO</span>'}`;
+
+  const sg = computeSizeGate();
+  document.getElementById("pillSize").innerHTML =
+    `<strong>Size Up:</strong> ${sg.unlocked ? '<span class="ok">UNLOCKED</span>' : '<span class="warn">LOCKED</span>'}`;
+
+  const t=state.pillars.trader,b=state.pillars.body,c=state.pillars.closer,f=state.pillars.family;
+
+  document.getElementById("lvlTrader").textContent=t.lvl;
+  document.getElementById("lvlBody").textContent=b.lvl;
+  document.getElementById("lvlCloser").textContent=c.lvl;
+  document.getElementById("lvlFamily").textContent=f.lvl;
+
+  document.getElementById("todayTrader").textContent=t.todayXP;
+  document.getElementById("todayBody").textContent=b.todayXP;
+  document.getElementById("todayCloser").textContent=c.todayXP;
+  document.getElementById("todayFamily").textContent=f.todayXP;
+
+  document.getElementById("cardLvlTrader").textContent=t.lvl;
+  document.getElementById("cardLvlBody").textContent=b.lvl;
+  document.getElementById("cardLvlCloser").textContent=c.lvl;
+  document.getElementById("cardLvlFamily").textContent=f.lvl;
+
+  document.getElementById("cardXpTrader").textContent=t.xp;
+  document.getElementById("cardXpBody").textContent=b.xp;
+  document.getElementById("cardXpCloser").textContent=c.xp;
+  document.getElementById("cardXpFamily").textContent=f.xp;
+
+  const needT=setBar("barTrader",t.lvl,t.xp);
+  const needB=setBar("barBody",b.lvl,b.xp);
+  const needC=setBar("barCloser",c.lvl,c.xp);
+  const needF=setBar("barFamily",f.lvl,f.xp);
+
+  document.getElementById("needTrader").textContent=needT;
+  document.getElementById("needBody").textContent=needB;
+  document.getElementById("needCloser").textContent=needC;
+  document.getElementById("needFamily").textContent=needF;
+
+  document.getElementById("xpTraderText").textContent = `${t.xp} / ${needT} XP`;
+  document.getElementById("xpBodyText").textContent = `${b.xp} / ${needB} XP`;
+  document.getElementById("xpCloserText").textContent = `${c.xp} / ${needC} XP`;
+  document.getElementById("xpFamilyText").textContent = `${f.xp} / ${needF} XP`;
+
+  document.getElementById("traderLockText").innerHTML = state.locks.tradingHaltedToday
+    ? `<span class="warn">Trader XP frozen today</span> (halted = no market interaction).`
+    : `<span class="ok">Trader XP active</span>.`;
+
+  if(!state.trading.selectedDate) state.trading.selectedDate = todayKey();
+
+  renderWeeklyAndStreaks();
+  renderTrading();
+  renderSales();
+  renderApex();
+  renderWow();
+}
+
+/* =========================
+   CSP-SAFE BUTTON WIRING
+   ========================= */
+const actions = {
+  awardWeeklyBonus: () => awardWeeklyBonus(),
+  setRel: (btn) => setRelationshipRating(Number(btn.dataset.rel||0)),
+  habitYesNow: () => habitYesNow(),
+  habitNo: () => habitNo(),
+  tiltYes: () => tiltYes(),
+  tiltNo: () => tiltNo(),
+  toggleHaltToday: () => toggleHaltToday(),
+  toggleHaltNext: () => toggleHaltNext(),
+
+  logBody: (btn) => logBody(btn.dataset.tag, Number(btn.dataset.xp||0)),
+  logCloser: (btn) => logCloser(btn.dataset.tag, Number(btn.dataset.xp||0)),
+  logFamily: (btn) => logFamily(btn.dataset.tag, Number(btn.dataset.xp||0)),
+
+  saveTradingDay: () => saveTradingDay(),
+  jumpToToday: () => jumpToToday(),
+  deleteTradingDay: () => deleteTradingDay(),
+
+  saveQuota: () => saveQuota(),
+  setQuota76000: () => setQuota76000(),
+  saveDialing: () => saveDialing(),
+  markDialed120: () => markDialed120(),
+
+  addDeal: () => addDeal(),
+  jumpSalesToday: () => jumpSalesToday(),
+  deleteDeal: (btn) => deleteDeal(Number(btn.dataset.idx)),
+
+  saveApex: () => saveApex(),
+  setApexGoal500: () => setApexGoal500(),
+
+  startWow: () => startWow(),
+  pauseWow: () => pauseWow(),
+  resetWow: () => resetWow(),
+
+  exportData: () => exportData(),
+  importData: () => importData(),
+  focusImport: () => document.getElementById("importBox").focus(),
+  hardResetAll: () => hardResetAll()
+};
+
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-action]");
+  if(!btn) return;
+  const fn = actions[btn.dataset.action];
+  if(typeof fn === "function") fn(btn);
+});
+
+/* Tabs */
+document.querySelectorAll(".tab").forEach(t=>{
+  t.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll(".tabcontent").forEach(c=>c.classList.remove("active"));
+    t.classList.add("active");
+    document.getElementById(t.dataset.tab).classList.add("active");
+  });
+});
+
+/* init */
+(function init(){
+  ensureTodayDaily();
+  if(!wowInterval) wowInterval = setInterval(tickWow, 300);
+  render();
+})();
+</script>
+</body>
+</html>
