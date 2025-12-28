@@ -632,51 +632,94 @@ function drawChart(points){
   const canvas = document.getElementById("equityChart");
   const ctx = canvas.getContext("2d");
 
+  // HiDPI fix (iPhone): match drawing buffer to CSS size
+  const cssW = canvas.clientWidth || 900;
+  const cssH = canvas.clientHeight || 260;
+  const dpr = window.devicePixelRatio || 1;
+
+  canvas.width = Math.floor(cssW * dpr);
+  canvas.height = Math.floor(cssH * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // draw in CSS pixels
+
   // Clear
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.clearRect(0, 0, cssW, cssH);
 
-  // Border padding
-  const pad = 30;
+  const padL = 42, padR = 14, padT = 14, padB = 34;
 
-  // If no points
+  // Empty state
   if(points.length === 0){
     ctx.fillStyle = "rgba(232,234,243,.7)";
     ctx.font = "14px system-ui";
-    ctx.fillText("No data yet. Add your first daily log.", pad, canvas.height/2);
+    ctx.fillText("No data yet. Add your first daily log.", padL, cssH/2);
     return;
   }
 
   const ys = points.map(p=>p.y);
   const minY = Math.min(...ys);
   const maxY = Math.max(...ys);
-  const rangeY = (maxY-minY) || 1;
+  const rangeY = (maxY - minY) || 1;
+
+  // Background grid (subtle)
+  ctx.strokeStyle = "rgba(255,255,255,.06)";
+  ctx.lineWidth = 1;
+  for(let i=1;i<=3;i++){
+    const y = padT + i * ((cssH - padT - padB)/4);
+    ctx.beginPath();
+    ctx.moveTo(padL, y);
+    ctx.lineTo(cssW - padR, y);
+    ctx.stroke();
+  }
 
   // Axes
-  ctx.strokeStyle = "rgba(255,255,255,.12)";
+  ctx.strokeStyle = "rgba(255,255,255,.14)";
   ctx.lineWidth = 1;
   ctx.beginPath();
-  ctx.moveTo(pad, pad);
-  ctx.lineTo(pad, canvas.height-pad);
-  ctx.lineTo(canvas.width-pad, canvas.height-pad);
+  ctx.moveTo(padL, padT);
+  ctx.lineTo(padL, cssH - padB);
+  ctx.lineTo(cssW - padR, cssH - padB);
   ctx.stroke();
+
+  // Axis labels
+  ctx.fillStyle = "rgba(232,234,243,.75)";
+  ctx.font = "12px system-ui";
+  ctx.fillText("Days", cssW - padR - 34, cssH - 10);
+
+  ctx.save();
+  ctx.translate(12, cssH/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText("Equity ($)", 0, 0);
+  ctx.restore();
+
+  // Y-axis tick labels (min / max)
+  ctx.fillStyle = "rgba(232,234,243,.65)";
+  ctx.font = "11px system-ui";
+  const fmt = (n)=> (n<0? "-" : "") + Math.abs(n).toLocaleString(undefined,{maximumFractionDigits:0});
+  ctx.fillText(fmt(maxY), padL + 6, padT + 10);
+  ctx.fillText(fmt(minY), padL + 6, cssH - padB - 6);
 
   // Line
   ctx.strokeStyle = "rgba(123,108,255,.95)";
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 2.5;
   ctx.beginPath();
 
+  const plotW = (cssW - padL - padR);
+  const plotH = (cssH - padT - padB);
+
   points.forEach((p,i)=>{
-    const x = pad + (i*( (canvas.width-2*pad) / Math.max(1,points.length-1) ));
-    const y = (canvas.height-pad) - ((p.y - minY)/rangeY)*(canvas.height-2*pad);
-    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    const x = padL + (i * (plotW / Math.max(1, points.length-1)));
+    const y = (cssH - padB) - ((p.y - minY) / rangeY) * plotH;
+    if(i === 0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
   });
   ctx.stroke();
 
-  // Last point label
+  // Optional: last point dot (no number label)
   const last = points[points.length-1];
+  const lx = padL + ((points.length-1) * (plotW / Math.max(1, points.length-1)));
+  const ly = (cssH - padB) - ((last.y - minY) / rangeY) * plotH;
   ctx.fillStyle = "rgba(246,197,107,.95)";
-  ctx.font = "12px system-ui";
-  ctx.fillText(`$${fmtMoney(last.y)}`, canvas.width-pad-80, pad+12);
+  ctx.beginPath();
+  ctx.arc(lx, ly, 3, 0, Math.PI*2);
+  ctx.fill();12);
 }
 
 /* =======================
