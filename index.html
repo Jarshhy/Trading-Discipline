@@ -25,7 +25,7 @@
       background:linear-gradient(135deg, rgba(30,27,75,.85), rgba(17,24,39,.55));
     }
     h1{margin:0;font-size:16px;letter-spacing:.2px}
-    .wrap{max-width:1100px;margin:0 auto;padding:16px}
+    .wrap{max-width:1200px;margin:0 auto;padding:16px}
     .card{
       background:linear-gradient(180deg, rgba(20,22,42,.95), rgba(12,14,28,.95));
       border:1px solid var(--line);
@@ -59,7 +59,7 @@
     .pill strong{color:var(--text)}
     .grid{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
       gap:12px;
     }
     .titleRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
@@ -89,11 +89,56 @@
     .warn{color:rgba(251,113,133,.95);font-weight:800}
     .ok{color:rgba(74,222,128,.95);font-weight:800}
     .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .tab{
+      padding:8px 10px;border-radius:10px;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      cursor:pointer; user-select:none;
+      font-size:13px;
+    }
+    .tab.active{background:rgba(123,108,255,.18); border-color:rgba(123,108,255,.35)}
+    .tabcontent{display:none}
+    .tabcontent.active{display:block}
+    input, select, textarea{
+      width:100%;
+      padding:10px;border-radius:10px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      font-size:13px;
+    }
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:rgba(255,255,255,.02);
+    }
+    th,td{
+      padding:10px;
+      border-bottom:1px solid var(--line);
+      font-size:13px;
+      text-align:left;
+    }
+    th{background:rgba(255,255,255,.03); color:rgba(232,234,243,.9)}
+    tr:last-child td{border-bottom:none}
+    .twoCol{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+    canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02)}
+    .overlayLock{
+      border:1px solid rgba(251,113,133,.35);
+      background:rgba(251,113,133,.08);
+      padding:10px;
+      border-radius:12px;
+      margin-top:10px;
+    }
   </style>
 </head>
 <body>
 <header>
-  <h1>2026 Beast Dashboard — 4 Pillars, 1 Rank, No Loopholes</h1>
+  <h1>2026 Beast Dashboard — 4 Pillars + Rank Gate + Trading Discipline Board</h1>
 </header>
 
 <div class="wrap">
@@ -111,121 +156,230 @@
     <div style="margin-top:10px">
       <span class="pill" id="pillTradeToday"><strong>Trading Today:</strong> Unknown</span>
       <span class="pill" id="pillTradeNext"><strong>Trading Next Day:</strong> Unknown</span>
-      <span class="pill" id="pillDD"><strong>Drawdown Rule:</strong> Stop &lt; $2,000</span>
+      <span class="pill" id="pillDD"><strong>Apex DD Rule:</strong> Stop &lt; $2,000 buffer</span>
       <span class="pill" id="pillHabit"><strong>Habit Rule:</strong> If YES → No Trading (today/next)</span>
     </div>
 
-    <div class="btnRow">
-      <button class="danger" onclick="markHabitYesNow()">Habit = YES (trading stops)</button>
-      <button class="secondary" onclick="markHabitNo()">Habit = NO (for today)</button>
-      <button class="secondary" onclick="toggleTradeHaltToday()">Toggle: Trading Halted Today</button>
-      <button class="secondary" onclick="toggleTradeHaltNext()">Toggle: Trading Halted Next Day</button>
-      <button class="secondary" onclick="resetToday()">Reset Today (only today’s toggles)</button>
-    </div>
-
-    <div class="small" style="margin-top:10px">
-      Habit tracking: if you press <span class="mono">Habit = YES</span> before trading, trading is halted today.  
-      If habit happens after trading, press it anyway — it will set <span class="mono">Trading Halted Next Day</span>.
-      (We’ll make this fully automatic in Step 3 when we add timestamps and “first-trade lock”.)
+    <div class="tabs">
+      <div class="tab active" data-tab="pillars">Pillars</div>
+      <div class="tab" data-tab="trading">Trading Board</div>
+      <div class="tab" data-tab="backup">Backup</div>
     </div>
   </div>
 
-  <!-- 4 PILLAR CARDS -->
-  <div class="grid">
+  <!-- PILLARS TAB -->
+  <div id="pillars" class="tabcontent active">
+    <div class="grid">
 
-    <div class="card">
-      <div class="titleRow">
-        <div class="h2">🧠 Trader</div>
-        <span class="pill"><strong>Today XP:</strong> <span id="todayTrader">0</span></span>
+      <div class="card">
+        <div class="titleRow">
+          <div class="h2">🧠 Trader</div>
+          <span class="pill"><strong>Today XP:</strong> <span id="todayTrader">0</span></span>
+        </div>
+        <div class="small">Trader XP freezes if trading is halted (burn rule).</div>
+        <div class="xpbar"><div class="xpfill" id="barTrader"></div></div>
+        <div class="row small">
+          <div>Level: <b id="cardLvlTrader">1</b></div>
+          <div>XP: <b id="cardXpTrader">0</b> / <b id="needTrader">100</b></div>
+        </div>
+        <hr/>
+        <div class="btnRow">
+          <button onclick="addXP('trader',50)">All Apex rules followed (+50)</button>
+          <button onclick="addXP('trader',40)">Stopped at DD buffer (+40)</button>
+          <button onclick="addXP('trader',20)">Journal complete (+20)</button>
+          <button class="danger" onclick="addXP('trader',-100)">Size-up after red (-100)</button>
+        </div>
+        <div class="small" id="traderLockText"></div>
+
+        <hr/>
+        <div class="btnRow">
+          <button class="danger" onclick="markHabitYesNow()">Habit = YES (halts trading)</button>
+          <button class="secondary" onclick="markHabitNo()">Habit = NO (today)</button>
+          <button class="secondary" onclick="toggleTradeHaltToday()">Toggle: Trading Halted Today</button>
+          <button class="secondary" onclick="toggleTradeHaltNext()">Toggle: Trading Halted Next Day</button>
+        </div>
+        <div class="small" style="margin-top:8px">
+          If habit occurs <b>after</b> trading: press Habit YES, then toggle “Halted Next Day”.
+          (We’ll automate this in the next step.)
+        </div>
       </div>
-      <div class="small">XP to next level = <b>100 × current level</b>. Trader XP should feel earned.</div>
-      <div class="xpbar"><div class="xpfill" id="barTrader"></div></div>
-      <div class="row small">
-        <div>Level: <b id="cardLvlTrader">1</b></div>
-        <div>XP: <b id="cardXpTrader">0</b> / <b id="needTrader">100</b></div>
+
+      <div class="card">
+        <div class="titleRow">
+          <div class="h2">💪 Body</div>
+          <span class="pill"><strong>Today XP:</strong> <span id="todayBody">0</span></span>
+        </div>
+        <div class="xpbar"><div class="xpfill" id="barBody"></div></div>
+        <div class="row small">
+          <div>Level: <b id="cardLvlBody">1</b></div>
+          <div>XP: <b id="cardXpBody">0</b> / <b id="needBody">100</b></div>
+        </div>
+        <hr/>
+        <div class="btnRow">
+          <button onclick="addXP('body',25)">Cold plunge (+25)</button>
+          <button onclick="addXP('body',40)">Lift (+40)</button>
+          <button onclick="addXP('body',30)">Diet compliant (+30)</button>
+          <button onclick="addXP('body',25)">In bed by cutoff (+25)</button>
+          <button onclick="addXP('body',50)">Habit avoided (+50)</button>
+        </div>
       </div>
-      <hr/>
-      <div class="btnRow">
-        <button onclick="addXP('trader',50)">All Apex rules followed (+50)</button>
-        <button onclick="addXP('trader',40)">Stopped correctly at DD (+40)</button>
-        <button onclick="addXP('trader',20)">Journal complete (+20)</button>
-        <button class="danger" onclick="addXP('trader',-100)">Size-up after red (-100)</button>
+
+      <div class="card">
+        <div class="titleRow">
+          <div class="h2">💼 Closer</div>
+          <span class="pill"><strong>Today XP:</strong> <span id="todayCloser">0</span></span>
+        </div>
+        <div class="xpbar"><div class="xpfill" id="barCloser"></div></div>
+        <div class="row small">
+          <div>Level: <b id="cardLvlCloser">1</b></div>
+          <div>XP: <b id="cardXpCloser">0</b> / <b id="needCloser">100</b></div>
+        </div>
+        <hr/>
+        <div class="btnRow">
+          <button onclick="addXP('closer',50)">2h dialing (+50)</button>
+          <button onclick="addXP('closer',20)">CRM + follow-ups (+20)</button>
+          <button onclick="addXP('closer',25)">Deal closed (+25)</button>
+          <button onclick="addXP('closer',15)">Self-sourced bonus (+15)</button>
+          <button onclick="addXP('closer',15)">No-trial bonus (+15)</button>
+        </div>
       </div>
-      <div class="small" id="traderLockText"></div>
+
+      <div class="card">
+        <div class="titleRow">
+          <div class="h2">❤️ Husband / Father</div>
+          <span class="pill"><strong>Today XP:</strong> <span id="todayFamily">0</span></span>
+        </div>
+        <div class="xpbar"><div class="xpfill" id="barFamily"></div></div>
+        <div class="row small">
+          <div>Level: <b id="cardLvlFamily">1</b></div>
+          <div>XP: <b id="cardXpFamily">0</b> / <b id="needFamily">100</b></div>
+        </div>
+        <hr/>
+        <div class="btnRow">
+          <button onclick="addXP('family',40)">Spouse time (no phone) (+40)</button>
+          <button onclick="addXP('family',30)">Kid time engaged (+30)</button>
+          <button onclick="addXP('family',20)">Helped unasked (+20)</button>
+          <button onclick="addXP('family',20)">Calm under stress (+20)</button>
+          <button onclick="addXP('family',100)">Weekly date/leadership (+100)</button>
+        </div>
+      </div>
+
     </div>
-
-    <div class="card">
-      <div class="titleRow">
-        <div class="h2">💪 Body</div>
-        <span class="pill"><strong>Today XP:</strong> <span id="todayBody">0</span></span>
-      </div>
-      <div class="small">Binary compliance beats perfect plans.</div>
-      <div class="xpbar"><div class="xpfill" id="barBody"></div></div>
-      <div class="row small">
-        <div>Level: <b id="cardLvlBody">1</b></div>
-        <div>XP: <b id="cardXpBody">0</b> / <b id="needBody">100</b></div>
-      </div>
-      <hr/>
-      <div class="btnRow">
-        <button onclick="addXP('body',25)">Cold plunge (+25)</button>
-        <button onclick="addXP('body',40)">Lift (+40)</button>
-        <button onclick="addXP('body',30)">Diet compliant (+30)</button>
-        <button onclick="addXP('body',25)">In bed by cutoff (+25)</button>
-        <button onclick="addXP('body',50)">Habit avoided (+50)</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="titleRow">
-        <div class="h2">💼 Closer</div>
-        <span class="pill"><strong>Today XP:</strong> <span id="todayCloser">0</span></span>
-      </div>
-      <div class="small">Inputs first. Closings are bonuses.</div>
-      <div class="xpbar"><div class="xpfill" id="barCloser"></div></div>
-      <div class="row small">
-        <div>Level: <b id="cardLvlCloser">1</b></div>
-        <div>XP: <b id="cardXpCloser">0</b> / <b id="needCloser">100</b></div>
-      </div>
-      <hr/>
-      <div class="btnRow">
-        <button onclick="addXP('closer',50)">2h dialing (+50)</button>
-        <button onclick="addXP('closer',20)">CRM + follow-ups (+20)</button>
-        <button onclick="addXP('closer',25)">Deal closed (+25)</button>
-        <button onclick="addXP('closer',15)">Self-sourced bonus (+15)</button>
-        <button onclick="addXP('closer',15)">No-trial bonus (+15)</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="titleRow">
-        <div class="h2">❤️ Husband / Father</div>
-        <span class="pill"><strong>Today XP:</strong> <span id="todayFamily">0</span></span>
-      </div>
-      <div class="small">Presence is a skill. Train it like one.</div>
-      <div class="xpbar"><div class="xpfill" id="barFamily"></div></div>
-      <div class="row small">
-        <div>Level: <b id="cardLvlFamily">1</b></div>
-        <div>XP: <b id="cardXpFamily">0</b> / <b id="needFamily">100</b></div>
-      </div>
-      <hr/>
-      <div class="btnRow">
-        <button onclick="addXP('family',40)">Spouse time (no phone) (+40)</button>
-        <button onclick="addXP('family',30)">Kid time engaged (+30)</button>
-        <button onclick="addXP('family',20)">Helped unasked (+20)</button>
-        <button onclick="addXP('family',20)">Calm under stress (+20)</button>
-        <button onclick="addXP('family',100)">Weekly date/leadership (+100)</button>
-      </div>
-    </div>
-
   </div>
 
-  <div class="card">
-    <h1 style="font-size:14px;margin:0 0 8px 0">What “Rank Gated” means</h1>
-    <div class="small">
-      Overall Rank = average of pillar levels.  
-      Rank can only increase if <b>each pillar</b> meets the minimum required for that Rank band:
-      <div style="margin-top:8px">
-        Rank 1–5 ⇒ min level 1+ • Rank 6–10 ⇒ min level 5+ • Rank 11–15 ⇒ min level 10+ • Rank 16–20 ⇒ min level 15+ • Rank 21–25 ⇒ min level 20+
+  <!-- TRADING BOARD TAB -->
+  <div id="trading" class="tabcontent">
+    <div class="card">
+      <div class="titleRow">
+        <div class="h2">📊 Trading Board (Aggregate Daily)</div>
+        <span class="pill"><strong>Equity:</strong> $<span id="equityNow">0</span></span>
+      </div>
+      <div class="small">
+        Log only meaningful stats from Tradovate. No account names. No fluff.
+      </div>
+
+      <div id="lockOverlay" class="overlayLock" style="display:none;">
+        <div class="warn">TRADING HALTED — NO MARKET INTERACTION</div>
+        <div class="small">This is training. Losing access is the consequence. Trader XP is frozen today.</div>
+      </div>
+
+      <hr/>
+
+      <div class="twoCol">
+        <div class="card" style="margin:0;background:rgba(255,255,255,.02)">
+          <h1 style="font-size:14px;margin:0 0 8px 0">Add Daily Log</h1>
+          <div class="small">Date auto-fills. Enter daily totals from Tradovate.</div>
+
+          <div style="margin-top:10px" class="small">Net PnL ($)</div>
+          <input id="inPnl" type="number" step="0.01" placeholder="e.g. 350.25" />
+
+          <div style="margin-top:10px" class="small">Trades</div>
+          <input id="inTrades" type="number" min="0" placeholder="e.g. 6" />
+
+          <div style="margin-top:10px" class="small">Wins</div>
+          <input id="inWins" type="number" min="0" placeholder="e.g. 4" />
+
+          <div style="margin-top:10px" class="small">Losses</div>
+          <input id="inLosses" type="number" min="0" placeholder="e.g. 2" />
+
+          <div style="margin-top:10px" class="small">Rule Violations (0 if clean)</div>
+          <input id="inVios" type="number" min="0" placeholder="e.g. 0" />
+
+          <div style="margin-top:10px" class="small">DD Buffer ($) (optional)</div>
+          <input id="inDdBuf" type="number" step="0.01" placeholder="e.g. 4200 (leave blank if unknown)" />
+
+          <div class="btnRow">
+            <button onclick="saveDailyLog()">Save Day</button>
+            <button class="secondary" onclick="deleteTodayLog()">Delete Today</button>
+          </div>
+
+          <div class="small" style="margin-top:8px">
+            Trader XP auto-award (only if trading not halted):
+            <ul style="margin:6px 0 0 18px;padding:0">
+              <li>Clean day (violations = 0) → +50 XP</li>
+              <li>Violations &gt; 0 → 0 XP and flags “discipline hit”</li>
+              <li>DD buffer &lt; 2000 → trading halt today (visual)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card" style="margin:0;background:rgba(255,255,255,.02)">
+          <h1 style="font-size:14px;margin:0 0 8px 0">Equity Curve</h1>
+          <canvas id="equityChart" width="900" height="260"></canvas>
+          <hr/>
+          <div class="twoCol" style="gap:8px">
+            <div class="pill"><strong>Win Rate:</strong> <span id="statWr">0%</span></div>
+            <div class="pill"><strong>Avg Daily PnL:</strong> $<span id="statAvg">0</span></div>
+            <div class="pill"><strong>Max Drawdown:</strong> $<span id="statMdd">0</span></div>
+            <div class="pill"><strong>Days Logged:</strong> <span id="statDays">0</span></div>
+          </div>
+          <div class="small" style="margin-top:8px">
+            These are daily-aggregate stats. We can upgrade to per-trade later if you ever want it.
+          </div>
+        </div>
+      </div>
+
+      <hr/>
+
+      <h1 style="font-size:14px;margin:0 0 8px 0">Daily Logs</h1>
+      <div class="small">Tap Save Day once per day. Editing is done by saving again (it overwrites today).</div>
+      <div style="overflow:auto;margin-top:10px">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Net PnL</th>
+              <th>Trades</th>
+              <th>W</th>
+              <th>L</th>
+              <th>Violations</th>
+              <th>DD Buffer</th>
+            </tr>
+          </thead>
+          <tbody id="logTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- BACKUP TAB -->
+  <div id="backup" class="tabcontent">
+    <div class="card">
+      <div class="h2">Backup / Restore</div>
+      <div class="small">LocalStorage is phone-only. Use this to export and keep a copy.</div>
+      <hr/>
+      <div class="btnRow">
+        <button onclick="exportData()">Export JSON</button>
+        <button class="secondary" onclick="document.getElementById('importBox').focus()">Import JSON</button>
+        <button class="danger" onclick="hardResetAll()">Hard Reset All</button>
+      </div>
+      <div style="margin-top:10px" class="small">Paste JSON here to restore:</div>
+      <textarea id="importBox" rows="8" placeholder="Paste exported JSON here"></textarea>
+      <div class="btnRow">
+        <button class="secondary" onclick="importData()">Restore Now</button>
+      </div>
+      <div class="small" style="margin-top:8px">
+        After export, email/text it to yourself or save in Notes/Drive.
       </div>
     </div>
   </div>
@@ -236,24 +390,27 @@
 /* =======================
    DATA + RESET ENGINE
    ======================= */
-const KEY = "beastDashboard_v1";
+const KEY = "beastDashboard_v2";
 
 const todayKey = () => new Date().toDateString();
 
 const defaults = {
   lastDate: null,
-  // Pillars all share the same XP curve: need = 100 * level
   pillars: {
     trader: { lvl: 1, xp: 0, todayXP: 0 },
     body:   { lvl: 1, xp: 0, todayXP: 0 },
     closer: { lvl: 1, xp: 0, todayXP: 0 },
     family: { lvl: 1, xp: 0, todayXP: 0 },
   },
-  // Locks and habit logic
   locks: {
     tradingHaltedToday: false,
     tradingHaltedNext: false,
     habitYesToday: false
+  },
+  trading: {
+    dailyLogs: {
+      // dateStr: { pnl, trades, wins, losses, vios, ddBuf }
+    }
   }
 };
 
@@ -264,15 +421,14 @@ function needForLevel(lvl){ return 100 * lvl; }
 function resetIfNewDay(){
   const t = todayKey();
   if(state.lastDate !== t){
-    // shift "next day trading halt" into today automatically
     state.locks.tradingHaltedToday = !!state.locks.tradingHaltedNext;
     state.locks.tradingHaltedNext = false;
     state.locks.habitYesToday = false;
 
-    // reset daily XP counters
     for(const k of Object.keys(state.pillars)){
       state.pillars[k].todayXP = 0;
     }
+
     state.lastDate = t;
     save();
   }
@@ -290,28 +446,19 @@ resetIfNewDay();
    ======================= */
 function addXP(pillar, amount){
   resetIfNewDay();
-
-  // If trading is halted today, Trader XP is frozen (your "burn")
   if(pillar === "trader" && state.locks.tradingHaltedToday){
     alert("Trader XP is frozen because trading is halted today.");
     return;
   }
-
   const p = state.pillars[pillar];
-
-  // Apply XP (can be negative)
   p.xp += amount;
   p.todayXP += amount;
-
-  // Prevent negative XP below 0 at current level
   if(p.xp < 0){ p.xp = 0; }
 
-  // Level up loop
   while(p.xp >= needForLevel(p.lvl)){
     p.xp -= needForLevel(p.lvl);
     p.lvl += 1;
   }
-
   save();
 }
 
@@ -328,15 +475,14 @@ function minLevelRequiredForRank(rank){
   if(rank <= 10) return 5;
   if(rank <= 15) return 10;
   if(rank <= 20) return 15;
-  return 20; // rank 21–25+ band
+  return 20;
 }
 
 function computeRank(){
   const raw = avgLevel();
-  const targetRank = Math.floor(raw); // integer rank
-
-  // Gate: rank can only be as high as the weakest pillar allows for that band
+  const targetRank = Math.floor(raw);
   const minReq = minLevelRequiredForRank(targetRank);
+
   const minPillarLvl = Math.min(
     state.pillars.trader.lvl,
     state.pillars.body.lvl,
@@ -345,8 +491,6 @@ function computeRank(){
   );
 
   if(minPillarLvl < minReq){
-    // Clamp rank to the highest rank whose requirement you actually meet
-    // We'll step down until requirement is satisfied.
     let r = targetRank;
     while(r > 1 && minPillarLvl < minLevelRequiredForRank(r)){
       r--;
@@ -362,13 +506,9 @@ function computeRank(){
 function markHabitYesNow(){
   resetIfNewDay();
   state.locks.habitYesToday = true;
-
-  // If you haven't traded yet (we're not tracking trade times yet), we enforce: trading halted today.
-  // If it happens after trading, you still press this and you will manually toggle next-day halt (for now).
   state.locks.tradingHaltedToday = true;
-
   save();
-  alert("Habit marked YES. Trading halted today. (If this occurred after trading, also toggle 'Trading Halted Next Day'.)");
+  alert("Habit marked YES. Trading halted today. If this occurred after trading, also toggle 'Halted Next Day'.");
 }
 
 function markHabitNo(){
@@ -389,16 +529,201 @@ function toggleTradeHaltNext(){
   save();
 }
 
-function resetToday(){
+/* =======================
+   TRADING DAILY LOGS (AGGREGATE)
+   ======================= */
+function saveDailyLog(){
   resetIfNewDay();
-  state.locks.habitYesToday = false;
-  state.locks.tradingHaltedToday = false;
-  // leave next-day flag alone unless you explicitly change it
-  for(const k of Object.keys(state.pillars)){
-    state.pillars[k].todayXP = 0;
+  const d = todayKey();
+
+  const pnl = Number(document.getElementById("inPnl").value || 0);
+  const trades = Number(document.getElementById("inTrades").value || 0);
+  const wins = Number(document.getElementById("inWins").value || 0);
+  const losses = Number(document.getElementById("inLosses").value || 0);
+  const vios = Number(document.getElementById("inVios").value || 0);
+  const ddRaw = document.getElementById("inDdBuf").value;
+  const ddBuf = ddRaw === "" ? null : Number(ddRaw);
+
+  state.trading.dailyLogs[d] = { pnl, trades, wins, losses, vios, ddBuf };
+
+  // Apex DD rule visual enforcement: if buffer known and < 2000 → halt today
+  if(ddBuf !== null && ddBuf < 2000){
+    state.locks.tradingHaltedToday = true;
   }
+
+  // Auto Trader XP award: only if not halted and violations == 0
+  // (one award per day; overwrite logic: if already awarded, we don't double-award)
+  // We detect by storing a hidden field in the log.
+  const log = state.trading.dailyLogs[d];
+  if(!log.xpAwarded){
+    if(!state.locks.tradingHaltedToday && vios === 0){
+      addXP("trader", 50);
+      log.xpAwarded = true;
+    } else {
+      log.xpAwarded = true; // mark processed; no XP
+    }
+  }
+
   save();
 }
+
+function deleteTodayLog(){
+  resetIfNewDay();
+  const d = todayKey();
+  if(!state.trading.dailyLogs[d]) return;
+  if(!confirm("Delete today's trading log?")) return;
+  delete state.trading.dailyLogs[d];
+  save();
+}
+
+/* =======================
+   EQUITY + STATS + CHART
+   ======================= */
+function getSortedLogs(){
+  const entries = Object.entries(state.trading.dailyLogs)
+    .map(([date, v]) => ({ date, ...v }))
+    .sort((a,b) => new Date(a.date) - new Date(b.date));
+  return entries;
+}
+
+function fmtMoney(n){
+  const sign = n < 0 ? "-" : "";
+  const abs = Math.abs(n);
+  return sign + abs.toLocaleString(undefined, {maximumFractionDigits:2});
+}
+
+function computeEquitySeries(logs){
+  let eq = 0;
+  const pts = logs.map(l => {
+    eq += (Number(l.pnl)||0);
+    return { x:l.date, y:eq };
+  });
+  return pts;
+}
+
+function computeStats(logs){
+  if(logs.length === 0){
+    return { equity:0, wr:0, avg:0, mdd:0, days:0 };
+  }
+  const equitySeries = computeEquitySeries(logs);
+  const equity = equitySeries[equitySeries.length-1].y;
+
+  let totalWins=0, totalTrades=0, sum=0;
+  for(const l of logs){
+    totalWins += Number(l.wins)||0;
+    totalTrades += Number(l.trades)||0;
+    sum += Number(l.pnl)||0;
+  }
+  const wr = totalTrades > 0 ? (totalWins/totalTrades) : 0;
+  const avg = logs.length > 0 ? (sum/logs.length) : 0;
+
+  // max drawdown on equity curve
+  let peak = -Infinity;
+  let mdd = 0;
+  for(const p of equitySeries){
+    if(p.y > peak) peak = p.y;
+    const dd = peak - p.y;
+    if(dd > mdd) mdd = dd;
+  }
+  return { equity, wr, avg, mdd, days:logs.length, equitySeries };
+}
+
+function drawChart(points){
+  const canvas = document.getElementById("equityChart");
+  const ctx = canvas.getContext("2d");
+
+  // Clear
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Border padding
+  const pad = 30;
+
+  // If no points
+  if(points.length === 0){
+    ctx.fillStyle = "rgba(232,234,243,.7)";
+    ctx.font = "14px system-ui";
+    ctx.fillText("No data yet. Add your first daily log.", pad, canvas.height/2);
+    return;
+  }
+
+  const ys = points.map(p=>p.y);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+  const rangeY = (maxY-minY) || 1;
+
+  // Axes
+  ctx.strokeStyle = "rgba(255,255,255,.12)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(pad, pad);
+  ctx.lineTo(pad, canvas.height-pad);
+  ctx.lineTo(canvas.width-pad, canvas.height-pad);
+  ctx.stroke();
+
+  // Line
+  ctx.strokeStyle = "rgba(123,108,255,.95)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+
+  points.forEach((p,i)=>{
+    const x = pad + (i*( (canvas.width-2*pad) / Math.max(1,points.length-1) ));
+    const y = (canvas.height-pad) - ((p.y - minY)/rangeY)*(canvas.height-2*pad);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  // Last point label
+  const last = points[points.length-1];
+  ctx.fillStyle = "rgba(246,197,107,.95)";
+  ctx.font = "12px system-ui";
+  ctx.fillText(`$${fmtMoney(last.y)}`, canvas.width-pad-80, pad+12);
+}
+
+/* =======================
+   BACKUP
+   ======================= */
+function exportData(){
+  const json = JSON.stringify(state, null, 2);
+  navigator.clipboard?.writeText(json).then(()=>{
+    alert("Export copied to clipboard. Paste it into Notes/Drive.");
+  }).catch(()=>{
+    // fallback
+    prompt("Copy this JSON:", json);
+  });
+}
+
+function importData(){
+  const box = document.getElementById("importBox");
+  const txt = box.value.trim();
+  if(!txt) return alert("Paste JSON first.");
+  try{
+    const parsed = JSON.parse(txt);
+    state = parsed;
+    save();
+    alert("Restored.");
+  } catch(e){
+    alert("Invalid JSON.");
+  }
+}
+
+function hardResetAll(){
+  if(!confirm("Wipe ALL data? This cannot be undone.")) return;
+  localStorage.removeItem(KEY);
+  state = structuredClone(defaults);
+  save();
+}
+
+/* =======================
+   TABS
+   ======================= */
+document.querySelectorAll(".tab").forEach(t=>{
+  t.onclick=()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll(".tabcontent").forEach(c=>c.classList.remove("active"));
+    t.classList.add("active");
+    document.getElementById(t.dataset.tab).classList.add("active");
+  };
+});
 
 /* =======================
    RENDER
@@ -410,20 +735,65 @@ function setBar(barId, lvl, xp){
   return need;
 }
 
+function renderTrading(){
+  // Lock overlay
+  const lock = state.locks.tradingHaltedToday;
+  document.getElementById("lockOverlay").style.display = lock ? "block" : "none";
+
+  // Fill inputs with today if present
+  const d = todayKey();
+  const log = state.trading.dailyLogs[d];
+  if(log){
+    document.getElementById("inPnl").value = log.pnl ?? 0;
+    document.getElementById("inTrades").value = log.trades ?? 0;
+    document.getElementById("inWins").value = log.wins ?? 0;
+    document.getElementById("inLosses").value = log.losses ?? 0;
+    document.getElementById("inVios").value = log.vios ?? 0;
+    document.getElementById("inDdBuf").value = (log.ddBuf === null || log.ddBuf === undefined) ? "" : log.ddBuf;
+  } else {
+    // do not wipe user typing if they are in the middle; keep as-is
+  }
+
+  const logs = getSortedLogs();
+  const stats = computeStats(logs);
+
+  document.getElementById("equityNow").textContent = fmtMoney(stats.equity);
+  document.getElementById("statWr").textContent = (stats.wr*100).toFixed(1) + "%";
+  document.getElementById("statAvg").textContent = fmtMoney(stats.avg);
+  document.getElementById("statMdd").textContent = fmtMoney(stats.mdd);
+  document.getElementById("statDays").textContent = stats.days;
+
+  drawChart(stats.equitySeries || []);
+
+  // Table
+  const tbody = document.getElementById("logTable");
+  tbody.innerHTML = "";
+  for(const l of logs.slice().reverse()){
+    const ddText = (l.ddBuf === null || l.ddBuf === undefined) ? "" : "$" + fmtMoney(l.ddBuf);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${l.date}</td>
+      <td>$${fmtMoney(l.pnl||0)}</td>
+      <td>${l.trades||0}</td>
+      <td>${l.wins||0}</td>
+      <td>${l.losses||0}</td>
+      <td>${l.vios||0}</td>
+      <td>${ddText}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+
 function render(){
   resetIfNewDay();
 
-  // Rank
   const r = computeRank();
   overallRank.textContent = r.rank;
 
-  if(r.gated){
-    rankGateText.innerHTML = `<span class="warn">GATED</span> — target rank ${r.target} requires min pillar level <b>${r.minReq}</b>. Weakest pillar is <b>${r.weakest}</b>.`;
-  } else {
-    rankGateText.innerHTML = `<span class="ok">UNLOCKED</span> — rank can progress normally.`;
-  }
+  rankGateText.innerHTML = r.gated
+    ? `<span class="warn">GATED</span> — target rank ${r.target} requires min pillar level <b>${r.minReq}</b>. Weakest pillar is <b>${r.weakest}</b>.`
+    : `<span class="ok">UNLOCKED</span> — rank can progress normally.`;
 
-  // Lock pills
   pillTradeToday.innerHTML = `<strong>Trading Today:</strong> ${state.locks.tradingHaltedToday ? '<span class="warn">HALTED</span>' : '<span class="ok">ALLOWED</span>'}`;
   pillTradeNext.innerHTML = `<strong>Trading Next Day:</strong> ${state.locks.tradingHaltedNext ? '<span class="warn">HALTED</span>' : '<span class="ok">ALLOWED</span>'}`;
 
@@ -436,7 +806,6 @@ function render(){
   const needT = setBar("barTrader", t.lvl, t.xp);
   needTrader.textContent = needT;
   xpTraderText.textContent = `${t.xp} / ${needT} XP`;
-
   traderLockText.innerHTML = state.locks.tradingHaltedToday
     ? `<span class="warn">Trader XP frozen today</span> (trading halted = no market interaction).`
     : `<span class="ok">Trader XP active</span>.`;
@@ -470,6 +839,8 @@ function render(){
   const needF = setBar("barFamily", f.lvl, f.xp);
   needFamily.textContent = needF;
   xpFamilyText.textContent = `${f.xp} / ${needF} XP`;
+
+  renderTrading();
 }
 
 render();
