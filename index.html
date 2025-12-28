@@ -4,9 +4,10 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>2026 Beast Dashboard</title>
+
 <style>
 :root{
-  --bg:#0b0c14; --panel:#14162a; --text:#e8eaf3; --muted:rgba(232,234,243,.72);
+  --bg:#0b0c14; --text:#e8eaf3; --muted:rgba(232,234,243,.72);
   --line:rgba(255,255,255,.10); --purple:#7b6cff; --accent:#f6c56b;
   --green:#4ade80; --red:#fb7185; --blue:#60a5fa; --amber:#fbbf24;
 }
@@ -32,10 +33,7 @@ h1{margin:0;font-size:16px}
 }
 .small{font-size:12px;color:var(--muted);line-height:1.35}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
-.kpi{
-  background:rgba(255,255,255,.03);border:1px solid var(--line);
-  border-radius:12px;padding:10px;text-align:center
-}
+.kpi{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
 .kpi b{font-size:18px}
 .pill{
   display:inline-flex;align-items:center;gap:8px;
@@ -44,11 +42,15 @@ h1{margin:0;font-size:16px}
   margin:4px 6px 0 0;
 }
 .pill strong{color:var(--text)}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 8px;border-radius:999px;border:1px solid var(--line);
+  background:rgba(255,255,255,.03);font-size:12px;color:var(--muted)
+}
 .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .tab{
   padding:8px 10px;border-radius:10px;border:1px solid var(--line);
-  background:rgba(255,255,255,.04);cursor:pointer;user-select:none;
-  font-size:13px;
+  background:rgba(255,255,255,.04);cursor:pointer;user-select:none;font-size:13px;
 }
 .tab.active{background:rgba(123,108,255,.18);border-color:rgba(123,108,255,.35)}
 .tabcontent{display:none}
@@ -70,7 +72,6 @@ button:disabled{opacity:.55;cursor:not-allowed}
 hr{border:none;border-top:1px solid var(--line);margin:12px 0}
 .warn{color:rgba(251,113,133,.95);font-weight:900}
 .ok{color:rgba(74,222,128,.95);font-weight:900}
-.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .twoCol{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px}
 input,select,textarea{
   width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);
@@ -84,20 +85,11 @@ th,td{padding:10px;border-bottom:1px solid var(--line);font-size:13px;text-align
 th{background:rgba(255,255,255,.03);color:rgba(232,234,243,.9)}
 tr:last-child td{border-bottom:none}
 canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02)}
-.banner{
-  border:1px solid rgba(251,113,133,.35);
-  background:rgba(251,113,133,.08);
-  padding:10px;border-radius:12px;margin-top:10px;
-}
-.progress{
-  height:12px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.08);border:1px solid var(--line)
-}
+.banner{border:1px solid rgba(251,113,133,.35);background:rgba(251,113,133,.08);padding:10px;border-radius:12px;margin-top:10px}
+.progress{height:12px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.08);border:1px solid var(--line)}
 .progress > div{height:100%;width:0%;background:linear-gradient(90deg,var(--purple),var(--accent));transition:width .25s ease}
 .calWrap{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
-.calDay{
-  border:1px solid var(--line);border-radius:10px;padding:8px;
-  background:rgba(255,255,255,.02);min-height:58px;cursor:pointer;
-}
+.calDay{border:1px solid var(--line);border-radius:10px;padding:8px;background:rgba(255,255,255,.02);min-height:58px;cursor:pointer}
 .calDay .d{font-size:12px;color:rgba(232,234,243,.75)}
 .calDay .v{font-size:12px;margin-top:6px;font-weight:900}
 .calHead{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px}
@@ -105,23 +97,14 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
 .calLegend{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .swatch{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
 .box{width:12px;height:12px;border-radius:3px;border:1px solid var(--line);background:rgba(255,255,255,.02)}
-.badge{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:4px 8px;border-radius:999px;border:1px solid var(--line);
-  background:rgba(255,255,255,.03);font-size:12px;color:var(--muted)
-}
-.timer{
-  font-size:26px;font-weight:1000;letter-spacing:.5px
-}
+.timer{font-size:26px;font-weight:1000;letter-spacing:.5px}
 </style>
 </head>
 
 <body>
-<header><h1>2026 Beast Dashboard — 4 Pillars + Rank Gate + TradeZella-Style + Quota + WoW Unlock</h1></header>
+<header><h1>2026 Beast Dashboard — 4 Pillars + Rank Gate + Trading + Quota + WoW Unlock</h1></header>
 
 <div class="wrap">
-
-  <!-- GLOBAL HEADER -->
   <div class="card">
     <div class="kpis">
       <div class="kpi">Overall Rank<br><b id="overallRank">1</b><div class="small" id="rankGateText"></div></div>
@@ -132,11 +115,11 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
     </div>
 
     <div style="margin-top:10px">
-      <span class="pill" id="pillTradeToday"><strong>Trading Today:</strong> Unknown</span>
-      <span class="pill" id="pillTradeNext"><strong>Trading Next Day:</strong> Unknown</span>
+      <span class="pill" id="pillTradeToday"><strong>Trading Today:</strong> ...</span>
+      <span class="pill" id="pillTradeNext"><strong>Trading Next Day:</strong> ...</span>
       <span class="pill"><strong>Apex DD Stop:</strong> Buffer &lt; $2,000 → Halt</span>
       <span class="pill"><strong>Habit:</strong> YES → Halt today/next</span>
-      <span class="pill" id="pillWow"><strong>WoW (30m):</strong> Unknown</span>
+      <span class="pill" id="pillWow"><strong>WoW (30m):</strong> ...</span>
     </div>
 
     <div class="tabs">
@@ -148,7 +131,7 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
     </div>
   </div>
 
-  <!-- PILLARS TAB -->
+  <!-- PILLARS -->
   <div id="pillars" class="tabcontent active">
     <div class="grid">
 
@@ -157,7 +140,7 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
           <div class="h2">🧠 Trader</div>
           <span class="badge"><strong>Today XP:</strong> <span id="todayTrader">0</span></span>
         </div>
-        <div class="small">Trader XP freezes if trading is halted (your burn rule).</div>
+        <div class="small">Trader XP freezes if trading is halted.</div>
         <div class="xpbar"><div class="xpfill" id="barTrader"></div></div>
         <div class="row small">
           <div>Level: <b id="cardLvlTrader">1</b></div>
@@ -167,8 +150,8 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
         <div class="btnRow">
           <button class="danger" onclick="markHabitYesNow()">Habit = YES (halts trading)</button>
           <button class="secondary" onclick="markHabitNo()">Habit = NO (today)</button>
-          <button class="secondary" onclick="toggleTradeHaltToday()">Toggle: Trading Halted Today</button>
-          <button class="secondary" onclick="toggleTradeHaltNext()">Toggle: Trading Halted Next Day</button>
+          <button class="secondary" onclick="toggleTradeHaltToday()">Toggle: Halt Today</button>
+          <button class="secondary" onclick="toggleTradeHaltNext()">Toggle: Halt Next Day</button>
         </div>
         <div class="small" id="traderLockText" style="margin-top:8px"></div>
       </div>
@@ -206,7 +189,6 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
         <hr/>
         <div class="btnRow">
           <button onclick="addXP('closer',50)">2h dialing (+50)</button>
-          <button onclick="addXP('closer',20)">CRM+followups (+20)</button>
           <button onclick="addXP('closer',25)">Deal closed (+25)</button>
           <button onclick="addXP('closer',15)">Self-sourced (+15)</button>
           <button onclick="addXP('closer',15)">No-trial (+15)</button>
@@ -236,20 +218,18 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
     </div>
   </div>
 
-  <!-- TRADING TAB -->
+  <!-- TRADING -->
   <div id="trading" class="tabcontent">
     <div class="card">
       <div class="titleRow">
-        <div class="h2">📊 Trading Dashboard (TradeZella-style, aggregate)</div>
+        <div class="h2">📊 Trading Dashboard (aggregate daily)</div>
         <span class="pill"><strong>Equity:</strong> $<span id="equityNow">0</span></span>
       </div>
-      <div class="small">
-        Input once per day from Tradovate. Advanced stats come from gross profit/loss + counts.
-      </div>
+      <div class="small">Enter daily totals from Tradovate. Advanced stats use gross profit/loss + win/loss counts.</div>
 
       <div id="lockOverlay" class="banner" style="display:none;">
         <div class="warn">TRADING HALTED — NO MARKET INTERACTION</div>
-        <div class="small">This is the consequence. Trader XP is frozen today.</div>
+        <div class="small">Trader XP is frozen today.</div>
       </div>
 
       <hr/>
@@ -260,25 +240,24 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
             <div class="h2">Add / Edit Day</div>
             <span class="badge"><strong>Date:</strong> <span id="editDateLabel"></span></span>
           </div>
-          <div class="small">Net is auto-calculated if you enter gross profit & gross loss.</div>
 
-          <div style="margin-top:10px" class="small">Wins</div>
+          <div class="small" style="margin-top:6px">Wins</div>
           <input id="inWins" type="number" min="0" placeholder="e.g. 4"/>
 
-          <div style="margin-top:10px" class="small">Losses</div>
+          <div class="small" style="margin-top:10px">Losses</div>
           <input id="inLosses" type="number" min="0" placeholder="e.g. 2"/>
 
-          <div style="margin-top:10px" class="small">Gross Profit ($)</div>
+          <div class="small" style="margin-top:10px">Gross Profit ($)</div>
           <input id="inGrossProfit" type="number" step="0.01" placeholder="e.g. 650.25"/>
 
-          <div style="margin-top:10px" class="small">Gross Loss ($) (positive number)</div>
+          <div class="small" style="margin-top:10px">Gross Loss ($) (positive number)</div>
           <input id="inGrossLoss" type="number" step="0.01" placeholder="e.g. 420.00"/>
 
-          <div style="margin-top:10px" class="small">Rule Violations (0 if clean)</div>
+          <div class="small" style="margin-top:10px">Rule Violations (0 if clean)</div>
           <input id="inVios" type="number" min="0" placeholder="0"/>
 
-          <div style="margin-top:10px" class="small">Drawdown Buffer ($) (optional, but recommended)</div>
-          <input id="inDdBuf" type="number" step="0.01" placeholder="e.g. 4200 (blank if unknown)"/>
+          <div class="small" style="margin-top:10px">Drawdown Buffer ($) (optional)</div>
+          <input id="inDdBuf" type="number" step="0.01" placeholder="e.g. 4200"/>
 
           <div class="btnRow">
             <button onclick="saveTradingDay()">Save Day</button>
@@ -299,8 +278,9 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
         <div class="card" style="margin:0;background:rgba(255,255,255,.02)">
           <div class="titleRow">
             <div class="h2">Equity Curve</div>
-            <span class="badge"><strong>Calendar:</strong> <span id="calMonthLabel"></span></span>
+            <span class="badge"><strong>Month:</strong> <span id="calMonthLabel"></span></span>
           </div>
+
           <canvas id="equityChart"></canvas>
 
           <hr/>
@@ -323,7 +303,7 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
           <hr/>
 
           <div class="titleRow">
-            <div class="h2">Trade Calendar (click a day to edit)</div>
+            <div class="h2">Trade Calendar (click a day)</div>
             <span class="badge"><strong>Selected:</strong> <span id="selectedDateLabel"></span></span>
           </div>
 
@@ -344,20 +324,13 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
 
       <hr/>
 
-      <h1 style="font-size:14px;margin:0 0 8px 0">Daily Logs</h1>
-      <div style="overflow:auto">
+      <div class="h2">Daily Logs</div>
+      <div style="overflow:auto;margin-top:10px">
         <table>
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Wins</th>
-              <th>Losses</th>
-              <th>Gross Profit</th>
-              <th>Gross Loss</th>
-              <th>Net</th>
-              <th>Violations</th>
-              <th>DD Buf</th>
-              <th>Halted</th>
+              <th>Date</th><th>W</th><th>L</th><th>Gross Profit</th><th>Gross Loss</th>
+              <th>Net</th><th>Vios</th><th>DD Buf</th><th>Halted</th>
             </tr>
           </thead>
           <tbody id="logTable"></tbody>
@@ -366,32 +339,34 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
     </div>
   </div>
 
-  <!-- SALES TAB -->
+  <!-- SALES -->
   <div id="sales" class="tabcontent">
     <div class="card">
       <div class="titleRow">
         <div class="h2">💼 Sales Quota Board</div>
         <span class="badge"><strong>Month:</strong> <span id="salesMonthLabel"></span></span>
       </div>
-      <div class="small">Track quota, deal mix, dialing, and the exact things you get paid more for.</div>
+      <div class="small">Quota + deal mix + dialing + pace.</div>
 
       <hr/>
 
       <div class="twoCol">
         <div class="card" style="margin:0;background:rgba(255,255,255,.02)">
           <div class="h2">Quota Settings</div>
-          <div class="small" style="margin-top:6px">Monthly quota goal (default $76,000). You can change anytime.</div>
-          <div style="margin-top:10px" class="small">Monthly Quota ($)</div>
+          <div class="small" style="margin-top:6px">Default $76,000.</div>
+          <div class="small" style="margin-top:10px">Monthly Quota ($)</div>
           <input id="inQuota" type="number" step="0.01" placeholder="76000"/>
           <div class="btnRow">
             <button onclick="saveQuota()">Save Quota</button>
             <button class="secondary" onclick="setQuota76000()">Set $76,000</button>
           </div>
+
           <hr/>
+
           <div class="h2">Daily Dialing</div>
-          <div class="small">Log minutes. 120 minutes is the target.</div>
-          <div style="margin-top:10px" class="small">Minutes Dialed (today)</div>
-          <input id="inDialMins" type="number" min="0" placeholder="e.g. 120"/>
+          <div class="small">Log minutes. Target is 120.</div>
+          <div class="small" style="margin-top:10px">Minutes Dialed (today)</div>
+          <input id="inDialMins" type="number" min="0" placeholder="120"/>
           <div class="btnRow">
             <button onclick="saveDialing()">Save Dialing</button>
             <button class="secondary" onclick="markDialed120()">Mark 120</button>
@@ -405,6 +380,7 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
             <div>MTD Closed: <b>$<span id="mtdClosed">0</span></b></div>
             <div>Goal: <b>$<span id="mtdGoal">76,000</span></b></div>
           </div>
+
           <div class="twoCol" style="gap:8px;margin-top:10px">
             <div class="pill"><strong>Sourced $:</strong> $<span id="mtdSourced">0</span></div>
             <div class="pill"><strong>Inbound $:</strong> $<span id="mtdInbound">0</span></div>
@@ -413,9 +389,11 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
             <div class="pill"><strong>Deals:</strong> <span id="mtdDeals">0</span></div>
             <div class="pill"><strong>Dial Minutes:</strong> <span id="mtdDial">0</span></div>
           </div>
+
           <hr/>
-          <div class="h2">Daily Target (pace)</div>
-          <div class="small">Auto pace: remaining quota / remaining business days (Mon–Fri).</div>
+
+          <div class="h2">Daily Pace</div>
+          <div class="small">Remaining quota / remaining business days (Mon–Fri).</div>
           <div class="pill" style="margin-top:8px"><strong>Today’s pace:</strong> $<span id="paceToday">0</span></div>
         </div>
       </div>
@@ -429,31 +407,27 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
             <span class="badge"><strong>Date:</strong> <span id="dealDateLabel"></span></span>
           </div>
 
-          <div style="margin-top:10px" class="small">Deal Amount ($)</div>
+          <div class="small" style="margin-top:10px">Deal Amount ($)</div>
           <input id="inDealAmt" type="number" step="0.01" placeholder="e.g. 12000"/>
 
-          <div style="margin-top:10px" class="small">Source</div>
+          <div class="small" style="margin-top:10px">Source</div>
           <select id="inDealSource">
             <option value="sourced">Sourced (higher pay)</option>
             <option value="inbound">Inbound (marketing)</option>
           </select>
 
-          <div style="margin-top:10px" class="small">Trial?</div>
+          <div class="small" style="margin-top:10px">Trial?</div>
           <select id="inDealTrial">
             <option value="no">No Trial (higher pay)</option>
             <option value="yes">Trial</option>
           </select>
 
-          <div style="margin-top:10px" class="small">Notes (optional)</div>
-          <input id="inDealNotes" placeholder="Client / product / anything short"/>
+          <div class="small" style="margin-top:10px">Notes (optional)</div>
+          <input id="inDealNotes" placeholder="Client / product / short note"/>
 
           <div class="btnRow">
             <button onclick="addDeal()">Add Deal</button>
             <button class="secondary" onclick="jumpSalesToday()">Jump to Today</button>
-          </div>
-
-          <div class="small" style="margin-top:10px">
-            XP: deals add XP via the Closer pillar buttons if you want, but quota progress is tracked here regardless.
           </div>
         </div>
 
@@ -462,36 +436,36 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
             <div class="h2">Deals This Month</div>
             <span class="badge"><strong>MTD:</strong> $<span id="dealMtdQuick">0</span></span>
           </div>
+
           <div style="overflow:auto;margin-top:10px">
             <table>
               <thead>
-                <tr>
-                  <th>Date</th><th>Amount</th><th>Source</th><th>Trial</th><th>Notes</th><th></th>
-                </tr>
+                <tr><th>Date</th><th>Amount</th><th>Source</th><th>Trial</th><th>Notes</th><th></th></tr>
               </thead>
               <tbody id="dealTable"></tbody>
             </table>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 
-  <!-- WOW TAB -->
+  <!-- WOW -->
   <div id="wow" class="tabcontent">
     <div class="card">
       <div class="titleRow">
         <div class="h2">🎮 WoW Unlock (30 minutes)</div>
-        <span class="badge"><strong>Status:</strong> <span id="wowStatus">Unknown</span></span>
+        <span class="badge"><strong>Status:</strong> <span id="wowStatus">...</span></span>
       </div>
 
       <div class="small">
         Unlock conditions (daily):
         <ul style="margin:6px 0 0 18px;padding:0">
           <li>Trading is <b>not halted</b> today</li>
-          <li>Today’s trading violations = <b>0</b> (if you logged trading today)</li>
+          <li>If you logged trading today → violations must be <b>0</b></li>
           <li>Dialing minutes today ≥ <b>120</b></li>
-          <li>At least one Family action logged today <span class="mono">(Family today XP &gt; 0)</span></li>
+          <li>Family today XP &gt; <b>0</b></li>
         </ul>
       </div>
 
@@ -502,7 +476,7 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
 
       <div id="wowUnlockBanner" class="banner" style="display:none;border-color:rgba(74,222,128,.35);background:rgba(74,222,128,.08)">
         <div class="ok">UNLOCKED — 30 MINUTES MAX</div>
-        <div class="small">Start the timer. When it hits 0, you stop. No bargaining.</div>
+        <div class="small">Start the timer. When it hits 0, stop. No side quests.</div>
       </div>
 
       <hr/>
@@ -516,14 +490,10 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
             <button class="secondary" onclick="pauseWow()">Pause</button>
             <button class="secondary" onclick="resetWow()">Reset 30:00</button>
           </div>
-          <div class="small" style="margin-top:8px">
-            Tip: If you pause it, you’re still using your 30 minutes. Don’t be that guy.
-          </div>
         </div>
 
         <div class="card" style="margin:0;background:rgba(255,255,255,.02)">
           <div class="h2">Quick Checks</div>
-          <div class="small">These auto-pull from your logs. If something looks wrong, fix it in Trading or Sales.</div>
           <div class="twoCol" style="gap:8px;margin-top:10px">
             <div class="pill"><strong>Trading Today:</strong> <span id="wowChkTrading">?</span></div>
             <div class="pill"><strong>Violations Today:</strong> <span id="wowChkVios">?</span></div>
@@ -535,7 +505,7 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
     </div>
   </div>
 
-  <!-- BACKUP TAB -->
+  <!-- BACKUP -->
   <div id="backup" class="tabcontent">
     <div class="card">
       <div class="h2">Backup / Restore</div>
@@ -546,7 +516,7 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
         <button class="secondary" onclick="document.getElementById('importBox').focus()">Import JSON</button>
         <button class="danger" onclick="hardResetAll()">Hard Reset All</button>
       </div>
-      <div style="margin-top:10px" class="small">Paste JSON here to restore:</div>
+      <div class="small" style="margin-top:10px">Paste JSON here to restore:</div>
       <textarea id="importBox" rows="8" placeholder="Paste exported JSON here"></textarea>
       <div class="btnRow"><button class="secondary" onclick="importData()">Restore Now</button></div>
     </div>
@@ -555,11 +525,8 @@ canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;b
 </div>
 
 <script>
-/* =========================
-   STATE
-   ========================= */
-const KEY = "beastDashboard_v5";
-
+/* ===== STATE ===== */
+const KEY = "beastDashboard_v6";
 const todayKey = () => new Date().toDateString();
 const monthKey = (d=new Date()) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
 
@@ -571,73 +538,43 @@ const defaults = {
     closer: { lvl: 1, xp: 0, todayXP: 0 },
     family: { lvl: 1, xp: 0, todayXP: 0 },
   },
-  locks: {
-    tradingHaltedToday: false,
-    tradingHaltedNext: false,
-    habitYesToday: false
-  },
-  trading: {
-    selectedDate: null,
-    dailyLogs: {
-      // dateStr: { wins, losses, grossProfit, grossLoss, vios, ddBuf, halted, xpAwarded }
-    }
-  },
-  sales: {
-    quotaByMonth: { /* "YYYY-MM": number */ },
-    dialingByDate: { /* dateStr: minutes */ },
-    deals: [
-      // { dateStr, amt, source, trial, notes }
-    ]
-  },
-  wow: {
-    remainingSec: 30*60,
-    running: false,
-    lastTick: null
-  }
+  locks: { tradingHaltedToday:false, tradingHaltedNext:false, habitYesToday:false },
+  trading: { selectedDate:null, dailyLogs:{} },
+  sales: { quotaByMonth:{}, dialingByDate:{}, deals:[] },
+  wow: { remainingSec: 30*60, running:false, lastTick:null }
 };
 
-let state = JSON.parse(localStorage.getItem(KEY)) || structuredClone(defaults);
+let state = (() => {
+  try { return JSON.parse(localStorage.getItem(KEY)) || structuredClone(defaults); }
+  catch { return structuredClone(defaults); }
+})();
 
-function save(){
-  localStorage.setItem(KEY, JSON.stringify(state));
-  render();
-}
-
+function save(){ localStorage.setItem(KEY, JSON.stringify(state)); render(); }
 function needForLevel(lvl){ return 100 * lvl; }
 
 function resetIfNewDay(){
   const t = todayKey();
   if(state.lastDate !== t){
-    // Move next-day halt into today
     state.locks.tradingHaltedToday = !!state.locks.tradingHaltedNext;
     state.locks.tradingHaltedNext = false;
     state.locks.habitYesToday = false;
 
-    // Reset daily XP
-    for(const k of Object.keys(state.pillars)){
-      state.pillars[k].todayXP = 0;
-    }
+    for(const k of Object.keys(state.pillars)) state.pillars[k].todayXP = 0;
 
-    // Reset WoW timer daily
     state.wow.remainingSec = 30*60;
     state.wow.running = false;
     state.wow.lastTick = null;
 
     state.lastDate = t;
-
-    // Default selected date to today
     state.trading.selectedDate = t;
-    save();
+    localStorage.setItem(KEY, JSON.stringify(state));
   }
 }
 resetIfNewDay();
 
-/* =========================
-   XP / LEVELS
-   ========================= */
+/* ===== XP / LEVELS ===== */
 function addXP(pillar, amount){
   resetIfNewDay();
-
   if(pillar === "trader" && state.locks.tradingHaltedToday){
     alert("Trader XP is frozen because trading is halted today.");
     return;
@@ -646,7 +583,6 @@ function addXP(pillar, amount){
   p.xp += amount;
   p.todayXP += amount;
   if(p.xp < 0) p.xp = 0;
-
   while(p.xp >= needForLevel(p.lvl)){
     p.xp -= needForLevel(p.lvl);
     p.lvl += 1;
@@ -654,9 +590,7 @@ function addXP(pillar, amount){
   save();
 }
 
-/* =========================
-   OVERALL RANK + GATE
-   ========================= */
+/* ===== RANK GATE ===== */
 function avgLevel(){
   const lvls = Object.values(state.pillars).map(p=>p.lvl);
   return lvls.reduce((a,b)=>a+b,0) / lvls.length;
@@ -669,16 +603,9 @@ function minLevelRequiredForRank(rank){
   return 20;
 }
 function computeRank(){
-  const raw = avgLevel();
-  const target = Math.floor(raw);
+  const target = Math.floor(avgLevel());
   const minReq = minLevelRequiredForRank(target);
-  const weakest = Math.min(
-    state.pillars.trader.lvl,
-    state.pillars.body.lvl,
-    state.pillars.closer.lvl,
-    state.pillars.family.lvl
-  );
-
+  const weakest = Math.min(state.pillars.trader.lvl, state.pillars.body.lvl, state.pillars.closer.lvl, state.pillars.family.lvl);
   if(weakest < minReq){
     let r = target;
     while(r > 1 && weakest < minLevelRequiredForRank(r)) r--;
@@ -687,47 +614,21 @@ function computeRank(){
   return { rank: Math.max(1,target), gated:false, target, minReq, weakest };
 }
 
-/* =========================
-   LOCKS / HABIT
-   ========================= */
-function markHabitYesNow(){
-  resetIfNewDay();
-  state.locks.habitYesToday = true;
-  state.locks.tradingHaltedToday = true;
-  save();
-}
-function markHabitNo(){
-  resetIfNewDay();
-  state.locks.habitYesToday = false;
-  save();
-}
-function toggleTradeHaltToday(){
-  resetIfNewDay();
-  state.locks.tradingHaltedToday = !state.locks.tradingHaltedToday;
-  save();
-}
-function toggleTradeHaltNext(){
-  resetIfNewDay();
-  state.locks.tradingHaltedNext = !state.locks.tradingHaltedNext;
-  save();
-}
+/* ===== LOCKS / HABIT ===== */
+function markHabitYesNow(){ resetIfNewDay(); state.locks.habitYesToday = true; state.locks.tradingHaltedToday = true; save(); }
+function markHabitNo(){ resetIfNewDay(); state.locks.habitYesToday = false; save(); }
+function toggleTradeHaltToday(){ resetIfNewDay(); state.locks.tradingHaltedToday = !state.locks.tradingHaltedToday; save(); }
+function toggleTradeHaltNext(){ resetIfNewDay(); state.locks.tradingHaltedNext = !state.locks.tradingHaltedNext; save(); }
 
-/* =========================
-   TRADING: DAILY LOGS
-   ========================= */
+/* ===== TRADING ===== */
 function parseNum(id, fallback=0){
   const v = document.getElementById(id).value;
   if(v === "" || v === null || v === undefined) return fallback;
   const n = Number(v);
   return Number.isFinite(n) ? n : fallback;
 }
-function getSelectedTradingDate(){
-  return state.trading.selectedDate || todayKey();
-}
-function setSelectedTradingDate(d){
-  state.trading.selectedDate = d;
-  save();
-}
+function getSelectedTradingDate(){ return state.trading.selectedDate || todayKey(); }
+function setSelectedTradingDate(d){ state.trading.selectedDate = d; save(); }
 
 function saveTradingDay(){
   resetIfNewDay();
@@ -742,24 +643,19 @@ function saveTradingDay(){
   const ddBuf = (ddRaw === "" ? null : Number(ddRaw));
 
   const net = grossProfit - grossLoss;
-
-  const halted = (ddBuf !== null && ddBuf < 2000) ? true : false;
+  const halted = (ddBuf !== null && ddBuf < 2000);
 
   const prev = state.trading.dailyLogs[d] || {};
-  const xpAwarded = prev.xpAwarded || false;
+  const xpAwarded = !!prev.xpAwarded;
 
   state.trading.dailyLogs[d] = { wins, losses, grossProfit, grossLoss, vios, ddBuf, net, halted, xpAwarded };
 
-  // If this is today and halted, halt trading today
-  if(d === todayKey() && halted){
-    state.locks.tradingHaltedToday = true;
-  }
+  if(d === todayKey() && halted) state.locks.tradingHaltedToday = true;
 
-  // Auto Trader XP award ONCE per date: Clean day + not halted + not trading locked that day (if it's today)
   const log = state.trading.dailyLogs[d];
   if(!log.xpAwarded){
     const isToday = (d === todayKey());
-    const tradingLockedThatDay = isToday ? state.locks.tradingHaltedToday : false; // only enforce lock on today in app
+    const tradingLockedThatDay = isToday ? state.locks.tradingHaltedToday : false;
     if(!tradingLockedThatDay && !halted && vios === 0){
       addXP("trader", 50);
       log.xpAwarded = true;
@@ -767,7 +663,6 @@ function saveTradingDay(){
       log.xpAwarded = true;
     }
   }
-
   save();
 }
 
@@ -778,14 +673,8 @@ function deleteTradingDay(){
   delete state.trading.dailyLogs[d];
   save();
 }
+function jumpToToday(){ setSelectedTradingDate(todayKey()); }
 
-function jumpToToday(){
-  setSelectedTradingDate(todayKey());
-}
-
-/* =========================
-   TRADING: STATS
-   ========================= */
 function getSortedTradingLogs(){
   return Object.entries(state.trading.dailyLogs)
     .map(([date, v]) => ({ date, ...v }))
@@ -800,62 +689,41 @@ function fmtMoney(n){
 
 function computeEquitySeries(logs){
   let eq = 0;
-  return logs.map(l => {
-    eq += (Number(l.net)||0);
-    return { x:l.date, y:eq };
-  });
+  return logs.map(l => (eq += (Number(l.net)||0), { x:l.date, y:eq }));
 }
 
 function computeTradingStats(logs){
-  if(logs.length === 0){
-    return {
-      equity:0, equitySeries:[],
-      winRate:0, pf:0,
-      expectancy:0, avgWin:0, avgLoss:0,
-      mdd:0, days:0, trades:0,
-      green:0, red:0, best:0, worst:0,
-      viosToday: null
-    };
+  if(!logs.length){
+    return { equity:0, equitySeries:[], winRate:0, pf:0, expectancy:0, avgWin:0, avgLoss:0, mdd:0, days:0, trades:0, green:0, red:0, best:0, worst:0 };
   }
-
   const equitySeries = computeEquitySeries(logs);
   const equity = equitySeries[equitySeries.length-1].y;
 
-  let totalWins=0, totalLosses=0, totalTrades=0;
-  let grossProfit=0, grossLoss=0;
-  let green=0, red=0;
-  let best=-Infinity, worst=Infinity;
+  let totalWins=0,totalLosses=0,totalTrades=0,gp=0,gl=0,green=0,red=0;
+  let best=-Infinity,worst=Infinity;
 
   for(const l of logs){
     const w = Number(l.wins)||0;
     const lo = Number(l.losses)||0;
-    const gp = Number(l.grossProfit)||0;
-    const gl = Number(l.grossLoss)||0;
+    const gpp = Number(l.grossProfit)||0;
+    const gll = Number(l.grossLoss)||0;
     const net = Number(l.net)||0;
 
-    totalWins += w;
-    totalLosses += lo;
-    totalTrades += (w + lo);
+    totalWins += w; totalLosses += lo; totalTrades += (w+lo);
+    gp += gpp; gl += gll;
 
-    grossProfit += gp;
-    grossLoss += gl;
-
-    if(net > 0) green++;
-    if(net < 0) red++;
-
+    if(net > 0) green++; else if(net < 0) red++;
     if(net > best) best = net;
     if(net < worst) worst = net;
   }
 
-  const winRate = totalTrades > 0 ? (totalWins / totalTrades) : 0;
-  const avgWin = totalWins > 0 ? (grossProfit / totalWins) : 0;
-  const avgLoss = totalLosses > 0 ? (grossLoss / totalLosses) : 0; // positive
-  const pf = grossLoss > 0 ? (grossProfit / grossLoss) : (grossProfit > 0 ? 99 : 0);
-  const expectancy = totalTrades > 0 ? ((winRate * avgWin) - ((1-winRate) * avgLoss)) : 0;
+  const winRate = totalTrades ? (totalWins/totalTrades) : 0;
+  const avgWin = totalWins ? (gp/totalWins) : 0;
+  const avgLoss = totalLosses ? (gl/totalLosses) : 0; // positive
+  const pf = gl > 0 ? (gp/gl) : (gp > 0 ? 99 : 0);
+  const expectancy = totalTrades ? ((winRate*avgWin) - ((1-winRate)*avgLoss)) : 0;
 
-  // Max Drawdown
-  let peak = -Infinity;
-  let mdd = 0;
+  let peak = -Infinity, mdd = 0;
   for(const p of equitySeries){
     if(p.y > peak) peak = p.y;
     const dd = peak - p.y;
@@ -863,16 +731,13 @@ function computeTradingStats(logs){
   }
 
   return {
-    equity, equitySeries,
-    winRate, pf, expectancy, avgWin, avgLoss,
+    equity, equitySeries, winRate, pf, expectancy, avgWin, avgLoss,
     mdd, days:logs.length, trades:totalTrades,
-    green, red, best: (best===-Infinity?0:best), worst:(worst===Infinity?0:worst)
+    green, red, best:(best===-Infinity?0:best), worst:(worst===Infinity?0:worst)
   };
 }
 
-/* =========================
-   CANVAS: EQUITY CHART (line only, labeled axes)
-   ========================= */
+/* ===== CHART (iPhone-safe, line only, labeled axes) ===== */
 function drawChart(points){
   const canvas = document.getElementById("equityChart");
   const ctx = canvas.getContext("2d");
@@ -883,90 +748,69 @@ function drawChart(points){
 
   canvas.width = Math.floor(cssW * dpr);
   canvas.height = Math.floor(cssH * dpr);
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
 
   ctx.clearRect(0,0,cssW,cssH);
 
-  const padL = 46, padR = 14, padT = 14, padB = 34;
+  const padL=46,padR=14,padT=14,padB=34;
 
-  // Empty state
-  if(points.length === 0){
-    ctx.fillStyle = "rgba(232,234,243,.7)";
-    ctx.font = "14px system-ui";
+  if(!points.length){
+    ctx.fillStyle="rgba(232,234,243,.7)";
+    ctx.font="14px system-ui";
     ctx.fillText("No trading data yet. Log your first day.", padL, cssH/2);
     return;
   }
 
   const ys = points.map(p=>p.y);
-  const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
-  const rangeY = (maxY - minY) || 1;
+  const minY = Math.min(...ys), maxY = Math.max(...ys);
+  const rangeY = (maxY-minY) || 1;
 
   // grid
-  ctx.strokeStyle = "rgba(255,255,255,.06)";
-  ctx.lineWidth = 1;
+  ctx.strokeStyle="rgba(255,255,255,.06)";
+  ctx.lineWidth=1;
   for(let i=1;i<=3;i++){
-    const y = padT + i * ((cssH - padT - padB)/4);
-    ctx.beginPath();
-    ctx.moveTo(padL, y);
-    ctx.lineTo(cssW - padR, y);
-    ctx.stroke();
+    const y = padT + i*((cssH-padT-padB)/4);
+    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(cssW-padR,y); ctx.stroke();
   }
 
   // axes
-  ctx.strokeStyle = "rgba(255,255,255,.14)";
+  ctx.strokeStyle="rgba(255,255,255,.14)";
   ctx.beginPath();
-  ctx.moveTo(padL, padT);
-  ctx.lineTo(padL, cssH - padB);
-  ctx.lineTo(cssW - padR, cssH - padB);
+  ctx.moveTo(padL,padT); ctx.lineTo(padL,cssH-padB); ctx.lineTo(cssW-padR,cssH-padB);
   ctx.stroke();
 
   // labels
-  ctx.fillStyle = "rgba(232,234,243,.75)";
-  ctx.font = "12px system-ui";
-  ctx.fillText("Days", cssW - padR - 34, cssH - 10);
-  ctx.save();
-  ctx.translate(14, cssH/2);
-  ctx.rotate(-Math.PI/2);
-  ctx.fillText("Equity ($)", 0, 0);
-  ctx.restore();
+  ctx.fillStyle="rgba(232,234,243,.75)";
+  ctx.font="12px system-ui";
+  ctx.fillText("Days", cssW-padR-34, cssH-10);
+  ctx.save(); ctx.translate(14, cssH/2); ctx.rotate(-Math.PI/2); ctx.fillText("Equity ($)", 0, 0); ctx.restore();
 
   // min/max ticks
-  ctx.fillStyle = "rgba(232,234,243,.65)";
-  ctx.font = "11px system-ui";
+  ctx.fillStyle="rgba(232,234,243,.65)";
+  ctx.font="11px system-ui";
   const fmt = (n)=> (n<0? "-" : "") + Math.abs(n).toLocaleString(undefined,{maximumFractionDigits:0});
-  ctx.fillText(fmt(maxY), padL + 6, padT + 10);
-  ctx.fillText(fmt(minY), padL + 6, cssH - padB - 6);
+  ctx.fillText(fmt(maxY), padL+6, padT+10);
+  ctx.fillText(fmt(minY), padL+6, cssH-padB-6);
 
   // line
-  const plotW = (cssW - padL - padR);
-  const plotH = (cssH - padT - padB);
-
-  ctx.strokeStyle = "rgba(123,108,255,.95)";
-  ctx.lineWidth = 2.5;
+  const plotW = (cssW-padL-padR), plotH = (cssH-padT-padB);
+  ctx.strokeStyle="rgba(123,108,255,.95)";
+  ctx.lineWidth=2.5;
   ctx.beginPath();
-
   points.forEach((p,i)=>{
-    const x = padL + (i * (plotW / Math.max(1, points.length-1)));
-    const y = (cssH - padB) - ((p.y - minY) / rangeY) * plotH;
-    if(i === 0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    const x = padL + i*(plotW/Math.max(1,points.length-1));
+    const y = (cssH-padB) - ((p.y-minY)/rangeY)*plotH;
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
   });
   ctx.stroke();
 }
 
-/* =========================
-   TRADE CALENDAR (month view)
-   ========================= */
-function getMonthLabel(dateObj){
-  return dateObj.toLocaleString(undefined,{month:'long', year:'numeric'});
-}
+/* ===== CALENDAR ===== */
+function getMonthLabel(d){ return d.toLocaleString(undefined,{month:"long",year:"numeric"}); }
 function buildCalendar(forDate=new Date()){
   const cal = document.getElementById("calendar");
   cal.innerHTML = "";
-
-  const y = forDate.getFullYear();
-  const m = forDate.getMonth();
-
+  const y = forDate.getFullYear(), m = forDate.getMonth();
   document.getElementById("calMonthLabel").textContent = getMonthLabel(forDate);
 
   const first = new Date(y,m,1);
@@ -974,12 +818,11 @@ function buildCalendar(forDate=new Date()){
   const startDow = first.getDay();
   const daysInMonth = last.getDate();
 
-  // Fill leading blanks
   for(let i=0;i<startDow;i++){
-    const div = document.createElement("div");
-    div.className = "calDay";
-    div.style.opacity = "0.25";
-    div.innerHTML = `<div class="d">&nbsp;</div>`;
+    const div=document.createElement("div");
+    div.className="calDay";
+    div.style.opacity="0.25";
+    div.innerHTML=`<div class="d">&nbsp;</div>`;
     cal.appendChild(div);
   }
 
@@ -988,46 +831,31 @@ function buildCalendar(forDate=new Date()){
     const dateStr = d.toDateString();
     const log = state.trading.dailyLogs[dateStr];
 
-    let bg = "rgba(255,255,255,.02)";
-    let border = "rgba(255,255,255,.10)";
-
+    let bg="rgba(255,255,255,.02)", border="rgba(255,255,255,.10)";
     if(log){
-      const net = Number(log.net)||0;
-      const vios = Number(log.vios)||0;
-      const halted = !!log.halted;
-
-      if(halted){ bg = "rgba(96,165,250,.18)"; border = "rgba(96,165,250,.35)"; }
-      else if(vios > 0){ bg = "rgba(251,191,36,.22)"; border = "rgba(251,191,36,.35)"; }
-      else if(net > 0){ bg = "rgba(74,222,128,.22)"; border = "rgba(74,222,128,.35)"; }
-      else if(net < 0){ bg = "rgba(251,113,133,.22)"; border = "rgba(251,113,133,.35)"; }
-      else { bg = "rgba(255,255,255,.05)"; }
+      const net=Number(log.net)||0, vios=Number(log.vios)||0, halted=!!log.halted;
+      if(halted){ bg="rgba(96,165,250,.18)"; border="rgba(96,165,250,.35)"; }
+      else if(vios>0){ bg="rgba(251,191,36,.22)"; border="rgba(251,191,36,.35)"; }
+      else if(net>0){ bg="rgba(74,222,128,.22)"; border="rgba(74,222,128,.35)"; }
+      else if(net<0){ bg="rgba(251,113,133,.22)"; border="rgba(251,113,133,.35)"; }
+      else { bg="rgba(255,255,255,.05)"; }
     }
 
-    const div = document.createElement("div");
-    div.className = "calDay";
-    div.style.background = bg;
-    div.style.borderColor = border;
+    const div=document.createElement("div");
+    div.className="calDay";
+    div.style.background=bg;
+    div.style.borderColor=border;
 
     const netText = log ? (log.net>=0 ? `+$${fmtMoney(log.net)}` : `-$${fmtMoney(Math.abs(log.net))}`) : "";
+    div.innerHTML = `<div class="d">${day}</div><div class="v">${netText}</div>`;
 
-    div.innerHTML = `
-      <div class="d">${day}</div>
-      <div class="v">${netText}</div>
-    `;
-
-    div.onclick = () => {
-      setSelectedTradingDate(dateStr);
-      fillTradingInputsFromDate(dateStr);
-      document.getElementById("selectedDateLabel").textContent = dateStr;
-    };
+    div.onclick = () => { setSelectedTradingDate(dateStr); };
 
     cal.appendChild(div);
   }
 }
 
-/* =========================
-   SALES: QUOTA + DEALS + DIALING
-   ========================= */
+/* ===== SALES ===== */
 function getQuotaForCurrentMonth(){
   const mk = monthKey(new Date());
   const q = state.sales.quotaByMonth[mk];
@@ -1040,79 +868,55 @@ function saveQuota(){
   state.sales.quotaByMonth[mk] = v;
   save();
 }
-function setQuota76000(){
-  document.getElementById("inQuota").value = 76000;
-  saveQuota();
-}
+function setQuota76000(){ document.getElementById("inQuota").value = 76000; saveQuota(); }
 
+function getDialMinutesToday(){ return Number(state.sales.dialingByDate[todayKey()] || 0); }
 function saveDialing(){
-  const d = todayKey();
   const mins = Number(document.getElementById("inDialMins").value || 0);
-  state.sales.dialingByDate[d] = Math.max(0, Math.floor(mins));
-  // If >=120, you can optionally auto-award closer xp, but we keep it manual by your choice.
+  state.sales.dialingByDate[todayKey()] = Math.max(0, Math.floor(mins));
   save();
 }
-function markDialed120(){
-  document.getElementById("inDialMins").value = 120;
-  saveDialing();
-}
+function markDialed120(){ document.getElementById("inDialMins").value = 120; saveDialing(); }
 
 function addDeal(){
   const d = document.getElementById("dealDateLabel").textContent || todayKey();
   const amt = Number(document.getElementById("inDealAmt").value || 0);
   if(!Number.isFinite(amt) || amt <= 0) return alert("Enter a valid deal amount.");
 
-  const source = document.getElementById("inDealSource").value; // sourced/inbound
-  const trial = document.getElementById("inDealTrial").value;   // yes/no
+  const source = document.getElementById("inDealSource").value;
+  const trial = document.getElementById("inDealTrial").value;
   const notes = (document.getElementById("inDealNotes").value || "").trim();
 
-  state.sales.deals.push({ dateStr: d, amt, source, trial, notes });
-  document.getElementById("inDealAmt").value = "";
-  document.getElementById("inDealNotes").value = "";
+  state.sales.deals.push({ dateStr:d, amt, source, trial, notes });
+  document.getElementById("inDealAmt").value="";
+  document.getElementById("inDealNotes").value="";
   save();
 }
-
 function deleteDeal(idx){
   if(!confirm("Delete this deal?")) return;
   state.sales.deals.splice(idx,1);
   save();
 }
-
-function jumpSalesToday(){
-  document.getElementById("dealDateLabel").textContent = todayKey();
-  save();
-}
+function jumpSalesToday(){ document.getElementById("dealDateLabel").textContent = todayKey(); save(); }
 
 function isSameMonth(dateStr, mk){
   const d = new Date(dateStr);
-  const k = monthKey(d);
-  return k === mk;
+  return monthKey(d) === mk;
 }
-
 function businessDaysRemainingInMonth(fromDate=new Date()){
-  const y = fromDate.getFullYear();
-  const m = fromDate.getMonth();
+  const y=fromDate.getFullYear(), m=fromDate.getMonth();
   const last = new Date(y,m+1,0).getDate();
-  let count = 0;
-
-  for(let day = fromDate.getDate(); day<=last; day++){
+  let count=0;
+  for(let day=fromDate.getDate(); day<=last; day++){
     const d = new Date(y,m,day);
-    const dow = d.getDay();
-    if(dow !== 0 && dow !== 6) count++;
+    const dow=d.getDay();
+    if(dow!==0 && dow!==6) count++;
   }
   return Math.max(1,count);
 }
 
-/* =========================
-   WOW: UNLOCK + TIMER
-   ========================= */
-function getDialMinutesToday(){
-  return Number(state.sales.dialingByDate[todayKey()] || 0);
-}
-
-function getTradingLogForDate(dateStr){
-  return state.trading.dailyLogs[dateStr] || null;
-}
+/* ===== WOW ===== */
+function getTradingLogForDate(dateStr){ return state.trading.dailyLogs[dateStr] || null; }
 
 function computeWowUnlock(){
   const tday = todayKey();
@@ -1123,56 +927,34 @@ function computeWowUnlock(){
   const vios = log ? Number(log.vios || 0) : 0;
 
   const tradingOk = !state.locks.tradingHaltedToday;
-  const viosOk = (log ? (vios === 0) : true); // if no log, don't block
+  const viosOk = log ? (vios === 0) : true; // only enforce if you logged
   const dialOk = dial >= 120;
   const famOk = famToday > 0;
 
   const unlocked = tradingOk && viosOk && dialOk && famOk;
 
-  const reasons = [];
+  const reasons=[];
   if(!tradingOk) reasons.push("Trading is halted today.");
   if(log && !viosOk) reasons.push("Trading violations logged today.");
   if(!dialOk) reasons.push("Dialing minutes today < 120.");
-  if(!famOk) reasons.push("No Family action logged today.");
+  if(!famOk) reasons.push("No Family XP today.");
 
   return { unlocked, reasons, dial, vios, famToday, tradingOk };
 }
 
 let wowInterval = null;
 
-function startWow(){
-  const gate = computeWowUnlock();
-  if(!gate.unlocked){
-    alert("WoW is locked. Fix the requirements first.");
-    return;
-  }
-  if(state.wow.remainingSec <= 0) return;
-  state.wow.running = true;
-  state.wow.lastTick = Date.now();
-  save();
-  if(!wowInterval){
-    wowInterval = setInterval(tickWow, 300);
-  }
-}
-
-function pauseWow(){
-  state.wow.running = false;
-  state.wow.lastTick = null;
-  save();
-}
-
-function resetWow(){
-  state.wow.remainingSec = 30*60;
-  state.wow.running = false;
-  state.wow.lastTick = null;
-  save();
+function renderWowTimerOnly(){
+  const mm = String(Math.floor(state.wow.remainingSec/60)).padStart(2,'0');
+  const ss = String(state.wow.remainingSec%60).padStart(2,'0');
+  document.getElementById("wowTimer").textContent = `${mm}:${ss}`;
 }
 
 function tickWow(){
   if(!state.wow.running) return;
   const now = Date.now();
   const last = state.wow.lastTick || now;
-  const deltaSec = Math.floor((now - last)/1000);
+  const deltaSec = Math.floor((now-last)/1000);
   if(deltaSec <= 0) return;
 
   state.wow.remainingSec = Math.max(0, state.wow.remainingSec - deltaSec);
@@ -1182,38 +964,33 @@ function tickWow(){
     state.wow.running = false;
     state.wow.lastTick = null;
   }
-  localStorage.setItem(KEY, JSON.stringify(state)); // lighter than full render per tick
+  localStorage.setItem(KEY, JSON.stringify(state));
   renderWowTimerOnly();
 }
 
-function renderWowTimerOnly(){
-  const mm = String(Math.floor(state.wow.remainingSec/60)).padStart(2,'0');
-  const ss = String(state.wow.remainingSec%60).padStart(2,'0');
-  document.getElementById("wowTimer").textContent = `${mm}:${ss}`;
+function startWow(){
+  const gate = computeWowUnlock();
+  if(!gate.unlocked){ alert("WoW is locked. Fix requirements first."); return; }
+  if(state.wow.remainingSec <= 0) return;
+  state.wow.running = true;
+  state.wow.lastTick = Date.now();
+  localStorage.setItem(KEY, JSON.stringify(state));
+  if(!wowInterval) wowInterval = setInterval(tickWow, 300);
 }
+function pauseWow(){ state.wow.running=false; state.wow.lastTick=null; localStorage.setItem(KEY, JSON.stringify(state)); render(); }
+function resetWow(){ state.wow.remainingSec=30*60; state.wow.running=false; state.wow.lastTick=null; localStorage.setItem(KEY, JSON.stringify(state)); render(); }
 
-/* =========================
-   BACKUP
-   ========================= */
+/* ===== BACKUP ===== */
 function exportData(){
   const json = JSON.stringify(state, null, 2);
-  navigator.clipboard?.writeText(json).then(()=>{
-    alert("Export copied to clipboard. Paste into Notes/Drive.");
-  }).catch(()=>{
-    prompt("Copy this JSON:", json);
-  });
+  navigator.clipboard?.writeText(json).then(()=>alert("Export copied to clipboard. Paste into Notes/Drive."))
+    .catch(()=>prompt("Copy this JSON:", json));
 }
 function importData(){
   const txt = (document.getElementById("importBox").value || "").trim();
   if(!txt) return alert("Paste JSON first.");
-  try{
-    const parsed = JSON.parse(txt);
-    state = parsed;
-    save();
-    alert("Restored.");
-  } catch(e){
-    alert("Invalid JSON.");
-  }
+  try{ state = JSON.parse(txt); save(); alert("Restored."); }
+  catch{ alert("Invalid JSON."); }
 }
 function hardResetAll(){
   if(!confirm("Wipe ALL data? This cannot be undone.")) return;
@@ -1222,9 +999,7 @@ function hardResetAll(){
   save();
 }
 
-/* =========================
-   UI: TABS
-   ========================= */
+/* ===== UI: tabs ===== */
 document.querySelectorAll(".tab").forEach(t=>{
   t.onclick=()=>{
     document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
@@ -1234,9 +1009,7 @@ document.querySelectorAll(".tab").forEach(t=>{
   };
 });
 
-/* =========================
-   RENDER HELPERS
-   ========================= */
+/* ===== RENDER ===== */
 function setBar(barId, lvl, xp){
   const need = needForLevel(lvl);
   const pct = Math.max(0, Math.min(100, (xp/need)*100));
@@ -1245,7 +1018,7 @@ function setBar(barId, lvl, xp){
 }
 
 function fillTradingInputsFromDate(dateStr){
-  const log = state.trading.dailyLogs[dateStr];
+  const log = state.trading.dailyLogs[dateStr] || null;
   document.getElementById("editDateLabel").textContent = dateStr;
   document.getElementById("selectedDateLabel").textContent = dateStr;
 
@@ -1267,43 +1040,33 @@ function fillTradingInputsFromDate(dateStr){
 }
 
 function renderTrading(){
-  const isHalted = state.locks.tradingHaltedToday;
-  document.getElementById("lockOverlay").style.display = isHalted ? "block" : "none";
-
-  // Selected date
+  document.getElementById("lockOverlay").style.display = state.locks.tradingHaltedToday ? "block" : "none";
   const sel = getSelectedTradingDate();
   fillTradingInputsFromDate(sel);
 
-  // Stats + chart + table
   const logs = getSortedTradingLogs();
   const stats = computeTradingStats(logs);
 
   document.getElementById("equityNow").textContent = fmtMoney(stats.equity);
   document.getElementById("statWr").textContent = (stats.winRate*100).toFixed(1) + "%";
-  document.getElementById("statPf").textContent = (stats.pf || 0).toFixed(2);
-  document.getElementById("statExp").textContent = fmtMoney(stats.expectancy || 0);
-  document.getElementById("statAvgWin").textContent = fmtMoney(stats.avgWin || 0);
-  document.getElementById("statAvgLoss").textContent = fmtMoney(stats.avgLoss || 0);
-  document.getElementById("statMdd").textContent = fmtMoney(stats.mdd || 0);
+  document.getElementById("statPf").textContent = (stats.pf||0).toFixed(2);
+  document.getElementById("statExp").textContent = fmtMoney(stats.expectancy||0);
+  document.getElementById("statAvgWin").textContent = fmtMoney(stats.avgWin||0);
+  document.getElementById("statAvgLoss").textContent = fmtMoney(stats.avgLoss||0);
+  document.getElementById("statMdd").textContent = fmtMoney(stats.mdd||0);
   document.getElementById("statGreen").textContent = stats.green || 0;
   document.getElementById("statRed").textContent = stats.red || 0;
-  document.getElementById("statBest").textContent = fmtMoney(stats.best || 0);
-  document.getElementById("statWorst").textContent = fmtMoney(stats.worst || 0;
-  );
+  document.getElementById("statBest").textContent = fmtMoney(stats.best||0);
+  document.getElementById("statWorst").textContent = fmtMoney(stats.worst||0);
   document.getElementById("statDays").textContent = stats.days || 0;
   document.getElementById("statTrades").textContent = stats.trades || 0;
 
   drawChart(stats.equitySeries || []);
-
-  // Calendar month default = current month
   buildCalendar(new Date());
 
-  // Table
   const tbody = document.getElementById("logTable");
   tbody.innerHTML = "";
-  const rev = logs.slice().reverse();
-  for(const l of rev){
-    const haltedTxt = l.halted ? "YES" : "";
+  logs.slice().reverse().forEach(l=>{
     const ddTxt = (l.ddBuf === null || l.ddBuf === undefined) ? "" : "$"+fmtMoney(l.ddBuf);
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -1315,35 +1078,31 @@ function renderTrading(){
       <td>$${fmtMoney(l.net||0)}</td>
       <td>${l.vios||0}</td>
       <td>${ddTxt}</td>
-      <td>${haltedTxt}</td>
+      <td>${l.halted ? "YES" : ""}</td>
     `;
     tbody.appendChild(tr);
-  }
+  });
 }
 
 function renderSales(){
   const now = new Date();
   const mk = monthKey(now);
-  document.getElementById("salesMonthLabel").textContent = now.toLocaleString(undefined,{month:'long', year:'numeric'});
+  document.getElementById("salesMonthLabel").textContent = now.toLocaleString(undefined,{month:"long",year:"numeric"});
+  document.getElementById("dealDateLabel").textContent = todayKey();
 
   const quota = getQuotaForCurrentMonth();
   document.getElementById("inQuota").value = quota;
   document.getElementById("mtdGoal").textContent = quota.toLocaleString(undefined,{maximumFractionDigits:0});
 
-  document.getElementById("dealDateLabel").textContent = todayKey();
-
-  // Dial minutes today
   document.getElementById("inDialMins").value = getDialMinutesToday();
 
-  // MTD aggregations
-  let mtd = 0, sourced=0, inbound=0, noTrial=0, trial=0, deals=0;
-  for(const d of state.sales.deals){
-    if(!isSameMonth(d.dateStr, mk)) continue;
-    deals++;
-    mtd += d.amt;
-    if(d.source === "sourced") sourced += d.amt; else inbound += d.amt;
-    if(d.trial === "no") noTrial += d.amt; else trial += d.amt;
-  }
+  let mtd=0,sourced=0,inbound=0,noTrial=0,trial=0,deals=0;
+  state.sales.deals.forEach(d=>{
+    if(!isSameMonth(d.dateStr,mk)) return;
+    deals++; mtd += d.amt;
+    if(d.source==="sourced") sourced += d.amt; else inbound += d.amt;
+    if(d.trial==="no") noTrial += d.amt; else trial += d.amt;
+  });
 
   document.getElementById("mtdClosed").textContent = mtd.toLocaleString(undefined,{maximumFractionDigits:0});
   document.getElementById("mtdSourced").textContent = sourced.toLocaleString(undefined,{maximumFractionDigits:0});
@@ -1352,45 +1111,38 @@ function renderSales(){
   document.getElementById("mtdTrial").textContent = trial.toLocaleString(undefined,{maximumFractionDigits:0});
   document.getElementById("mtdDeals").textContent = deals;
 
-  // Dial minutes MTD
-  let dialMtd = 0;
-  for(const [dateStr, mins] of Object.entries(state.sales.dialingByDate)){
-    if(isSameMonth(dateStr, mk)) dialMtd += Number(mins)||0;
-  }
+  let dialMtd=0;
+  Object.entries(state.sales.dialingByDate).forEach(([dateStr,mins])=>{
+    if(isSameMonth(dateStr,mk)) dialMtd += Number(mins)||0;
+  });
   document.getElementById("mtdDial").textContent = dialMtd;
-
   document.getElementById("dealMtdQuick").textContent = mtd.toLocaleString(undefined,{maximumFractionDigits:0});
 
-  // Quota progress bar
-  const pct = quota > 0 ? Math.max(0, Math.min(100, (mtd/quota)*100)) : 0;
+  const pct = quota>0 ? Math.max(0,Math.min(100,(mtd/quota)*100)) : 0;
   document.getElementById("quotaBar").style.width = pct + "%";
 
-  // Pace calc (business days)
   const remaining = Math.max(0, quota - mtd);
   const bdays = businessDaysRemainingInMonth(now);
-  const pace = remaining / bdays;
-  document.getElementById("paceToday").textContent = pace.toLocaleString(undefined,{maximumFractionDigits:0});
+  document.getElementById("paceToday").textContent = (remaining/bdays).toLocaleString(undefined,{maximumFractionDigits:0});
 
-  // Deals table
   const tbody = document.getElementById("dealTable");
   tbody.innerHTML = "";
-  const dealsThisMonth = state.sales.deals
+  state.sales.deals
     .map((d,i)=>({ ...d, idx:i }))
-    .filter(d=>isSameMonth(d.dateStr, mk))
-    .sort((a,b)=> new Date(b.dateStr)-new Date(a.dateStr));
-
-  for(const d of dealsThisMonth){
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${d.dateStr}</td>
-      <td>$${fmtMoney(d.amt)}</td>
-      <td>${d.source}</td>
-      <td>${d.trial === "no" ? "no-trial" : "trial"}</td>
-      <td>${(d.notes||"").slice(0,50)}</td>
-      <td><button class="danger" onclick="deleteDeal(${d.idx})">Del</button></td>
-    `;
-    tbody.appendChild(tr);
-  }
+    .filter(d=>isSameMonth(d.dateStr,mk))
+    .sort((a,b)=> new Date(b.dateStr)-new Date(a.dateStr))
+    .forEach(d=>{
+      const tr=document.createElement("tr");
+      tr.innerHTML = `
+        <td>${d.dateStr}</td>
+        <td>$${fmtMoney(d.amt)}</td>
+        <td>${d.source}</td>
+        <td>${d.trial==="no" ? "no-trial" : "trial"}</td>
+        <td>${(d.notes||"").slice(0,50)}</td>
+        <td><button class="danger" onclick="deleteDeal(${d.idx})">Del</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
 }
 
 function renderWow(){
@@ -1421,49 +1173,48 @@ function renderWow(){
 function render(){
   resetIfNewDay();
 
-  // Rank + gate
   const r = computeRank();
   document.getElementById("overallRank").textContent = r.rank;
   document.getElementById("rankGateText").innerHTML = r.gated
     ? `<span class="warn">GATED</span> — target ${r.target} needs min pillar level <b>${r.minReq}</b>. Weakest is <b>${r.weakest}</b>.`
     : `<span class="ok">UNLOCKED</span> — rank can progress normally.`;
 
-  // Lock pills
-  document.getElementById("pillTradeToday").innerHTML = `<strong>Trading Today:</strong> ${state.locks.tradingHaltedToday ? '<span class="warn">HALTED</span>' : '<span class="ok">ALLOWED</span>'}`;
-  document.getElementById("pillTradeNext").innerHTML = `<strong>Trading Next Day:</strong> ${state.locks.tradingHaltedNext ? '<span class="warn">HALTED</span>' : '<span class="ok">ALLOWED</span>'}`;
+  document.getElementById("pillTradeToday").innerHTML =
+    `<strong>Trading Today:</strong> ${state.locks.tradingHaltedToday ? '<span class="warn">HALTED</span>' : '<span class="ok">ALLOWED</span>'}`;
+  document.getElementById("pillTradeNext").innerHTML =
+    `<strong>Trading Next Day:</strong> ${state.locks.tradingHaltedNext ? '<span class="warn">HALTED</span>' : '<span class="ok">ALLOWED</span>'}`;
 
-  // Pillar KPIs
-  const t = state.pillars.trader, b = state.pillars.body, c = state.pillars.closer, f = state.pillars.family;
+  const t=state.pillars.trader,b=state.pillars.body,c=state.pillars.closer,f=state.pillars.family;
 
-  document.getElementById("lvlTrader").textContent = t.lvl;
-  document.getElementById("lvlBody").textContent = b.lvl;
-  document.getElementById("lvlCloser").textContent = c.lvl;
-  document.getElementById("lvlFamily").textContent = f.lvl;
+  document.getElementById("lvlTrader").textContent=t.lvl;
+  document.getElementById("lvlBody").textContent=b.lvl;
+  document.getElementById("lvlCloser").textContent=c.lvl;
+  document.getElementById("lvlFamily").textContent=f.lvl;
 
-  document.getElementById("todayTrader").textContent = t.todayXP;
-  document.getElementById("todayBody").textContent = b.todayXP;
-  document.getElementById("todayCloser").textContent = c.todayXP;
-  document.getElementById("todayFamily").textContent = f.todayXP;
+  document.getElementById("todayTrader").textContent=t.todayXP;
+  document.getElementById("todayBody").textContent=b.todayXP;
+  document.getElementById("todayCloser").textContent=c.todayXP;
+  document.getElementById("todayFamily").textContent=f.todayXP;
 
-  document.getElementById("cardLvlTrader").textContent = t.lvl;
-  document.getElementById("cardLvlBody").textContent = b.lvl;
-  document.getElementById("cardLvlCloser").textContent = c.lvl;
-  document.getElementById("cardLvlFamily").textContent = f.lvl;
+  document.getElementById("cardLvlTrader").textContent=t.lvl;
+  document.getElementById("cardLvlBody").textContent=b.lvl;
+  document.getElementById("cardLvlCloser").textContent=c.lvl;
+  document.getElementById("cardLvlFamily").textContent=f.lvl;
 
-  document.getElementById("cardXpTrader").textContent = t.xp;
-  document.getElementById("cardXpBody").textContent = b.xp;
-  document.getElementById("cardXpCloser").textContent = c.xp;
-  document.getElementById("cardXpFamily").textContent = f.xp;
+  document.getElementById("cardXpTrader").textContent=t.xp;
+  document.getElementById("cardXpBody").textContent=b.xp;
+  document.getElementById("cardXpCloser").textContent=c.xp;
+  document.getElementById("cardXpFamily").textContent=f.xp;
 
-  const needT = setBar("barTrader", t.lvl, t.xp);
-  const needB = setBar("barBody", b.lvl, b.xp);
-  const needC = setBar("barCloser", c.lvl, c.xp);
-  const needF = setBar("barFamily", f.lvl, f.xp);
+  const needT=setBar("barTrader",t.lvl,t.xp);
+  const needB=setBar("barBody",b.lvl,b.xp);
+  const needC=setBar("barCloser",c.lvl,c.xp);
+  const needF=setBar("barFamily",f.lvl,f.xp);
 
-  document.getElementById("needTrader").textContent = needT;
-  document.getElementById("needBody").textContent = needB;
-  document.getElementById("needCloser").textContent = needC;
-  document.getElementById("needFamily").textContent = needF;
+  document.getElementById("needTrader").textContent=needT;
+  document.getElementById("needBody").textContent=needB;
+  document.getElementById("needCloser").textContent=needC;
+  document.getElementById("needFamily").textContent=needF;
 
   document.getElementById("xpTraderText").textContent = `${t.xp} / ${needT} XP`;
   document.getElementById("xpBodyText").textContent = `${b.xp} / ${needB} XP`;
@@ -1474,43 +1225,22 @@ function render(){
     ? `<span class="warn">Trader XP frozen today</span> (halted = no market interaction).`
     : `<span class="ok">Trader XP active</span>.`;
 
-  // Labels
-  document.getElementById("editDateLabel").textContent = getSelectedTradingDate();
-  document.getElementById("selectedDateLabel").textContent = getSelectedTradingDate();
-  document.getElementById("dealDateLabel").textContent = todayKey();
-  document.getElementById("salesMonthLabel").textContent = new Date().toLocaleString(undefined,{month:'long', year:'numeric'});
-
-  // Trading
+  if(!state.trading.selectedDate) state.trading.selectedDate = todayKey();
   renderTrading();
-
-  // Sales
   renderSales();
-
-  // WoW
   renderWow();
 }
 
-/* =========================
-   INITIALIZE
-   ========================= */
+/* ===== INIT ===== */
 (function init(){
-  // set default selected date
-  if(!state.trading.selectedDate) state.trading.selectedDate = todayKey();
+  // set initial labels
+  document.getElementById("dealDateLabel").textContent = todayKey();
 
-  // month label
-  document.getElementById("calMonthLabel").textContent = getMonthLabel(new Date());
-
-  // Selected date label init
-  document.getElementById("selectedDateLabel").textContent = state.trading.selectedDate;
-
-  // Start WoW tick interval (safe)
-  if(!wowInterval){
-    wowInterval = setInterval(tickWow, 300);
-  }
+  // start wow ticker
+  if(!wowInterval) wowInterval = setInterval(tickWow, 300);
 
   render();
 })();
-
 </script>
 </body>
 </html>
