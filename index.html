@@ -1,1670 +1,1063 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Better You</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jarsh — Life Game (4 Pillars)</title>
+  <style>
+    :root{
+      --bg:#0b0f14; --card:#111826; --muted:#7b8797; --text:#e6edf6;
+      --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444; --accent:#60a5fa;
+      --line:#1f2a3a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; background:linear-gradient(180deg,#070a0f 0%, #0b0f14 70%);
+      color:var(--text); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      letter-spacing:.2px;
+    }
+    header{
+      position:sticky; top:0; z-index:9;
+      background:rgba(11,15,20,.85); backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .wrap{max-width:1100px; margin:0 auto; padding:16px}
+    h1{margin:0; font-size:18px}
+    .sub{color:var(--muted); font-size:12px; margin-top:4px}
+    .grid{display:grid; gap:14px}
+    @media(min-width:980px){ .grid.cols2{grid-template-columns: 1.15fr .85fr;} }
+    @media(min-width:980px){ .grid.cols3{grid-template-columns: 1fr 1fr 1fr;} }
 
-<style>
-:root{
-  --bg:#0b0c14; --text:#e8eaf3; --muted:rgba(232,234,243,.72);
-  --line:rgba(255,255,255,.10); --purple:#7b6cff; --accent:#f6c56b;
-  --green:#4ade80; --red:#fb7185; --blue:#60a5fa; --amber:#fbbf24;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  background:radial-gradient(1200px 600px at 20% 0%, rgba(123,108,255,.22), transparent 55%),
-             radial-gradient(900px 500px at 80% 0%, rgba(246,197,107,.16), transparent 60%),
-             var(--bg);
-  color:var(--text);
-}
-header{
-  position:sticky;top:0;z-index:10;
-  padding:14px 16px;border-bottom:1px solid var(--line);
-  background:linear-gradient(135deg, rgba(30,27,75,.85), rgba(17,24,39,.55));
-}
-h1{margin:0;font-size:16px}
-.wrap{max-width:1280px;margin:0 auto;padding:16px}
-.card{
-  background:linear-gradient(180deg, rgba(20,22,42,.95), rgba(12,14,28,.95));
-  border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;
-  box-shadow:0 10px 30px rgba(0,0,0,.35);
-}
-.small{font-size:12px;color:var(--muted);line-height:1.35}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
-.kpi{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
-.kpi b{font-size:18px}
-.pill{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:6px 10px;border-radius:999px;border:1px solid var(--line);
-  background:rgba(255,255,255,.03);font-size:12px;color:var(--muted);
-  margin:4px 6px 0 0;
-}
-.pill strong{color:var(--text)}
-.badge{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:4px 8px;border-radius:999px;border:1px solid var(--line);
-  background:rgba(255,255,255,.03);font-size:12px;color:var(--muted)
-}
-.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.tab{
-  padding:8px 10px;border-radius:10px;border:1px solid var(--line);
-  background:rgba(255,255,255,.04);cursor:pointer;user-select:none;font-size:13px;
-}
-.tab.active{background:rgba(123,108,255,.18);border-color:rgba(123,108,255,.35)}
-.tabcontent{display:none}
-.tabcontent.active{display:block}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px}
-.titleRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
-.h2{font-size:13px;margin:0;color:rgba(232,234,243,.95);letter-spacing:.2px}
-.xpbar{height:10px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.08);border:1px solid var(--line);margin-top:8px}
-.xpfill{height:100%;width:0%;background:linear-gradient(90deg,var(--purple),var(--accent));transition:width .25s ease}
-.row{display:flex;justify-content:space-between;gap:10px;margin-top:8px}
-.btnRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-button{
-  border:none;border-radius:10px;padding:8px 10px;cursor:pointer;font-weight:800;
-  background:var(--accent);color:#101012;
-}
-button.secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line)}
-button.danger{background:rgba(251,113,133,.95);color:#0b0c14}
-button:disabled{opacity:.55;cursor:not-allowed}
-hr{border:none;border-top:1px solid var(--line);margin:12px 0}
-.warn{color:rgba(251,113,133,.95);font-weight:900}
-.ok{color:rgba(74,222,128,.95);font-weight:900}
-.twoCol{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px}
-input,select,textarea{
-  width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);
-  background:rgba(255,255,255,.03);color:var(--text);font-size:13px;
-}
-table{
-  width:100%;border-collapse:separate;border-spacing:0;
-  overflow:hidden;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);
-}
-th,td{padding:10px;border-bottom:1px solid var(--line);font-size:13px;text-align:left;white-space:nowrap}
-th{background:rgba(255,255,255,.03);color:rgba(232,234,243,.9)}
-tr:last-child td{border-bottom:none}
-canvas{width:100%;height:260px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02)}
-.banner{border:1px solid rgba(251,113,133,.35);background:rgba(251,113,133,.08);padding:10px;border-radius:12px;margin-top:10px}
-.bannerOk{border:1px solid rgba(74,222,128,.35);background:rgba(74,222,128,.08);padding:10px;border-radius:12px;margin-top:10px}
-.progress{height:12px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.08);border:1px solid var(--line)}
-.progress > div{height:100%;width:0%;background:linear-gradient(90deg,var(--purple),var(--accent));transition:width .25s ease}
-.calWrap{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
-.calDay{border:1px solid var(--line);border-radius:10px;padding:8px;background:rgba(255,255,255,.02);min-height:58px;cursor:pointer}
-.calDay .d{font-size:12px;color:rgba(232,234,243,.75)}
-.calDay .v{font-size:12px;margin-top:6px;font-weight:900}
-.calHead{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px}
-.calHead div{font-size:11px;color:rgba(232,234,243,.6);text-align:center}
-.calLegend{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.swatch{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
-.box{width:12px;height:12px;border-radius:3px;border:1px solid var(--line);background:rgba(255,255,255,.02)}
-.timer{font-size:26px;font-weight:1000;letter-spacing:.5px}
-.streakGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
-.streakCard{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px}
-.streakCard b{font-size:20px}
-</style>
+    .card{
+      background:rgba(17,24,38,.85);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .between{display:flex; justify-content:space-between; gap:12px; align-items:center}
+    .pill{
+      padding:6px 10px; border-radius:999px; font-size:12px;
+      border:1px solid var(--line); color:var(--muted);
+    }
+    .pill.ok{border-color: rgba(34,197,94,.35); color: #a7f3d0}
+    .pill.warn{border-color: rgba(245,158,11,.35); color: #fde68a}
+    .pill.bad{border-color: rgba(239,68,68,.35); color: #fecaca}
+    .pill.accent{border-color: rgba(96,165,250,.35); color: #bfdbfe}
+
+    .kpi{display:grid; grid-template-columns: repeat(4,1fr); gap:10px}
+    @media(max-width:720px){ .kpi{grid-template-columns: repeat(2,1fr);} }
+    .k{
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px;
+    }
+    .k .t{color:var(--muted); font-size:12px}
+    .k .v{font-size:18px; margin-top:4px}
+
+    label{font-size:12px; color:var(--muted)}
+    input[type="text"], input[type="number"], input[type="date"], select, textarea{
+      width:100%;
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px;
+      outline:none;
+    }
+    textarea{min-height:86px; resize:vertical}
+    .chk{display:flex; gap:10px; align-items:flex-start; padding:8px 0}
+    .chk input{transform: translateY(2px)}
+    .small{font-size:12px; color:var(--muted); line-height:1.4}
+    .btn{
+      appearance:none; border:none; cursor:pointer;
+      background: linear-gradient(180deg, rgba(96,165,250,.25), rgba(96,165,250,.12));
+      border:1px solid rgba(96,165,250,.35);
+      color: #dbeafe;
+      padding:10px 12px; border-radius:12px; font-weight:600;
+    }
+    .btn.secondary{
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--line);
+      color:var(--text);
+      font-weight:600;
+    }
+    .btn.danger{
+      background:rgba(239,68,68,.12);
+      border:1px solid rgba(239,68,68,.35);
+      color:#fee2e2;
+    }
+    .btn:disabled{opacity:.5; cursor:not-allowed}
+    hr{border:none; border-top:1px solid var(--line); margin:12px 0}
+    table{width:100%; border-collapse:collapse}
+    th,td{border-bottom:1px solid var(--line); padding:8px 6px; font-size:12px; text-align:left}
+    th{color:var(--muted); font-weight:600}
+    .tag{font-size:11px; padding:3px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted)}
+    .tag.locked{border-color: rgba(245,158,11,.35); color:#fde68a}
+    .tag.unlocked{border-color: rgba(34,197,94,.35); color:#a7f3d0}
+    .tag.claimed{border-color: rgba(96,165,250,.35); color:#bfdbfe}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+  </style>
 </head>
-
 <body>
-<header><h1>Better You</h1></header>
-
-<div class="wrap">
-  <div class="card">
-    <div class="kpis">
-      <div class="kpi">Overall Rank<br><b id="overallRank">1</b><div class="small" id="rankGateText"></div></div>
-      <div class="kpi">Trader Level<br><b id="lvlTrader">1</b><div class="small" id="xpTraderText"></div></div>
-      <div class="kpi">Body Level<br><b id="lvlBody">1</b><div class="small" id="xpBodyText"></div></div>
-      <div class="kpi">Closer Level<br><b id="lvlCloser">1</b><div class="small" id="xpCloserText"></div></div>
-      <div class="kpi">Family Level<br><b id="lvlFamily">1</b><div class="small" id="xpFamilyText"></div></div>
-    </div>
-
-    <div style="margin-top:10px">
-      <span class="pill" id="pillTradeToday"><strong>Trading Today:</strong> ...</span>
-      <span class="pill" id="pillTradeNext"><strong>Trading Next Day:</strong> ...</span>
-      <span class="pill" id="pillPenalty"><strong>Penalty:</strong> ...</span>
-      <span class="pill" id="pillTilt"><strong>Tilt:</strong> ...</span>
-      <span class="pill" id="pillSize"><strong>Size Up:</strong> ...</span>
-      <span class="pill" id="pillWow"><strong>WoW (30m):</strong> ...</span>
-    </div>
-
-    <div class="tabs">
-      <div class="tab active" data-tab="pillars">Pillars</div>
-      <div class="tab" data-tab="trading">Trading</div>
-      <div class="tab" data-tab="sales">Sales</div>
-      <div class="tab" data-tab="apex">Apex</div>
-      <div class="tab" data-tab="wow">WoW</div>
-      <div class="tab" data-tab="backup">Backup</div>
+<header>
+  <div class="wrap">
+    <div class="between">
+      <div>
+        <h1>Life Game — 4 Pillars</h1>
+        <div class="sub">Local-only. No accounts. Data stored in your browser (localStorage). GitHub Pages-ready.</div>
+      </div>
+      <div class="row">
+        <span id="statusPill" class="pill">—</span>
+        <button class="btn secondary" id="btnExport">Export</button>
+        <button class="btn secondary" id="btnImport">Import</button>
+        <button class="btn danger" id="btnReset">Reset</button>
+      </div>
     </div>
   </div>
+</header>
 
-  <!-- PILLARS -->
-  <div id="pillars" class="tabcontent active">
-
-    <div class="card">
-      <div class="titleRow">
-        <div class="h2">👑 Weekly Boss Fight (Mon–Sun)</div>
-        <span class="badge"><strong>Week:</strong> <span id="weekLabel"></span></span>
-      </div>
-      <div class="small">
-        Pass conditions (discipline only):
-        <ul style="margin:6px 0 0 18px;padding:0">
-          <li>Trading clean days ≥ <b>3</b> (logged day, violations=0, not halted)</li>
-          <li>Dialing days ≥120 mins: <b>5</b></li>
-          <li>Body days (any Body action): <b>5</b></li>
-          <li>Family days (any Family action): <b>5</b></li>
-          <li>Habit mornings this week: <b>0</b></li>
-        </ul>
-      </div>
-
-      <div class="twoCol" style="margin-top:10px">
-        <div class="streakCard"><div class="small">Trading clean days</div><b id="wkTradeClean">0</b></div>
-        <div class="streakCard"><div class="small">Dial 120+ days</div><b id="wkDial120">0</b></div>
-        <div class="streakCard"><div class="small">Body days</div><b id="wkBodyDays">0</b></div>
-        <div class="streakCard"><div class="small">Family days</div><b id="wkFamilyDays">0</b></div>
-        <div class="streakCard"><div class="small">Habit mornings</div><b id="wkHabitYes">0</b></div>
-        <div class="streakCard"><div class="small">Relationship avg (1–5)</div><b id="wkRelAvg">—</b></div>
-      </div>
-
-      <div id="bossPass" class="bannerOk" style="display:none;">
-        <div class="ok">BOSS CLEARED</div>
-        <div class="small">You earned the weekly bonus. Don’t get cute — do it again.</div>
-      </div>
-      <div id="bossFail" class="banner" style="display:none;">
-        <div class="warn">BOSS FAILED</div>
-        <div class="small">Penalty: next Monday starts with <b>Trading Halted</b> until you log your first clean trading day.</div>
-      </div>
-
-      <div class="btnRow">
-        <button data-action="awardWeeklyBonus">Claim Weekly Bonus (if cleared)</button>
-        <button class="secondary" data-action="setRel" data-rel="5">Rel = 5</button>
-        <button class="secondary" data-action="setRel" data-rel="4">Rel = 4</button>
-        <button class="secondary" data-action="setRel" data-rel="3">Rel = 3</button>
-        <button class="secondary" data-action="setRel" data-rel="2">Rel = 2</button>
-        <button class="secondary" data-action="setRel" data-rel="1">Rel = 1</button>
-      </div>
-      <div class="small" id="relTodayText" style="margin-top:8px"></div>
-    </div>
-
-    <div class="card">
-      <div class="titleRow"><div class="h2">🔥 Streaks (discipline only)</div></div>
-      <div class="streakGrid">
-        <div class="streakCard"><div class="small">Clean trading streak</div><b id="stCleanTrade">0</b></div>
-        <div class="streakCard"><div class="small">Dial 120+ streak</div><b id="stDial">0</b></div>
-        <div class="streakCard"><div class="small">Cold plunge streak</div><b id="stPlunge">0</b></div>
-        <div class="streakCard"><div class="small">Habit-free morning streak</div><b id="stHabitFree">0</b></div>
-      </div>
-      <div class="small" style="margin-top:8px">Streaks boost XP; breaking them doesn’t erase progress. Your rules supply the “burn.”</div>
-    </div>
-
-    <div class="grid">
-
-      <div class="card">
-        <div class="titleRow">
-          <div class="h2">🧠 Trader</div>
-          <span class="badge"><strong>Today XP:</strong> <span id="todayTrader">0</span></span>
+<main class="wrap">
+  <div class="grid cols2">
+    <section class="card">
+      <div class="between">
+        <div>
+          <div class="row">
+            <span class="pill accent">Today</span>
+            <span class="pill" id="todayDatePill">—</span>
+          </div>
+          <div class="small" style="margin-top:8px">
+            Rules baked in:
+            <span class="mono">Training mandatory</span> ·
+            <span class="mono">Protein ≥ 1g/lb</span> ·
+            <span class="mono">Sleep ≥ 7h</span> ·
+            <span class="mono">Apex hard stop at -200</span> ·
+            <span class="mono">+200 is a soft stop (extend only if you play it smarter)</span>.
+          </div>
         </div>
-        <div class="small">Trader XP freezes if trading is halted (your burn rule).</div>
-        <div class="xpbar"><div class="xpfill" id="barTrader"></div></div>
-        <div class="row small">
-          <div>Level: <b id="cardLvlTrader">1</b></div>
-          <div>XP: <b id="cardXpTrader">0</b> / <b id="needTrader">100</b></div>
+        <div class="row">
+          <button class="btn" id="btnSave">Save Day</button>
+          <button class="btn secondary" id="btnClearToday">Clear Form</button>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="grid cols3">
+        <!-- FITNESS -->
+        <div class="card" style="padding:12px">
+          <div class="between">
+            <div><strong>Fitness</strong></div>
+            <span id="pillFitness" class="pill">—</span>
+          </div>
+          <div class="chk"><input id="fitTrain" type="checkbox" /> <label for="fitTrain">Trained (mandatory)</label></div>
+          <div class="chk"><input id="fitProtein" type="checkbox" /> <label for="fitProtein">Hit protein (≥ 1g/lb)</label></div>
+          <div class="chk"><input id="fitSleep" type="checkbox" /> <label for="fitSleep">Sleep ≥ 7 hours (9pm–4am target)</label></div>
+          <div class="small">Minimum to pass fitness: all three checked. (You said mandatory training.)</div>
+        </div>
+
+        <!-- APEX -->
+        <div class="card" style="padding:12px">
+          <div class="between">
+            <div><strong>Apex</strong></div>
+            <span id="pillApex" class="pill">—</span>
+          </div>
+
+          <div class="row" style="gap:10px">
+            <div style="flex:1">
+              <label for="apexTrades">Trades taken (1–6)</label>
+              <input id="apexTrades" type="number" min="0" max="20" step="1" value="0"/>
+            </div>
+            <div style="flex:1">
+              <label for="apexMode">Day type</label>
+              <select id="apexMode">
+                <option value="trade">Trade day</option>
+                <option value="no_trade">No-trade day (by plan)</option>
+              </select>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="chk"><input id="apexHardStopRespected" type="checkbox" /> <label for="apexHardStopRespected">Hard stop respected (stop if -200)</label></div>
+          <div class="chk"><input id="apexMaxTradesRespected" type="checkbox" /> <label for="apexMaxTradesRespected">Max trades respected (cap = 6)</label></div>
+          <div class="chk"><input id="apexJournal" type="checkbox" /> <label for="apexJournal">Journal done (screenshots + notes)</label></div>
+
+          <hr />
+
+          <div class="chk"><input id="apexSoftStopHit" type="checkbox" /> <label for="apexSoftStopHit">Went past +200 today</label></div>
+
+          <div class="card" style="padding:10px; background:rgba(255,255,255,.02)">
+            <div class="between">
+              <div><strong class="mono">If you went past +200</strong></div>
+              <span class="tag locked" id="tagExtend">Extend: Locked</span>
+            </div>
+            <div class="small" style="margin-top:8px">
+              “Play it smarter” requirements (all must be true):
+            </div>
+            <div class="chk"><input id="apexExtendTrend" type="checkbox" /> <label for="apexExtendTrend">Trend genuinely continuing (not chop)</label></div>
+            <div class="chk"><input id="apexExtendRiskDown" type="checkbox" /> <label for="apexExtendRiskDown">Risk reduced (smaller size / tighter rules)</label></div>
+            <div class="chk"><input id="apexExtendNoRevenge" type="checkbox" /> <label for="apexExtendNoRevenge">No revenge behavior (see strikes below)</label></div>
+            <div class="chk"><input id="apexExtendMaxTradesDown" type="checkbox" /> <label for="apexExtendMaxTradesDown">Max trades reduced after +200 (≤ 2 more trades)</label></div>
+          </div>
+
+          <hr />
+
+          <div class="between">
+            <div class="small"><strong>Tilt strikes</strong> (0–3). At 2: mandatory 30-min stop. At 3: done for day.</div>
+            <div style="width:120px">
+              <input id="apexStrikes" type="number" min="0" max="3" step="1" value="0"/>
+            </div>
+          </div>
+
+          <div class="chk"><input id="apexRuleBreak" type="checkbox" /> <label for="apexRuleBreak"><span style="color:var(--bad);font-weight:700">Rule break</span> (auto Red Day)</label></div>
+        </div>
+
+        <!-- W2 -->
+        <div class="card" style="padding:12px">
+          <div class="between">
+            <div><strong>W2 Job</strong></div>
+            <span id="pillW2" class="pill">—</span>
+          </div>
+          <div class="chk"><input id="w2Dial" type="checkbox" /> <label for="w2Dial">2 hours dedicated dial time</label></div>
+          <div class="chk"><input id="w2Learn" type="checkbox" /> <label for="w2Learn">30 minutes learning</label></div>
+          <div class="chk"><input id="w2Needle" type="checkbox" /> <label for="w2Needle">One needle-mover shipped (pipeline/closing)</label></div>
+          <hr />
+          <div class="row" style="gap:10px">
+            <div style="flex:1">
+              <label for="w2Set">Weekly “set” completed today?</label>
+              <select id="w2Set">
+                <option value="0">No</option>
+                <option value="1">Yes (counts toward 3/week)</option>
+              </select>
+            </div>
+            <div style="flex:1">
+              <label for="w2SelfSource">Self-sourced deal action?</label>
+              <select id="w2SelfSource">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </div>
+            <div style="flex:1">
+              <label for="w2NoTrial">No-trial push?</label>
+              <select id="w2NoTrial">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- FAMILY -->
+        <div class="card" style="padding:12px">
+          <div class="between">
+            <div><strong>Family</strong></div>
+            <span id="pillFamily" class="pill">—</span>
+          </div>
+          <div class="chk"><input id="famTalk" type="checkbox" /> <label for="famTalk">30 minutes uninterrupted talking (phone away)</label></div>
+          <div class="chk"><input id="famSupport" type="checkbox" /> <label for="famSupport">One support action (help/household/parenting)</label></div>
+          <div class="chk"><input id="famPhoneFail" type="checkbox" /> <label for="famPhoneFail">Phone/distraction failure today</label></div>
+          <hr />
+          <div class="chk"><input id="famRepair" type="checkbox" /> <label for="famRepair">If you were off, you did a same-day repair (apology + reset)</label></div>
+          <div class="chk"><input id="famDate" type="checkbox" /> <label for="famDate">Weekly date happened today</label></div>
+          <div class="small">Hard fail: you were off + no repair.</div>
+        </div>
+
+      </div>
+
+      <hr />
+
+      <div class="row">
+        <div style="flex:1">
+          <label for="notes">Notes (optional)</label>
+          <textarea id="notes" placeholder="What mattered today? What triggered tilt? What worked?"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <aside class="grid" style="gap:14px">
+      <section class="card">
+        <div class="between">
+          <strong>Dashboard</strong>
+          <span class="pill accent" id="weekRange">—</span>
+        </div>
+
+        <div class="kpi" style="margin-top:10px">
+          <div class="k">
+            <div class="t">Today</div>
+            <div class="v" id="kToday">—</div>
+          </div>
+          <div class="k">
+            <div class="t">Streak</div>
+            <div class="v" id="kStreak">0</div>
+          </div>
+          <div class="k">
+            <div class="t">This Week</div>
+            <div class="v" id="kWeek">—</div>
+          </div>
+          <div class="k">
+            <div class="t">Red Days (14d)</div>
+            <div class="v" id="kRed14">0</div>
+          </div>
+        </div>
+
+        <hr />
+
+        <div class="between">
+          <div class="small">
+            <strong>Week rule</strong>: Pass = 4+ Clean days. Gold = 5+ Clean days. Review = ≤3.
+          </div>
+          <span id="pillWeek" class="pill">—</span>
+        </div>
+
+        <hr />
+
+        <div class="small"><strong>Recent days</strong></div>
+        <div id="recentTable" style="margin-top:6px"></div>
+      </section>
+
+      <section class="card">
+        <div class="between">
+          <strong>Stability Locks (manual)</strong>
+          <span class="pill">No financials</span>
+        </div>
+        <div class="small" style="margin-top:8px">
+          You said “carrots only when stable.” Since this site has no numbers, you manually flip locks when your real-world trend is good.
         </div>
         <hr/>
-        <div class="btnRow">
-          <button class="danger" data-action="habitYesNow">Habit = YES (halts trading)</button>
-          <button class="secondary" data-action="habitNo">Habit = NO (today)</button>
-          <button class="danger" data-action="tiltYes">Tilt = YES (halt now + discipline XP)</button>
-          <button class="secondary" data-action="tiltNo">Tilt = NO</button>
-          <button class="secondary" data-action="toggleHaltToday">Toggle: Halt Today</button>
-          <button class="secondary" data-action="toggleHaltNext">Toggle: Halt Next Day</button>
+        <div class="chk"><input id="lockDebtTrend" type="checkbox" /> <label for="lockDebtTrend">Lock 1 — Debt trend improving (4+ good weeks)</label></div>
+        <div class="chk"><input id="lockNoChaos" type="checkbox" /> <label for="lockNoChaos">Lock 2 — No chaos (no late payments / no new debt behavior)</label></div>
+        <div class="chk"><input id="lockBufferHabit" type="checkbox" /> <label for="lockBufferHabit">Lock 3 — Buffer habit consistent (tax/buffer routine)</label></div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn secondary" id="btnSaveLocks">Save Locks</button>
         </div>
-        <div class="small" id="traderLockText" style="margin-top:8px"></div>
-      </div>
+      </section>
 
-      <div class="card">
-        <div class="titleRow">
-          <div class="h2">💪 Body</div>
-          <span class="badge"><strong>Today XP:</strong> <span id="todayBody">0</span></span>
+      <section class="card">
+        <div class="between">
+          <strong>Rewards</strong>
+          <span class="pill">Locked / Unlocked / Claimed</span>
         </div>
-        <div class="xpbar"><div class="xpfill" id="barBody"></div></div>
-        <div class="row small">
-          <div>Level: <b id="cardLvlBody">1</b></div>
-          <div>XP: <b id="cardXpBody">0</b> / <b id="needBody">100</b></div>
+        <div class="small" style="margin-top:8px">
+          Rewards unlock based on <strong>streak + locks</strong>. No money shown. You can edit reward names in Settings.
         </div>
         <hr/>
-        <div class="btnRow">
-          <button data-action="logBody" data-tag="coldPlunge" data-xp="25">Cold plunge (+25)</button>
-          <button data-action="logBody" data-tag="lift" data-xp="40">Lift (+40)</button>
-          <button data-action="logBody" data-tag="diet" data-xp="30">Diet compliant (+30)</button>
-          <button data-action="logBody" data-tag="bedBy9" data-xp="25">In bed cutoff (+25)</button>
-          <button data-action="logBody" data-tag="habitAvoided" data-xp="50">Habit avoided (+50)</button>
-        </div>
-      </div>
+        <div id="rewardsList"></div>
+      </section>
 
-      <div class="card">
-        <div class="titleRow">
-          <div class="h2">💼 Closer</div>
-          <span class="badge"><strong>Today XP:</strong> <span id="todayCloser">0</span></span>
+      <section class="card">
+        <div class="between">
+          <strong>Settings</strong>
+          <span class="pill">Edit rules</span>
         </div>
-        <div class="xpbar"><div class="xpfill" id="barCloser"></div></div>
-        <div class="row small">
-          <div>Level: <b id="cardLvlCloser">1</b></div>
-          <div>XP: <b id="cardXpCloser">0</b> / <b id="needCloser">100</b></div>
-        </div>
-        <hr/>
-        <div class="btnRow">
-          <button data-action="logCloser" data-tag="dial2h" data-xp="50">2h dialing (+50)</button>
-          <button data-action="logCloser" data-tag="deal" data-xp="25">Deal closed (+25)</button>
-          <button data-action="logCloser" data-tag="sourced" data-xp="15">Self-sourced (+15)</button>
-          <button data-action="logCloser" data-tag="noTrial" data-xp="15">No-trial (+15)</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="titleRow">
-          <div class="h2">❤️ Husband / Father</div>
-          <span class="badge"><strong>Today XP:</strong> <span id="todayFamily">0</span></span>
-        </div>
-        <div class="xpbar"><div class="xpfill" id="barFamily"></div></div>
-        <div class="row small">
-          <div>Level: <b id="cardLvlFamily">1</b></div>
-          <div>XP: <b id="cardXpFamily">0</b> / <b id="needFamily">100</b></div>
+        <div class="row">
+          <div style="flex:1">
+            <label for="setMaxTrades">Apex max trades/day</label>
+            <input id="setMaxTrades" type="number" min="1" max="20" step="1" value="6">
+          </div>
+          <div style="flex:1">
+            <label for="setAfter200ExtraTrades">After +200: allowed extra trades</label>
+            <input id="setAfter200ExtraTrades" type="number" min="0" max="10" step="1" value="2">
+          </div>
         </div>
         <hr/>
-        <div class="btnRow">
-          <button data-action="logFamily" data-tag="spouseNoPhone" data-xp="40">Spouse time no phone (+40)</button>
-          <button data-action="logFamily" data-tag="kidsEngaged" data-xp="30">Kids engaged (+30)</button>
-          <button data-action="logFamily" data-tag="helpedUnasked" data-xp="20">Helped unasked (+20)</button>
-          <button data-action="logFamily" data-tag="calm" data-xp="20">Calm under stress (+20)</button>
-          <button data-action="logFamily" data-tag="weeklyDate" data-xp="100">Weekly date/leadership (+100)</button>
+        <label for="setRewardsJson">Rewards JSON (names only; tiers drive locks)</label>
+        <textarea id="setRewardsJson" class="mono"></textarea>
+        <div class="row" style="margin-top:10px">
+          <button class="btn secondary" id="btnSaveSettings">Save Settings</button>
         </div>
-      </div>
-
-    </div>
+        <div class="small" style="margin-top:10px">
+          Tip: Add items from your wish list here (PC setup, carpet cleaning, trip fund, Tesla milestone, house milestone, etc.).
+        </div>
+      </section>
+    </aside>
   </div>
 
-  <!-- TRADING -->
-  <div id="trading" class="tabcontent">
-    <div class="card">
-      <div class="titleRow">
-        <div class="h2">📊 Trading Dashboard (aggregate daily)</div>
-        <span class="pill"><strong>Equity:</strong> $<span id="equityNow">0</span></span>
-      </div>
-
-      <div class="twoCol" style="margin-top:10px">
-        <div class="banner" id="sizeGateBox" style="display:none;">
-          <div class="warn">SIZE-UP LOCKED</div>
-          <div class="small" id="sizeGateText"></div>
-        </div>
-        <div class="bannerOk" id="sizeGateOk" style="display:none;">
-          <div class="ok">SIZE-UP UNLOCKED</div>
-          <div class="small">You may increase size today. If you break rules, next day is halted.</div>
-        </div>
-      </div>
-
-      <div id="lockOverlay" class="banner" style="display:none;">
-        <div class="warn">TRADING HALTED — NO MARKET INTERACTION</div>
-        <div class="small">Trader XP is frozen today.</div>
-      </div>
-
-      <hr/>
-
-      <div class="twoCol">
-        <div class="card" style="margin:0;background:rgba(255,255,255,.02)">
-          <div class="titleRow">
-            <div class="h2">Add / Edit Day</div>
-            <span class="badge"><strong>Date:</strong> <span id="editDateLabel"></span></span>
-          </div>
-
-          <div class="small" style="margin-top:6px">Wins</div>
-          <input id="inWins" type="number" min="0" placeholder="e.g. 4"/>
-
-          <div class="small" style="margin-top:10px">Losses</div>
-          <input id="inLosses" type="number" min="0" placeholder="e.g. 2"/>
-
-          <div class="small" style="margin-top:10px">Gross Profit ($)</div>
-          <input id="inGrossProfit" type="number" step="0.01" placeholder="e.g. 650.25"/>
-
-          <div class="small" style="margin-top:10px">Gross Loss ($) (positive number)</div>
-          <input id="inGrossLoss" type="number" step="0.01" placeholder="e.g. 420.00"/>
-
-          <div class="small" style="margin-top:10px">Rule Violations (0 if clean)</div>
-          <input id="inVios" type="number" min="0" placeholder="0"/>
-
-          <div class="small" style="margin-top:10px">Drawdown Buffer ($) (optional)</div>
-          <input id="inDdBuf" type="number" step="0.01" placeholder="e.g. 4200"/>
-
-          <div class="btnRow">
-            <button data-action="saveTradingDay">Save Day</button>
-            <button class="secondary" data-action="jumpToToday">Jump to Today</button>
-            <button class="secondary" data-action="deleteTradingDay">Delete This Day</button>
-          </div>
-
-          <div class="small" style="margin-top:10px">
-            Auto rules:
-            <ul style="margin:6px 0 0 18px;padding:0">
-              <li>DD buffer &lt; 2000 → trading halt today</li>
-              <li>Violations &gt; 0 → no Trader XP for that day</li>
-              <li>Clean day (vios=0 and not halted) → +50 Trader XP (once/day)</li>
-              <li>If weekly penalty active → trading stays halted until first clean day is logged</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="card" style="margin:0;background:rgba(255,255,255,.02)">
-          <div class="titleRow">
-            <div class="h2">Equity Curve</div>
-            <span class="badge"><strong>Month:</strong> <span id="calMonthLabel"></span></span>
-          </div>
-
-          <canvas id="equityChart"></canvas>
-
-          <hr/>
-
-          <div class="twoCol" style="gap:8px">
-            <div class="pill"><strong>Win Rate:</strong> <span id="statWr">0%</span></div>
-            <div class="pill"><strong>Profit Factor:</strong> <span id="statPf">0.00</span></div>
-            <div class="pill"><strong>Expectancy / Trade:</strong> $<span id="statExp">0</span></div>
-            <div class="pill"><strong>Avg Win:</strong> $<span id="statAvgWin">0</span></div>
-            <div class="pill"><strong>Avg Loss:</strong> $<span id="statAvgLoss">0</span></div>
-            <div class="pill"><strong>Max Drawdown:</strong> $<span id="statMdd">0</span></div>
-            <div class="pill"><strong>Green Days:</strong> <span id="statGreen">0</span></div>
-            <div class="pill"><strong>Red Days:</strong> <span id="statRed">0</span></div>
-            <div class="pill"><strong>Best Day:</strong> $<span id="statBest">0</span></div>
-            <div class="pill"><strong>Worst Day:</strong> $<span id="statWorst">0</span></div>
-            <div class="pill"><strong>Days Logged:</strong> <span id="statDays">0</span></div>
-            <div class="pill"><strong>Trades:</strong> <span id="statTrades">0</span></div>
-          </div>
-
-          <hr/>
-
-          <div class="titleRow">
-            <div class="h2">Trade Calendar (click a day)</div>
-            <span class="badge"><strong>Selected:</strong> <span id="selectedDateLabel"></span></span>
-          </div>
-
-          <div class="calHead">
-            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-          </div>
-          <div id="calendar" class="calWrap"></div>
-
-          <div class="calLegend">
-            <span class="swatch"><span class="box" style="background:rgba(74,222,128,.35)"></span>Green</span>
-            <span class="swatch"><span class="box" style="background:rgba(251,113,133,.35)"></span>Red</span>
-            <span class="swatch"><span class="box" style="background:rgba(255,255,255,.06)"></span>No log</span>
-            <span class="swatch"><span class="box" style="background:rgba(251,191,36,.30)"></span>Violations</span>
-            <span class="swatch"><span class="box" style="background:rgba(96,165,250,.25)"></span>Halted</span>
-          </div>
-        </div>
-      </div>
-
-      <hr/>
-
-      <div class="h2">Daily Logs</div>
-      <div style="overflow:auto;margin-top:10px">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th><th>W</th><th>L</th><th>Gross Profit</th><th>Gross Loss</th>
-              <th>Net</th><th>Vios</th><th>DD Buf</th><th>Halted</th>
-            </tr>
-          </thead>
-          <tbody id="logTable"></tbody>
-        </table>
-      </div>
+  <div class="card" style="margin-top:14px">
+    <div class="between">
+      <strong>How to run on GitHub Pages</strong>
+      <span class="pill">2 minutes</span>
     </div>
+    <ol class="small">
+      <li>Create a repo (e.g., <span class="mono">life-game</span>).</li>
+      <li>Add this file as <span class="mono">index.html</span> and push.</li>
+      <li>Repo → Settings → Pages → Deploy from branch → <span class="mono">main</span> / root.</li>
+      <li>Open your Pages URL. Data stays in your browser. Use Export for backups.</li>
+    </ol>
   </div>
-
-  <!-- SALES -->
-  <div id="sales" class="tabcontent">
-    <div class="card">
-      <div class="titleRow">
-        <div class="h2">💼 Sales Quota Board</div>
-        <span class="badge"><strong>Month:</strong> <span id="salesMonthLabel"></span></span>
-      </div>
-      <div class="small">Quota + deal mix + dialing + pace.</div>
-
-      <hr/>
-
-      <div class="twoCol">
-        <div class="card" style="margin:0;background:rgba(255,255,255,.02)">
-          <div class="h2">Quota Settings</div>
-          <div class="small" style="margin-top:6px">Default $76,000.</div>
-          <div class="small" style="margin-top:10px">Monthly Quota ($)</div>
-          <input id="inQuota" type="number" step="0.01" placeholder="76000"/>
-          <div class="btnRow">
-            <button data-action="saveQuota">Save Quota</button>
-            <button class="secondary" data-action="setQuota76000">Set $76,000</button>
-          </div>
-
-          <hr/>
-
-          <div class="h2">Daily Dialing</div>
-          <div class="small">Log minutes. Target is 120.</div>
-          <div class="small" style="margin-top:10px">Minutes Dialed (today)</div>
-          <input id="inDialMins" type="number" min="0" placeholder="120"/>
-          <div class="btnRow">
-            <button data-action="saveDialing">Save Dialing</button>
-            <button class="secondary" data-action="markDialed120">Mark 120</button>
-          </div>
-        </div>
-
-        <div class="card" style="margin:0;background:rgba(255,255,255,.02)">
-          <div class="h2">Monthly Progress</div>
-          <div class="progress" style="margin-top:10px"><div id="quotaBar"></div></div>
-          <div class="row small">
-            <div>MTD Closed: <b>$<span id="mtdClosed">0</span></b></div>
-            <div>Goal: <b>$<span id="mtdGoal">76,000</span></b></div>
-          </div>
-
-          <div class="twoCol" style="gap:8px;margin-top:10px">
-            <div class="pill"><strong>Sourced $:</strong> $<span id="mtdSourced">0</span></div>
-            <div class="pill"><strong>Inbound $:</strong> $<span id="mtdInbound">0</span></div>
-            <div class="pill"><strong>No-trial $:</strong> $<span id="mtdNoTrial">0</span></div>
-            <div class="pill"><strong>Trial $:</strong> $<span id="mtdTrial">0</span></div>
-            <div class="pill"><strong>Deals:</strong> <span id="mtdDeals">0</span></div>
-            <div class="pill"><strong>Dial Minutes:</strong> <span id="mtdDial">0</span></div>
-          </div>
-
-          <hr/>
-
-          <div class="h2">Daily Pace</div>
-          <div class="small">Remaining quota / remaining business days (Mon–Fri).</div>
-          <div class="pill" style="margin-top:8px"><strong>Today’s pace:</strong> $<span id="paceToday">0</span></div>
-        </div>
-      </div>
-
-      <hr/>
-
-      <div class="twoCol">
-        <div class="card" style="margin:0;background:rgba(255,255,255,.02)">
-          <div class="titleRow">
-            <div class="h2">Add Deal</div>
-            <span class="badge"><strong>Date:</strong> <span id="dealDateLabel"></span></span>
-          </div>
-
-          <div class="small" style="margin-top:10px">Deal Amount ($)</div>
-          <input id="inDealAmt" type="number" step="0.01" placeholder="e.g. 12000"/>
-
-          <div class="small" style="margin-top:10px">Source</div>
-          <select id="inDealSource">
-            <option value="sourced">Sourced (higher pay)</option>
-            <option value="inbound">Inbound (marketing)</option>
-          </select>
-
-          <div class="small" style="margin-top:10px">Trial?</div>
-          <select id="inDealTrial">
-            <option value="no">No Trial (higher pay)</option>
-            <option value="yes">Trial</option>
-          </select>
-
-          <div class="small" style="margin-top:10px">Notes (optional)</div>
-          <input id="inDealNotes" placeholder="Client / product / short note"/>
-
-          <div class="btnRow">
-            <button data-action="addDeal">Add Deal</button>
-            <button class="secondary" data-action="jumpSalesToday">Jump to Today</button>
-          </div>
-        </div>
-
-        <div class="card" style="margin:0;background:rgba(255,255,255,.02)">
-          <div class="titleRow">
-            <div class="h2">Deals This Month</div>
-            <span class="badge"><strong>MTD:</strong> $<span id="dealMtdQuick">0</span></span>
-          </div>
-
-          <div style="overflow:auto;margin-top:10px">
-            <table>
-              <thead>
-                <tr><th>Date</th><th>Amount</th><th>Source</th><th>Trial</th><th>Notes</th><th></th></tr>
-              </thead>
-              <tbody id="dealTable"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- APEX -->
-  <div id="apex" class="tabcontent">
-    <div class="card">
-      <div class="titleRow">
-        <div class="h2">🏦 Apex Payout Tracker</div>
-        <span class="badge"><strong>Goal:</strong> $<span id="apexGoalLabel">500,000</span></span>
-      </div>
-      <div class="small">Track payouts, not dopamine PnL.</div>
-
-      <hr/>
-
-      <div class="twoCol">
-        <div class="card" style="margin:0;background:rgba(255,255,255,.02)">
-          <div class="h2">Inputs</div>
-
-          <div class="small" style="margin-top:10px">Annual Payout Goal ($)</div>
-          <input id="inApexGoal" type="number" step="1" placeholder="500000"/>
-
-          <div class="small" style="margin-top:10px">Payouts Received YTD ($)</div>
-          <input id="inApexYtd" type="number" step="0.01" placeholder="0"/>
-
-          <div class="small" style="margin-top:10px">Number of Payouts Completed</div>
-          <input id="inApexCount" type="number" step="1" placeholder="0"/>
-
-          <div class="small" style="margin-top:10px">Next Eligible Payout Date</div>
-          <input id="inApexNext" type="date"/>
-
-          <div class="small" style="margin-top:10px">Notes</div>
-          <input id="inApexNotes" placeholder="policy reminders"/>
-
-          <div class="btnRow">
-            <button data-action="saveApex">Save</button>
-            <button class="secondary" data-action="setApexGoal500">Set Goal $500k</button>
-          </div>
-        </div>
-
-        <div class="card" style="margin:0;background:rgba(255,255,255,.02)">
-          <div class="h2">Progress</div>
-          <div class="progress" style="margin-top:10px"><div id="apexBar"></div></div>
-          <div class="row small">
-            <div>YTD: <b>$<span id="apexYtdLabel">0</span></b></div>
-            <div>Goal: <b>$<span id="apexGoalLabel2">500,000</span></b></div>
-          </div>
-          <div class="twoCol" style="gap:8px;margin-top:10px">
-            <div class="pill"><strong>Payout count:</strong> <span id="apexCountLabel">0</span></div>
-            <div class="pill"><strong>Next eligible:</strong> <span id="apexNextLabel">—</span></div>
-            <div class="pill"><strong>Notes:</strong> <span id="apexNotesLabel">—</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- WOW -->
-  <div id="wow" class="tabcontent">
-    <div class="card">
-      <div class="titleRow">
-        <div class="h2">🎮 WoW Unlock (30 minutes)</div>
-        <span class="badge"><strong>Status:</strong> <span id="wowStatus">...</span></span>
-      </div>
-
-      <div class="small">
-        Unlock (daily): trading not halted • violations=0 if logged • dialing ≥120 • family XP >0
-      </div>
-
-      <div id="wowLockBanner" class="banner" style="display:none;">
-        <div class="warn">LOCKED</div>
-        <div class="small" id="wowLockReason"></div>
-      </div>
-
-      <div id="wowUnlockBanner" class="bannerOk" style="display:none;">
-        <div class="ok">UNLOCKED — 30 MINUTES MAX</div>
-        <div class="small">Start timer. When it hits 0, stop.</div>
-      </div>
-
-      <hr/>
-
-      <div class="twoCol">
-        <div class="card" style="margin:0;background:rgba(255,255,255,.02)">
-          <div class="h2">Timer</div>
-          <div class="timer" id="wowTimer">30:00</div>
-          <div class="btnRow">
-            <button data-action="startWow">Start</button>
-            <button class="secondary" data-action="pauseWow">Pause</button>
-            <button class="secondary" data-action="resetWow">Reset 30:00</button>
-          </div>
-        </div>
-
-        <div class="card" style="margin:0;background:rgba(255,255,255,.02)">
-          <div class="h2">Quick Checks</div>
-          <div class="twoCol" style="gap:8px;margin-top:10px">
-            <div class="pill"><strong>Trading Today:</strong> <span id="wowChkTrading">?</span></div>
-            <div class="pill"><strong>Violations Today:</strong> <span id="wowChkVios">?</span></div>
-            <div class="pill"><strong>Dial Minutes:</strong> <span id="wowChkDial">?</span></div>
-            <div class="pill"><strong>Family XP Today:</strong> <span id="wowChkFam">?</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- BACKUP -->
-  <div id="backup" class="tabcontent">
-    <div class="card">
-      <div class="h2">Backup / Restore</div>
-      <div class="small">This lives on your device. Export weekly.</div>
-      <hr/>
-      <div class="btnRow">
-        <button data-action="exportData">Export JSON</button>
-        <button class="secondary" data-action="focusImport">Import JSON</button>
-        <button class="danger" data-action="hardResetAll">Hard Reset All</button>
-      </div>
-      <div class="small" style="margin-top:10px">Paste JSON here to restore:</div>
-      <textarea id="importBox" rows="8" placeholder="Paste exported JSON here"></textarea>
-      <div class="btnRow"><button class="secondary" data-action="importData">Restore Now</button></div>
-    </div>
-  </div>
-
-</div>
+</main>
 
 <script>
-/* =========================
-   STORAGE (same key = keep data)
-   ========================= */
-const KEY = "beastDashboard_v6";
-const todayKey = () => new Date().toDateString();
-const monthKey = (d=new Date()) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+/** =========================
+ *  Storage + Defaults
+ *  ========================= */
+const LS_KEY = "lifeGame_v1";
+const LS_LOCKS = "lifeGame_locks_v1";
+const LS_SETTINGS = "lifeGame_settings_v1";
 
-const defaults = {
-  lastDate: null,
-  pillars: {
-    trader: { lvl: 1, xp: 0, todayXP: 0 },
-    body:   { lvl: 1, xp: 0, todayXP: 0 },
-    closer: { lvl: 1, xp: 0, todayXP: 0 },
-    family: { lvl: 1, xp: 0, todayXP: 0 },
-  },
-  locks: {
-    tradingHaltedToday:false,
-    tradingHaltedNext:false,
-    habitYesToday:false,
-    tiltYesToday:false,
-    weekPenaltyActive:false
-  },
-  trading: { selectedDate:null, dailyLogs:{} },
-  sales: { quotaByMonth:{}, dialingByDate:{}, deals:[] },
-  wow: { remainingSec: 30*60, running:false, lastTick:null },
-  daily: { byDate: {} },
-  weekly: { byWeek: {} },
-  apex: { goal: 500000, ytd: 0, payoutCount: 0, nextEligible: "", notes: "" }
+function todayISO(){
+  const d = new Date();
+  const tzOff = d.getTimezoneOffset() * 60000;
+  return new Date(d - tzOff).toISOString().slice(0,10);
+}
+function startOfWeekISO(iso){
+  // Monday start
+  const d = new Date(iso + "T00:00:00");
+  const day = (d.getDay() + 6) % 7; // Mon=0..Sun=6
+  d.setDate(d.getDate() - day);
+  return d.toISOString().slice(0,10);
+}
+function addDaysISO(iso, n){
+  const d = new Date(iso + "T00:00:00");
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0,10);
+}
+function loadJSON(key, fallback){
+  try{
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : fallback;
+  }catch{ return fallback; }
+}
+function saveJSON(key, obj){
+  localStorage.setItem(key, JSON.stringify(obj));
+}
+
+const DEFAULT_SETTINGS = {
+  apexMaxTrades: 6,
+  after200ExtraTrades: 2,
+  rewards: [
+    // Tier logic:
+    // T0 = always
+    // T1 = requires Lock1
+    // T2 = requires Lock1+Lock2
+    // T3 = requires Lock1+Lock2+Lock3 + long streak
+    { id:"free_hobby", name:"Tier 0: 60 min guilt-free hobby time", tier:0, streakReq:0 },
+    { id:"movie_night", name:"Tier 0: Movie night (phone away)", tier:0, streakReq:0 },
+
+    { id:"otf_band", name:"Tier 1: OTF band (wish list)", tier:1, streakReq:7 },
+    { id:"carpet_clean", name:"Tier 1: Carpet cleaning / house reset", tier:1, streakReq:7 },
+
+    { id:"pc_setup", name:"Tier 2: PC setup upgrade (wish list)", tier:2, streakReq:21 },
+    { id:"wardrobe", name:"Tier 2: Wardrobe upgrade", tier:2, streakReq:21 },
+    { id:"vibration_plate", name:"Tier 2: Vibration plate", tier:2, streakReq:21 },
+
+    { id:"trip_milestone", name:"Tier 3: Trip milestone", tier:3, streakReq:60 },
+    { id:"tesla_milestone", name:"Tier 3: Tesla milestone", tier:3, streakReq:60 },
+    { id:"house_milestone", name:"Tier 3: House milestone", tier:3, streakReq:90 }
+  ]
 };
 
-function structuredCloneSafe(obj){
-  try { return structuredClone(obj); }
-  catch { return JSON.parse(JSON.stringify(obj)); }
-}
-function deepMerge(target, source){
-  for(const k in source){
-    if(source[k] && typeof source[k] === "object" && !Array.isArray(source[k])){
-      if(!target[k] || typeof target[k] !== "object") target[k] = {};
-      deepMerge(target[k], source[k]);
-    } else {
-      if(target[k] === undefined) target[k] = source[k];
-    }
-  }
-  return target;
-}
+const DEFAULT_LOCKS = { lockDebtTrend:false, lockNoChaos:false, lockBufferHabit:false };
 
-let state = (() => {
-  try { return JSON.parse(localStorage.getItem(KEY)) || structuredCloneSafe(defaults); }
-  catch { return structuredCloneSafe(defaults); }
-})();
-state = deepMerge(state, structuredCloneSafe(defaults));
+let settings = loadJSON(LS_SETTINGS, DEFAULT_SETTINGS);
+let locks = loadJSON(LS_LOCKS, DEFAULT_LOCKS);
+let days = loadJSON(LS_KEY, {}); // { "YYYY-MM-DD": dayRecord }
 
-function save(){ localStorage.setItem(KEY, JSON.stringify(state)); render(); }
+/** =========================
+ *  DOM helpers
+ *  ========================= */
+const $ = (id)=>document.getElementById(id);
 
-function ensureTodayDaily(){
-  const d = todayKey();
-  if(!state.daily.byDate[d]) state.daily.byDate[d] = { tags:{}, pillarActions:{}, relationshipRating:null, habitYes:false };
-  return state.daily.byDate[d];
-}
-function resetIfNewDay(){
-  const t = todayKey();
-  if(state.lastDate !== t){
-    state.locks.tradingHaltedToday = !!state.locks.tradingHaltedNext;
-    state.locks.tradingHaltedNext = false;
-    state.locks.habitYesToday = false;
-    state.locks.tiltYesToday = false;
-
-    for(const k of Object.keys(state.pillars)) state.pillars[k].todayXP = 0;
-
-    state.wow.remainingSec = 30*60;
-    state.wow.running = false;
-    state.wow.lastTick = null;
-
-    state.trading.selectedDate = t;
-    ensureTodayDaily();
-
-    const now = new Date();
-    if(now.getDay() === 1){
-      const prevWeekKey = getWeekKey(addDays(now, -7));
-      const prev = state.weekly.byWeek[prevWeekKey];
-      if(prev && prev.passed === false) state.locks.weekPenaltyActive = true;
-    }
-
-    state.lastDate = t;
-    localStorage.setItem(KEY, JSON.stringify(state));
-  }
-}
-resetIfNewDay();
-
-function needForLevel(lvl){ return 100 * lvl; }
-function addXP(pillar, amount, opts={ bypassFreeze:false }){
-  resetIfNewDay();
-  if(pillar === "trader" && state.locks.tradingHaltedToday && !opts.bypassFreeze){
-    alert("Trader XP is frozen because trading is halted today.");
-    return;
-  }
-  const p = state.pillars[pillar];
-  p.xp += amount;
-  p.todayXP += amount;
-  while(p.xp >= needForLevel(p.lvl)){
-    p.xp -= needForLevel(p.lvl);
-    p.lvl += 1;
-  }
-  const day = ensureTodayDaily();
-  if(!day.pillarActions[pillar]) day.pillarActions[pillar] = 0;
-  day.pillarActions[pillar] += 1;
-  save();
-}
-function tagToday(tag){
-  const day = ensureTodayDaily();
-  day.tags[tag] = true;
-  save();
-}
-function logBody(tag, xp){ tagToday(tag); addXP("body", xp); }
-function logCloser(tag, xp){ tagToday(tag); addXP("closer", xp); }
-function logFamily(tag, xp){ tagToday(tag); addXP("family", xp); }
-
-function avgLevel(){
-  const lvls = Object.values(state.pillars).map(p=>p.lvl);
-  return lvls.reduce((a,b)=>a+b,0) / lvls.length;
-}
-function minLevelRequiredForRank(rank){
-  if(rank <= 5) return 1;
-  if(rank <= 10) return 5;
-  if(rank <= 15) return 10;
-  if(rank <= 20) return 15;
-  return 20;
-}
-function computeRank(){
-  const target = Math.floor(avgLevel());
-  const minReq = minLevelRequiredForRank(target);
-  const weakest = Math.min(state.pillars.trader.lvl, state.pillars.body.lvl, state.pillars.closer.lvl, state.pillars.family.lvl);
-  if(weakest < minReq){
-    let r = target;
-    while(r > 1 && weakest < minLevelRequiredForRank(r)) r--;
-    return { rank: Math.max(1,r), gated:true, target, minReq, weakest };
-  }
-  return { rank: Math.max(1,target), gated:false, target, minReq, weakest };
+function setPill(el, kind, text){
+  el.className = "pill" + (kind ? (" " + kind) : "");
+  el.textContent = text;
 }
 
-function habitYesNow(){
-  resetIfNewDay();
-  state.locks.habitYesToday = true;
-  state.locks.tradingHaltedToday = true;
-  const day = ensureTodayDaily();
-  day.habitYes = true;
-  save();
-}
-function habitNo(){
-  resetIfNewDay();
-  state.locks.habitYesToday = false;
-  ensureTodayDaily().habitYes = false;
-  save();
-}
-function tiltYes(){
-  resetIfNewDay();
-  addXP("trader", 25, { bypassFreeze:true });
-  state.locks.tiltYesToday = true;
-  state.locks.tradingHaltedToday = true;
-  tagToday("tilt");
-  save();
-}
-function tiltNo(){ resetIfNewDay(); state.locks.tiltYesToday = false; save(); }
-function toggleHaltToday(){ resetIfNewDay(); state.locks.tradingHaltedToday = !state.locks.tradingHaltedToday; save(); }
-function toggleHaltNext(){ resetIfNewDay(); state.locks.tradingHaltedNext = !state.locks.tradingHaltedNext; save(); }
+function computeDayStatus(rec){
+  // Hard fails -> Red Day
+  const familyHardFail = (rec.famPhoneFail || rec.familyOff) && !rec.famRepair;
+  const apexHardFail = rec.apexRuleBreak || (Number(rec.apexStrikes) >= 3);
 
-function parseNum(id, fallback=0){
-  const v = document.getElementById(id).value;
-  if(v === "" || v === null || v === undefined) return fallback;
-  const n = Number(v);
-  return Number.isFinite(n) ? n : fallback;
-}
-function getSelectedTradingDate(){ return state.trading.selectedDate || todayKey(); }
-function setSelectedTradingDate(d){ state.trading.selectedDate = d; save(); }
+  if (apexHardFail || familyHardFail) return "RED";
 
-function saveTradingDay(){
-  resetIfNewDay();
-  const d = getSelectedTradingDate();
+  // Pillar minimums
+  const fitnessOk = rec.fitTrain && rec.fitProtein && rec.fitSleep;
 
-  const wins = parseNum("inWins", 0);
-  const losses = parseNum("inLosses", 0);
-  const grossProfit = parseNum("inGrossProfit", 0);
-  const grossLoss = parseNum("inGrossLoss", 0);
-  const vios = parseNum("inVios", 0);
-  const ddRaw = document.getElementById("inDdBuf").value;
-  const ddBuf = (ddRaw === "" ? null : Number(ddRaw));
+  const apexOk = (rec.apexMode === "no_trade")
+    ? (rec.apexJournal) // must still log why you passed
+    : (
+        rec.apexHardStopRespected &&
+        rec.apexMaxTradesRespected &&
+        rec.apexJournal &&
+        (Number(rec.apexStrikes) <= 2)
+      );
 
-  const net = grossProfit - grossLoss;
-  const halted = (ddBuf !== null && ddBuf < 2000);
-
-  const prev = state.trading.dailyLogs[d] || {};
-  const xpAwarded = !!prev.xpAwarded;
-
-  state.trading.dailyLogs[d] = { wins, losses, grossProfit, grossLoss, vios, ddBuf, net, halted, xpAwarded };
-
-  if(d === todayKey() && halted) state.locks.tradingHaltedToday = true;
-
-  if(d === todayKey() && state.locks.weekPenaltyActive){
-    if(vios === 0 && !halted){
-      state.locks.weekPenaltyActive = false;
-    } else {
-      state.locks.tradingHaltedToday = true;
-    }
+  // Soft stop extension rule: only matters if they went past +200.
+  let extendOk = true;
+  if (rec.apexSoftStopHit){
+    extendOk =
+      rec.apexExtendTrend &&
+      rec.apexExtendRiskDown &&
+      rec.apexExtendNoRevenge &&
+      rec.apexExtendMaxTradesDown;
+    if (!extendOk) return "RED"; // you went past +200 without “playing it smarter”
   }
 
-  const log = state.trading.dailyLogs[d];
-  if(!log.xpAwarded){
-    const isToday = (d === todayKey());
-    const tradingLockedThatDay = isToday ? state.locks.tradingHaltedToday : false;
-    if(!tradingLockedThatDay && !halted && vios === 0){
-      addXP("trader", 50);
-      log.xpAwarded = true;
-    } else {
-      log.xpAwarded = true;
-    }
-  }
-  save();
-}
-function deleteTradingDay(){
-  const d = getSelectedTradingDate();
-  if(!state.trading.dailyLogs[d]) return;
-  if(!confirm("Delete this trading day log?")) return;
-  delete state.trading.dailyLogs[d];
-  save();
-}
-function jumpToToday(){ setSelectedTradingDate(todayKey()); }
+  const w2Ok = rec.w2Dial && rec.w2Learn && rec.w2Needle;
+  const familyOk = rec.famTalk && rec.famSupport;
 
-function getSortedTradingLogs(){
-  return Object.entries(state.trading.dailyLogs)
-    .map(([date, v]) => ({ date, ...v }))
-    .sort((a,b) => new Date(a.date) - new Date(b.date));
-}
-function fmtMoney(n){
-  const sign = n < 0 ? "-" : "";
-  const abs = Math.abs(n);
-  return sign + abs.toLocaleString(undefined,{maximumFractionDigits:2});
-}
-function computeEquitySeries(logs){
-  let eq = 0;
-  return logs.map(l => (eq += (Number(l.net)||0), { x:l.date, y:eq }));
-}
-function computeTradingStats(logs){
-  if(!logs.length){
-    return { equity:0, equitySeries:[], winRate:0, pf:0, expectancy:0, avgWin:0, avgLoss:0, mdd:0, days:0, trades:0, green:0, red:0, best:0, worst:0 };
-  }
-  const equitySeries = computeEquitySeries(logs);
-  const equity = equitySeries[equitySeries.length-1].y;
-
-  let totalWins=0,totalLosses=0,totalTrades=0,gp=0,gl=0,green=0,red=0;
-  let best=-Infinity,worst=Infinity;
-
-  for(const l of logs){
-    const w = Number(l.wins)||0;
-    const lo = Number(l.losses)||0;
-    const gpp = Number(l.grossProfit)||0;
-    const gll = Number(l.grossLoss)||0;
-    const net = Number(l.net)||0;
-
-    totalWins += w; totalLosses += lo; totalTrades += (w+lo);
-    gp += gpp; gl += gll;
-
-    if(net > 0) green++; else if(net < 0) red++;
-    if(net > best) best = net;
-    if(net < worst) worst = net;
-  }
-
-  const winRate = totalTrades ? (totalWins/totalTrades) : 0;
-  const avgWin = totalWins ? (gp/totalWins) : 0;
-  const avgLoss = totalLosses ? (gl/totalLosses) : 0;
-  const pf = gl > 0 ? (gp/gl) : (gp > 0 ? 99 : 0);
-  const expectancy = totalTrades ? ((winRate*avgWin) - ((1-winRate)*avgLoss)) : 0;
-
-  let peak = -Infinity, mdd = 0;
-  for(const p of equitySeries){
-    if(p.y > peak) peak = p.y;
-    const dd = peak - p.y;
-    if(dd > mdd) mdd = dd;
-  }
-
-  return {
-    equity, equitySeries, winRate, pf, expectancy, avgWin, avgLoss,
-    mdd, days:logs.length, trades:totalTrades,
-    green, red, best:(best===-Infinity?0:best), worst:(worst===Infinity?0:worst)
-  };
+  if (fitnessOk && apexOk && w2Ok && familyOk) return "CLEAN";
+  if (fitnessOk || apexOk || w2Ok || familyOk) return "PARTIAL";
+  return "PARTIAL";
 }
 
-function drawChart(points){
-  const canvas = document.getElementById("equityChart");
-  const ctx = canvas.getContext("2d");
+function computeXP(rec){
+  // 25 XP per pillar minimum met (max 100). No bonus farming here; add later if you want.
+  const fitnessOk = rec.fitTrain && rec.fitProtein && rec.fitSleep;
+  const apexOk = (rec.apexMode === "no_trade")
+    ? (rec.apexJournal)
+    : (rec.apexHardStopRespected && rec.apexMaxTradesRespected && rec.apexJournal && (Number(rec.apexStrikes) <= 2));
+  const w2Ok = rec.w2Dial && rec.w2Learn && rec.w2Needle;
+  const familyOk = rec.famTalk && rec.famSupport;
 
-  const cssW = canvas.clientWidth || 900;
-  const cssH = canvas.clientHeight || 260;
-  const dpr = window.devicePixelRatio || 1;
-
-  canvas.width = Math.floor(cssW * dpr);
-  canvas.height = Math.floor(cssH * dpr);
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-
-  ctx.clearRect(0,0,cssW,cssH);
-
-  const padL=46,padR=14,padT=14,padB=34;
-
-  if(!points.length){
-    ctx.fillStyle="rgba(232,234,243,.7)";
-    ctx.font="14px system-ui";
-    ctx.fillText("No trading data yet. Log your first day.", padL, cssH/2);
-    return;
-  }
-
-  const ys = points.map(p=>p.y);
-  const minY = Math.min(...ys), maxY = Math.max(...ys);
-  const rangeY = (maxY-minY) || 1;
-
-  ctx.strokeStyle="rgba(255,255,255,.06)";
-  ctx.lineWidth=1;
-  for(let i=1;i<=3;i++){
-    const y = padT + i*((cssH-padT-padB)/4);
-    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(cssW-padR,y); ctx.stroke();
-  }
-
-  ctx.strokeStyle="rgba(255,255,255,.14)";
-  ctx.beginPath();
-  ctx.moveTo(padL,padT); ctx.lineTo(padL,cssH-padB); ctx.lineTo(cssW-padR,cssH-padB);
-  ctx.stroke();
-
-  ctx.fillStyle="rgba(232,234,243,.75)";
-  ctx.font="12px system-ui";
-  ctx.fillText("Days", cssW-padR-34, cssH-10);
-  ctx.save(); ctx.translate(14, cssH/2); ctx.rotate(-Math.PI/2); ctx.fillText("Equity ($)", 0, 0); ctx.restore();
-
-  ctx.fillStyle="rgba(232,234,243,.65)";
-  ctx.font="11px system-ui";
-  const fmt = (n)=> (n<0? "-" : "") + Math.abs(n).toLocaleString(undefined,{maximumFractionDigits:0});
-  ctx.fillText(fmt(maxY), padL+6, padT+10);
-  ctx.fillText(fmt(minY), padL+6, cssH-padB-6);
-
-  const plotW = (cssW-padL-padR), plotH = (cssH-padT-padB);
-  ctx.strokeStyle="rgba(123,108,255,.95)";
-  ctx.lineWidth=2.5;
-  ctx.beginPath();
-  points.forEach((p,i)=>{
-    const x = padL + i*(plotW/Math.max(1,points.length-1));
-    const y = (cssH-padB) - ((p.y-minY)/rangeY)*plotH;
-    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-  });
-  ctx.stroke();
+  return (fitnessOk?25:0) + (apexOk?25:0) + (w2Ok?25:0) + (familyOk?25:0);
 }
 
-function getMonthLabel(d){ return d.toLocaleString(undefined,{month:"long",year:"numeric"}); }
-function buildCalendar(forDate=new Date()){
-  const cal = document.getElementById("calendar");
-  cal.innerHTML = "";
-  const y = forDate.getFullYear(), m = forDate.getMonth();
-  document.getElementById("calMonthLabel").textContent = getMonthLabel(forDate);
-
-  const first = new Date(y,m,1);
-  const last = new Date(y,m+1,0);
-  const startDow = first.getDay();
-  const daysInMonth = last.getDate();
-
-  for(let i=0;i<startDow;i++){
-    const div=document.createElement("div");
-    div.className="calDay";
-    div.style.opacity="0.25";
-    div.innerHTML=`<div class="d">&nbsp;</div>`;
-    cal.appendChild(div);
-  }
-
-  for(let day=1; day<=daysInMonth; day++){
-    const d = new Date(y,m,day);
-    const dateStr = d.toDateString();
-    const log = state.trading.dailyLogs[dateStr];
-
-    let bg="rgba(255,255,255,.02)", border="rgba(255,255,255,.10)";
-    if(log){
-      const net=Number(log.net)||0, vios=Number(log.vios)||0, halted=!!log.halted;
-      if(halted){ bg="rgba(96,165,250,.18)"; border="rgba(96,165,250,.35)"; }
-      else if(vios>0){ bg="rgba(251,191,36,.22)"; border="rgba(251,191,36,.35)"; }
-      else if(net>0){ bg="rgba(74,222,128,.22)"; border="rgba(74,222,128,.35)"; }
-      else if(net<0){ bg="rgba(251,113,133,.22)"; border="rgba(251,113,133,.35)"; }
-      else { bg="rgba(255,255,255,.05)"; }
-    }
-
-    const div=document.createElement("div");
-    div.className="calDay";
-    div.style.background=bg;
-    div.style.borderColor=border;
-
-    const netText = log ? (log.net>=0 ? `+$${fmtMoney(log.net)}` : `-$${fmtMoney(Math.abs(log.net))}`) : "";
-    div.innerHTML = `<div class="d">${day}</div><div class="v">${netText}</div>`;
-    div.addEventListener("click", () => setSelectedTradingDate(dateStr));
-    cal.appendChild(div);
-  }
-}
-
-function fillTradingInputsFromDate(dateStr){
-  const log = state.trading.dailyLogs[dateStr] || null;
-  document.getElementById("editDateLabel").textContent = dateStr;
-  document.getElementById("selectedDateLabel").textContent = dateStr;
-
-  if(log){
-    document.getElementById("inWins").value = log.wins ?? 0;
-    document.getElementById("inLosses").value = log.losses ?? 0;
-    document.getElementById("inGrossProfit").value = log.grossProfit ?? 0;
-    document.getElementById("inGrossLoss").value = log.grossLoss ?? 0;
-    document.getElementById("inVios").value = log.vios ?? 0;
-    document.getElementById("inDdBuf").value = (log.ddBuf === null || log.ddBuf === undefined) ? "" : log.ddBuf;
-  } else {
-    document.getElementById("inWins").value = "";
-    document.getElementById("inLosses").value = "";
-    document.getElementById("inGrossProfit").value = "";
-    document.getElementById("inGrossLoss").value = "";
-    document.getElementById("inVios").value = "";
-    document.getElementById("inDdBuf").value = "";
-  }
-}
-
-function isCleanTradeDay(dateStr){
-  const log = state.trading.dailyLogs[dateStr];
-  if(!log) return false;
-  return Number(log.vios||0) === 0 && !log.halted;
-}
-function didDial120(dateStr){
-  return Number(state.sales.dialingByDate[dateStr]||0) >= 120;
-}
-function didColdPlunge(dateStr){
-  const d = state.daily.byDate[dateStr];
-  return !!(d && d.tags && d.tags.coldPlunge);
-}
-function isHabitFreeMorning(dateStr){
-  const d = state.daily.byDate[dateStr];
-  if(!d) return false;
-  return d.habitYes !== true;
-}
-function computeStreak(checkFn){
+function getStreakUpto(dateISO){
+  // streak of consecutive CLEAN ending at dateISO
   let streak = 0;
-  let d = new Date();
-  for(let i=0;i<365;i++){
-    const ds = d.toDateString();
-    if(checkFn(ds)) streak++;
-    else break;
-    d.setDate(d.getDate()-1);
+  let d = dateISO;
+  while(true){
+    const rec = days[d];
+    if (!rec) break;
+    if (rec.status !== "CLEAN") break;
+    streak++;
+    d = addDaysISO(d, -1);
   }
   return streak;
 }
 
-function addDays(d, n){
-  const x = new Date(d);
-  x.setDate(x.getDate() + n);
-  return x;
+function countRedInLastNDays(dateISO, n){
+  let c = 0;
+  for(let i=0;i<n;i++){
+    const d = addDaysISO(dateISO, -i);
+    if (days[d]?.status === "RED") c++;
+  }
+  return c;
 }
-function startOfWeekMon(date=new Date()){
-  const d = new Date(date);
-  const day = d.getDay();
-  const diff = (day === 0 ? -6 : 1 - day);
-  d.setDate(d.getDate() + diff);
-  d.setHours(0,0,0,0);
-  return d;
-}
-function getWeekKey(date=new Date()){
-  const s = startOfWeekMon(date);
-  return `${s.getFullYear()}-${String(s.getMonth()+1).padStart(2,'0')}-${String(s.getDate()).padStart(2,'0')}`;
-}
-function weekRangeLabels(date=new Date()){
-  const s = startOfWeekMon(date);
-  const e = addDays(s, 6);
-  const fmt = (x)=> x.toLocaleDateString(undefined,{month:"short",day:"numeric"});
-  return `${fmt(s)}–${fmt(e)}`;
-}
-function computeWeeklyStats(date=new Date()){
-  const start = startOfWeekMon(date);
-  let tradeClean=0, dial120=0, bodyDays=0, familyDays=0, habitYes=0;
-  let relSum=0, relCount=0;
 
+function weekSummary(weekStartISO){
+  let clean=0, partial=0, red=0, xp=0;
   for(let i=0;i<7;i++){
-    const ds = addDays(start, i).toDateString();
-    if(isCleanTradeDay(ds)) tradeClean++;
-    if(didDial120(ds)) dial120++;
+    const d = addDaysISO(weekStartISO, i);
+    const rec = days[d];
+    if (!rec) continue;
+    xp += rec.xp || 0;
+    if (rec.status === "CLEAN") clean++;
+    else if (rec.status === "RED") red++;
+    else partial++;
+  }
+  let label = "Review";
+  let kind = "warn";
+  if (clean >= 5){ label = "Gold"; kind = "ok"; }
+  else if (clean >= 4){ label = "Pass"; kind = "ok"; }
+  return {clean, partial, red, xp, label, kind};
+}
 
-    const day = state.daily.byDate[ds];
-    if(day && day.pillarActions){
-      if((day.pillarActions.body||0) > 0) bodyDays++;
-      if((day.pillarActions.family||0) > 0) familyDays++;
+function rewardUnlocked(r, streak){
+  // Tier lock requirements (manual stability locks)
+  const l1 = locks.lockDebtTrend;
+  const l2 = locks.lockNoChaos;
+  const l3 = locks.lockBufferHabit;
+
+  const tierOk =
+    (r.tier === 0) ||
+    (r.tier === 1 && l1) ||
+    (r.tier === 2 && l1 && l2) ||
+    (r.tier === 3 && l1 && l2 && l3);
+
+  const streakOk = (streak >= (r.streakReq || 0));
+  return tierOk && streakOk;
+}
+
+/** =========================
+ *  Form -> Record
+ *  ========================= */
+function readForm(){
+  const apexMax = Number(settings.apexMaxTrades || 6);
+  const after200Extra = Number(settings.after200ExtraTrades || 2);
+  const trades = Number($("apexTrades").value || 0);
+
+  // auto-check max trades respected if trades <= cap (but user can override)
+  const maxTradesRespectedAuto = trades <= apexMax;
+
+  const rec = {
+    date: todayISO(),
+    // Fitness
+    fitTrain: $("fitTrain").checked,
+    fitProtein: $("fitProtein").checked,
+    fitSleep: $("fitSleep").checked,
+
+    // Apex
+    apexMode: $("apexMode").value,
+    apexTrades: trades,
+    apexHardStopRespected: $("apexHardStopRespected").checked,
+    apexMaxTradesRespected: $("apexMaxTradesRespected").checked || maxTradesRespectedAuto,
+    apexJournal: $("apexJournal").checked,
+    apexSoftStopHit: $("apexSoftStopHit").checked,
+    apexExtendTrend: $("apexExtendTrend").checked,
+    apexExtendRiskDown: $("apexExtendRiskDown").checked,
+    apexExtendNoRevenge: $("apexExtendNoRevenge").checked,
+    apexExtendMaxTradesDown: $("apexExtendMaxTradesDown").checked,
+    apexStrikes: Number($("apexStrikes").value || 0),
+    apexRuleBreak: $("apexRuleBreak").checked,
+
+    // W2
+    w2Dial: $("w2Dial").checked,
+    w2Learn: $("w2Learn").checked,
+    w2Needle: $("w2Needle").checked,
+    w2Set: Number($("w2Set").value || 0),
+    w2SelfSource: Number($("w2SelfSource").value || 0),
+    w2NoTrial: Number($("w2NoTrial").value || 0),
+
+    // Family
+    famTalk: $("famTalk").checked,
+    famSupport: $("famSupport").checked,
+    famPhoneFail: $("famPhoneFail").checked,
+    famRepair: $("famRepair").checked,
+    famDate: $("famDate").checked,
+    // Derived “familyOff” if phone fail checked (simple proxy)
+    familyOff: $("famPhoneFail").checked,
+
+    notes: $("notes").value || "",
+    meta: {
+      apexMaxTrades: apexMax,
+      after200ExtraTrades: after200Extra
     }
-    if(day && day.habitYes === true) habitYes++;
+  };
 
-    if(day && typeof day.relationshipRating === "number"){
-      relSum += day.relationshipRating;
-      relCount++;
+  // Extension rule guidance tag: if past +200, enforce max extra trades
+  if (rec.apexSoftStopHit){
+    // require max trades reduced after +200: trades must be <= (apexMax + after200Extra) AND user confirms reduction
+    const allowedTotal = apexMax + after200Extra;
+    // If they went past +200 and traded beyond allowedTotal, that's a rule break.
+    if (rec.apexTrades > allowedTotal){
+      rec.apexRuleBreak = true;
     }
   }
-  const relAvg = relCount ? (relSum/relCount) : null;
-  const passed =
-    (tradeClean >= 3) &&
-    (dial120 >= 5) &&
-    (bodyDays >= 5) &&
-    (familyDays >= 5) &&
-    (habitYes === 0);
-  return { tradeClean, dial120, bodyDays, familyDays, habitYes, relAvg, passed };
-}
-function awardWeeklyBonus(){
-  resetIfNewDay();
-  const wk = getWeekKey(new Date());
-  if(!state.weekly.byWeek[wk]) state.weekly.byWeek[wk] = { bonusClaimed:false, passed:null };
 
-  const stats = computeWeeklyStats(new Date());
-  state.weekly.byWeek[wk].passed = stats.passed;
-
-  if(!stats.passed){ alert("Not cleared yet."); save(); return; }
-  if(state.weekly.byWeek[wk].bonusClaimed){ alert("Already claimed for this week."); return; }
-
-  addXP("trader", 100, { bypassFreeze:true });
-  addXP("body", 100);
-  addXP("closer", 100);
-  addXP("family", 100);
-
-  state.weekly.byWeek[wk].bonusClaimed = true;
-  save();
-}
-function setRelationshipRating(n){
-  resetIfNewDay();
-  ensureTodayDaily().relationshipRating = n;
-  save();
+  rec.status = computeDayStatus(rec);
+  rec.xp = computeXP(rec);
+  return rec;
 }
 
-function computeSizeGate(){
-  const logs = getSortedTradingLogs().slice().reverse();
-  const last3 = [];
-  for(const l of logs){
-    last3.push(l);
-    if(last3.length === 3) break;
-  }
-  if(last3.length < 3) return { unlocked:false, reason:"Need 3 logged days to qualify." };
-  const ok = last3.every(l => Number(l.vios||0)===0 && !l.halted);
-  return ok ? { unlocked:true, reason:"Last 3 logged days are clean." } :
-              { unlocked:false, reason:"Locked: last 3 logged days must be clean (no vios, no halt)." };
+function loadFormForDate(iso){
+  const rec = days[iso];
+  if (!rec) return;
+
+  $("fitTrain").checked = !!rec.fitTrain;
+  $("fitProtein").checked = !!rec.fitProtein;
+  $("fitSleep").checked = !!rec.fitSleep;
+
+  $("apexMode").value = rec.apexMode || "trade";
+  $("apexTrades").value = rec.apexTrades ?? 0;
+  $("apexHardStopRespected").checked = !!rec.apexHardStopRespected;
+  $("apexMaxTradesRespected").checked = !!rec.apexMaxTradesRespected;
+  $("apexJournal").checked = !!rec.apexJournal;
+  $("apexSoftStopHit").checked = !!rec.apexSoftStopHit;
+  $("apexExtendTrend").checked = !!rec.apexExtendTrend;
+  $("apexExtendRiskDown").checked = !!rec.apexExtendRiskDown;
+  $("apexExtendNoRevenge").checked = !!rec.apexExtendNoRevenge;
+  $("apexExtendMaxTradesDown").checked = !!rec.apexExtendMaxTradesDown;
+  $("apexStrikes").value = rec.apexStrikes ?? 0;
+  $("apexRuleBreak").checked = !!rec.apexRuleBreak;
+
+  $("w2Dial").checked = !!rec.w2Dial;
+  $("w2Learn").checked = !!rec.w2Learn;
+  $("w2Needle").checked = !!rec.w2Needle;
+  $("w2Set").value = rec.w2Set ?? 0;
+  $("w2SelfSource").value = rec.w2SelfSource ?? 0;
+  $("w2NoTrial").value = rec.w2NoTrial ?? 0;
+
+  $("famTalk").checked = !!rec.famTalk;
+  $("famSupport").checked = !!rec.famSupport;
+  $("famPhoneFail").checked = !!rec.famPhoneFail;
+  $("famRepair").checked = !!rec.famRepair;
+  $("famDate").checked = !!rec.famDate;
+
+  $("notes").value = rec.notes || "";
 }
 
-/* SALES */
-function getQuotaForCurrentMonth(){
-  const mk = monthKey(new Date());
-  const q = state.sales.quotaByMonth[mk];
-  return (typeof q === "number" && Number.isFinite(q) && q > 0) ? q : 76000;
-}
-function saveQuota(){
-  const mk = monthKey(new Date());
-  const v = Number(document.getElementById("inQuota").value || 0);
-  if(!Number.isFinite(v) || v <= 0) return alert("Enter a valid quota number.");
-  state.sales.quotaByMonth[mk] = v;
-  save();
-}
-function setQuota76000(){ document.getElementById("inQuota").value = 76000; saveQuota(); }
-function getDialMinutesToday(){ return Number(state.sales.dialingByDate[todayKey()] || 0); }
-function saveDialing(){
-  const mins = Number(document.getElementById("inDialMins").value || 0);
-  state.sales.dialingByDate[todayKey()] = Math.max(0, Math.floor(mins));
-  if(state.sales.dialingByDate[todayKey()] >= 120) tagToday("dial120");
-  save();
-}
-function markDialed120(){ document.getElementById("inDialMins").value = 120; saveDialing(); }
+function clearForm(){
+  [
+    "fitTrain","fitProtein","fitSleep",
+    "apexHardStopRespected","apexMaxTradesRespected","apexJournal",
+    "apexSoftStopHit","apexExtendTrend","apexExtendRiskDown","apexExtendNoRevenge","apexExtendMaxTradesDown",
+    "apexRuleBreak",
+    "w2Dial","w2Learn","w2Needle",
+    "famTalk","famSupport","famPhoneFail","famRepair","famDate"
+  ].forEach(id => $(id).checked = false);
 
-function addDeal(){
-  const d = document.getElementById("dealDateLabel").textContent || todayKey();
-  const amt = Number(document.getElementById("inDealAmt").value || 0);
-  if(!Number.isFinite(amt) || amt <= 0) return alert("Enter a valid deal amount.");
-  const source = document.getElementById("inDealSource").value;
-  const trial = document.getElementById("inDealTrial").value;
-  const notes = (document.getElementById("inDealNotes").value || "").trim();
-  state.sales.deals.push({ dateStr:d, amt, source, trial, notes });
-  document.getElementById("inDealAmt").value="";
-  document.getElementById("inDealNotes").value="";
-  save();
-}
-function deleteDeal(idx){
-  if(!confirm("Delete this deal?")) return;
-  state.sales.deals.splice(idx,1);
-  save();
-}
-function jumpSalesToday(){ document.getElementById("dealDateLabel").textContent = todayKey(); save(); }
+  $("apexTrades").value = 0;
+  $("apexMode").value = "trade";
+  $("apexStrikes").value = 0;
 
-function isSameMonth(dateStr, mk){
-  const d = new Date(dateStr);
-  return monthKey(d) === mk;
-}
-function businessDaysRemainingInMonth(fromDate=new Date()){
-  const y=fromDate.getFullYear(), m=fromDate.getMonth();
-  const last = new Date(y,m+1,0).getDate();
-  let count=0;
-  for(let day=fromDate.getDate(); day<=last; day++){
-    const d = new Date(y,m,day);
-    const dow=d.getDay();
-    if(dow!==0 && dow!==6) count++;
-  }
-  return Math.max(1,count);
+  $("w2Set").value = "0";
+  $("w2SelfSource").value = "0";
+  $("w2NoTrial").value = "0";
+
+  $("notes").value = "";
 }
 
-/* APEX */
-function setApexGoal500(){ document.getElementById("inApexGoal").value = 500000; saveApex(); }
-function saveApex(){
-  state.apex.goal = Number(document.getElementById("inApexGoal").value || 500000);
-  state.apex.ytd = Number(document.getElementById("inApexYtd").value || 0);
-  state.apex.payoutCount = Number(document.getElementById("inApexCount").value || 0);
-  state.apex.nextEligible = (document.getElementById("inApexNext").value || "");
-  state.apex.notes = (document.getElementById("inApexNotes").value || "").trim();
-  save();
-}
+/** =========================
+ *  UI rendering
+ *  ========================= */
+function renderPillStates(rec){
+  const map = { CLEAN:["ok","CLEAN"], PARTIAL:["warn","PARTIAL"], RED:["bad","RED"] };
+  const [k, t] = map[rec.status] || ["","—"];
+  setPill($("statusPill"), k, t);
+  $("kToday").textContent = t;
 
-/* WOW */
-function getTradingLogForDate(dateStr){ return state.trading.dailyLogs[dateStr] || null; }
-function computeWowUnlock(){
-  const tday = todayKey();
-  const dial = getDialMinutesToday();
-  const famToday = state.pillars.family.todayXP || 0;
-  const log = getTradingLogForDate(tday);
-  const vios = log ? Number(log.vios || 0) : 0;
+  // Fitness
+  const fitnessOk = rec.fitTrain && rec.fitProtein && rec.fitSleep;
+  setPill($("pillFitness"), fitnessOk ? "ok" : "warn", fitnessOk ? "PASS" : "MISS");
 
-  const tradingOk = !state.locks.tradingHaltedToday;
-  const viosOk = log ? (vios === 0) : true;
-  const dialOk = dial >= 120;
-  const famOk = famToday > 0;
+  // Apex
+  const apexOk = (rec.apexMode === "no_trade")
+    ? (rec.apexJournal && rec.status !== "RED")
+    : (rec.apexHardStopRespected && rec.apexMaxTradesRespected && rec.apexJournal && Number(rec.apexStrikes) <= 2 && rec.status !== "RED");
+  setPill($("pillApex"), (rec.status==="RED") ? "bad" : (apexOk ? "ok" : "warn"), (rec.status==="RED") ? "FAIL" : (apexOk ? "PASS" : "MISS"));
 
-  const unlocked = tradingOk && viosOk && dialOk && famOk;
+  // W2
+  const w2Ok = rec.w2Dial && rec.w2Learn && rec.w2Needle;
+  setPill($("pillW2"), w2Ok ? "ok" : "warn", w2Ok ? "PASS" : "MISS");
 
-  const reasons=[];
-  if(!tradingOk) reasons.push("Trading is halted today.");
-  if(log && !viosOk) reasons.push("Trading violations logged today.");
-  if(!dialOk) reasons.push("Dialing minutes today < 120.");
-  if(!famOk) reasons.push("No Family XP today.");
+  // Family
+  const familyOk = rec.famTalk && rec.famSupport && !( (rec.famPhoneFail||rec.familyOff) && !rec.famRepair );
+  setPill($("pillFamily"), (rec.status==="RED" && ((rec.famPhoneFail||rec.familyOff) && !rec.famRepair)) ? "bad" : (familyOk ? "ok" : "warn"),
+    (rec.status==="RED" && ((rec.famPhoneFail||rec.familyOff) && !rec.famRepair)) ? "FAIL" : (familyOk ? "PASS" : "MISS"));
 
-  return { unlocked, reasons, dial, vios, famToday, tradingOk };
-}
-let wowInterval = null;
-
-function renderWowTimerOnly(){
-  const mm = String(Math.floor(state.wow.remainingSec/60)).padStart(2,'0');
-  const ss = String(state.wow.remainingSec%60).padStart(2,'0');
-  document.getElementById("wowTimer").textContent = `${mm}:${ss}`;
-}
-function tickWow(){
-  if(!state.wow.running) return;
-  const now = Date.now();
-  const last = state.wow.lastTick || now;
-  const deltaSec = Math.floor((now-last)/1000);
-  if(deltaSec <= 0) return;
-  state.wow.remainingSec = Math.max(0, state.wow.remainingSec - deltaSec);
-  state.wow.lastTick = now;
-  if(state.wow.remainingSec <= 0){
-    state.wow.running = false;
-    state.wow.lastTick = null;
-  }
-  localStorage.setItem(KEY, JSON.stringify(state));
-  renderWowTimerOnly();
-}
-function startWow(){
-  const gate = computeWowUnlock();
-  if(!gate.unlocked){ alert("WoW is locked. Fix requirements first."); return; }
-  if(state.wow.remainingSec <= 0) return;
-  state.wow.running = true;
-  state.wow.lastTick = Date.now();
-  localStorage.setItem(KEY, JSON.stringify(state));
-  if(!wowInterval) wowInterval = setInterval(tickWow, 300);
-}
-function pauseWow(){ state.wow.running=false; state.wow.lastTick=null; localStorage.setItem(KEY, JSON.stringify(state)); render(); }
-function resetWow(){ state.wow.remainingSec=30*60; state.wow.running=false; state.wow.lastTick=null; localStorage.setItem(KEY, JSON.stringify(state)); render(); }
-
-/* BACKUP */
-function exportData(){
-  const json = JSON.stringify(state, null, 2);
-  navigator.clipboard?.writeText(json).then(()=>alert("Export copied to clipboard. Paste into Notes/Drive."))
-    .catch(()=>prompt("Copy this JSON:", json));
-}
-function importData(){
-  const txt = (document.getElementById("importBox").value || "").trim();
-  if(!txt) return alert("Paste JSON first.");
-  try{ state = deepMerge(JSON.parse(txt), structuredCloneSafe(defaults)); save(); alert("Restored."); }
-  catch{ alert("Invalid JSON."); }
-}
-function hardResetAll(){
-  if(!confirm("Wipe ALL data? This cannot be undone.")) return;
-  localStorage.removeItem(KEY);
-  state = structuredCloneSafe(defaults);
-  save();
-}
-
-/* WOW render */
-function renderWow(){
-  const gate = computeWowUnlock();
-  document.getElementById("wowChkTrading").textContent = gate.tradingOk ? "ALLOWED" : "HALTED";
-  document.getElementById("wowChkVios").textContent = String(gate.vios ?? 0);
-  document.getElementById("wowChkDial").textContent = String(gate.dial ?? 0);
-  document.getElementById("wowChkFam").textContent = String(gate.famToday ?? 0);
-
-  const locked = !gate.unlocked;
-  document.getElementById("wowLockBanner").style.display = locked ? "block" : "none";
-  document.getElementById("wowUnlockBanner").style.display = locked ? "none" : "block";
-
-  if(locked){
-    document.getElementById("wowStatus").textContent = "LOCKED";
-    document.getElementById("wowLockReason").textContent = gate.reasons.join(" ");
-    document.getElementById("pillWow").innerHTML = `<strong>WoW (30m):</strong> <span class="warn">LOCKED</span>`;
+  // Extend tag
+  const extendLocked = rec.apexSoftStopHit ? !(rec.apexExtendTrend && rec.apexExtendRiskDown && rec.apexExtendNoRevenge && rec.apexExtendMaxTradesDown) : true;
+  const extendOk = rec.apexSoftStopHit ? !extendLocked : false;
+  const tag = $("tagExtend");
+  if (!rec.apexSoftStopHit){
+    tag.className = "tag locked";
+    tag.textContent = "Extend: Locked";
+  } else if (extendOk){
+    tag.className = "tag unlocked";
+    tag.textContent = "Extend: OK";
   } else {
-    document.getElementById("wowStatus").textContent = "UNLOCKED";
-    document.getElementById("wowLockReason").textContent = "";
-    document.getElementById("pillWow").innerHTML = `<strong>WoW (30m):</strong> <span class="ok">UNLOCKED</span>`;
+    tag.className = "tag locked";
+    tag.textContent = "Extend: Not Met";
   }
-  renderWowTimerOnly();
 }
 
-/* SALES render */
-function renderSales(){
-  const now = new Date();
-  const mk = monthKey(now);
-  document.getElementById("salesMonthLabel").textContent = now.toLocaleString(undefined,{month:"long",year:"numeric"});
-  document.getElementById("dealDateLabel").textContent = todayKey();
+function renderDashboard(){
+  const t = todayISO();
+  $("todayDatePill").textContent = t;
 
-  const quota = getQuotaForCurrentMonth();
-  document.getElementById("inQuota").value = quota;
-  document.getElementById("mtdGoal").textContent = quota.toLocaleString(undefined,{maximumFractionDigits:0});
-  document.getElementById("inDialMins").value = getDialMinutesToday();
+  // streak & red count
+  const streak = getStreakUpto(t);
+  $("kStreak").textContent = String(streak);
+  $("kRed14").textContent = String(countRedInLastNDays(t, 14));
 
-  let mtd=0,sourced=0,inbound=0,noTrial=0,trial=0,deals=0;
-  state.sales.deals.forEach(d=>{
-    if(!isSameMonth(d.dateStr,mk)) return;
-    deals++; mtd += d.amt;
-    if(d.source==="sourced") sourced += d.amt; else inbound += d.amt;
-    if(d.trial==="no") noTrial += d.amt; else trial += d.amt;
+  // week summary
+  const ws = startOfWeekISO(t);
+  const we = addDaysISO(ws, 6);
+  $("weekRange").textContent = `${ws} → ${we}`;
+  const sum = weekSummary(ws);
+  $("kWeek").textContent = `${sum.clean} clean`;
+  setPill($("pillWeek"), sum.kind, sum.label);
+
+  // recent table (last 10)
+  let rows = [];
+  for(let i=0;i<10;i++){
+    const d = addDaysISO(t, -i);
+    const rec = days[d];
+    if (!rec) continue;
+    const s = rec.status;
+    const tagClass = (s==="CLEAN")?"unlocked":(s==="RED")?"locked":"locked";
+    rows.push(`<tr>
+      <td class="mono">${d}</td>
+      <td><span class="tag ${s==="CLEAN"?"unlocked":(s==="RED"?"locked":"locked")}">${s}</span></td>
+      <td>${rec.xp||0}</td>
+      <td><button class="btn secondary" data-load="${d}" style="padding:6px 10px;border-radius:10px">Load</button></td>
+    </tr>`);
+  }
+  $("recentTable").innerHTML = `
+    <table>
+      <thead><tr><th>Date</th><th>Status</th><th>XP</th><th></th></tr></thead>
+      <tbody>${rows.join("") || `<tr><td colspan="4" class="small">No saved days yet.</td></tr>`}</tbody>
+    </table>
+  `;
+
+  // attach load handlers
+  document.querySelectorAll("button[data-load]").forEach(btn=>{
+    btn.onclick = ()=>{
+      const d = btn.getAttribute("data-load");
+      loadFormForDate(d);
+      // render pills for loaded record
+      renderPillStates(days[d]);
+      window.scrollTo({top:0,behavior:"smooth"});
+    };
   });
 
-  document.getElementById("mtdClosed").textContent = mtd.toLocaleString(undefined,{maximumFractionDigits:0});
-  document.getElementById("mtdSourced").textContent = sourced.toLocaleString(undefined,{maximumFractionDigits:0});
-  document.getElementById("mtdInbound").textContent = inbound.toLocaleString(undefined,{maximumFractionDigits:0});
-  document.getElementById("mtdNoTrial").textContent = noTrial.toLocaleString(undefined,{maximumFractionDigits:0});
-  document.getElementById("mtdTrial").textContent = trial.toLocaleString(undefined,{maximumFractionDigits:0});
-  document.getElementById("mtdDeals").textContent = deals;
-
-  let dialMtd=0;
-  Object.entries(state.sales.dialingByDate).forEach(([dateStr,mins])=>{
-    if(isSameMonth(dateStr,mk)) dialMtd += Number(mins)||0;
-  });
-  document.getElementById("mtdDial").textContent = dialMtd;
-  document.getElementById("dealMtdQuick").textContent = mtd.toLocaleString(undefined,{maximumFractionDigits:0});
-
-  const pct = quota>0 ? Math.max(0,Math.min(100,(mtd/quota)*100)) : 0;
-  document.getElementById("quotaBar").style.width = pct + "%";
-
-  const remaining = Math.max(0, quota - mtd);
-  const bdays = businessDaysRemainingInMonth(now);
-  document.getElementById("paceToday").textContent = (remaining/bdays).toLocaleString(undefined,{maximumFractionDigits:0});
-
-  const tbody = document.getElementById("dealTable");
-  tbody.innerHTML = "";
-  state.sales.deals
-    .map((d,i)=>({ ...d, idx:i }))
-    .filter(d=>isSameMonth(d.dateStr,mk))
-    .sort((a,b)=> new Date(b.dateStr)-new Date(a.dateStr))
-    .forEach(d=>{
-      const tr=document.createElement("tr");
-      tr.innerHTML = `
-        <td>${d.dateStr}</td>
-        <td>$${fmtMoney(d.amt)}</td>
-        <td>${d.source}</td>
-        <td>${d.trial==="no" ? "no-trial" : "trial"}</td>
-        <td>${(d.notes||"").slice(0,50)}</td>
-        <td><button class="danger" data-action="deleteDeal" data-idx="${d.idx}">Del</button></td>
-      `;
-      tbody.appendChild(tr);
-    });
+  renderRewards();
 }
 
-/* APEX render */
-function renderApex(){
-  document.getElementById("inApexGoal").value = state.apex.goal ?? 500000;
-  document.getElementById("inApexYtd").value = state.apex.ytd ?? 0;
-  document.getElementById("inApexCount").value = state.apex.payoutCount ?? 0;
-  document.getElementById("inApexNext").value = state.apex.nextEligible ?? "";
-  document.getElementById("inApexNotes").value = state.apex.notes ?? "";
+function renderRewards(){
+  const t = todayISO();
+  const streak = getStreakUpto(t);
+  const claimed = loadJSON("lifeGame_claimed_v1", {}); // { rewardId: {claimedOn:"YYYY-MM-DD"} }
 
-  const goal = Number(state.apex.goal||500000);
-  const ytd = Number(state.apex.ytd||0);
-  const pct = goal>0 ? Math.max(0,Math.min(100,(ytd/goal)*100)) : 0;
+  const list = settings.rewards || [];
+  let html = "";
 
-  document.getElementById("apexBar").style.width = pct + "%";
-  document.getElementById("apexGoalLabel").textContent = goal.toLocaleString();
-  document.getElementById("apexGoalLabel2").textContent = goal.toLocaleString();
-  document.getElementById("apexYtdLabel").textContent = ytd.toLocaleString(undefined,{maximumFractionDigits:0});
-  document.getElementById("apexCountLabel").textContent = String(state.apex.payoutCount||0);
-  document.getElementById("apexNextLabel").textContent = state.apex.nextEligible ? state.apex.nextEligible : "—";
-  document.getElementById("apexNotesLabel").textContent = state.apex.notes ? state.apex.notes : "—";
-}
+  list.forEach(r=>{
+    const unlocked = rewardUnlocked(r, streak);
+    const isClaimed = !!claimed[r.id];
+    const statusTag = isClaimed ? `<span class="tag claimed">CLAIMED</span>`
+      : unlocked ? `<span class="tag unlocked">UNLOCKED</span>`
+      : `<span class="tag locked">LOCKED</span>`;
 
-function renderWeeklyAndStreaks(){
-  const wkKey = getWeekKey(new Date());
-  if(!state.weekly.byWeek[wkKey]) state.weekly.byWeek[wkKey] = { bonusClaimed:false, passed:null };
+    const btn = isClaimed
+      ? `<button class="btn secondary" data-unclaim="${r.id}" style="padding:6px 10px">Unclaim</button>`
+      : unlocked
+        ? `<button class="btn" data-claim="${r.id}" style="padding:6px 10px">Claim</button>`
+        : `<button class="btn secondary" disabled style="padding:6px 10px">Locked</button>`;
 
-  const stats = computeWeeklyStats(new Date());
-  state.weekly.byWeek[wkKey].passed = stats.passed;
+    const reqBits = [];
+    if (r.streakReq) reqBits.push(`streak ≥ ${r.streakReq}`);
+    if (r.tier===1) reqBits.push("Lock1");
+    if (r.tier===2) reqBits.push("Lock1+Lock2");
+    if (r.tier===3) reqBits.push("Lock1+Lock2+Lock3");
 
-  document.getElementById("weekLabel").textContent = weekRangeLabels(new Date());
-  document.getElementById("wkTradeClean").textContent = stats.tradeClean;
-  document.getElementById("wkDial120").textContent = stats.dial120;
-  document.getElementById("wkBodyDays").textContent = stats.bodyDays;
-  document.getElementById("wkFamilyDays").textContent = stats.familyDays;
-  document.getElementById("wkHabitYes").textContent = stats.habitYes;
-  document.getElementById("wkRelAvg").textContent = (stats.relAvg === null) ? "—" : stats.relAvg.toFixed(2);
-
-  const claimed = !!state.weekly.byWeek[wkKey].bonusClaimed;
-  document.getElementById("bossPass").style.display = (stats.passed) ? "block" : "none";
-  document.getElementById("bossFail").style.display = (!stats.passed) ? "block" : "none";
-  if(stats.passed && claimed){
-    document.getElementById("bossPass").querySelector(".small").textContent = "Weekly bonus claimed. Keep the machine running.";
-  }
-
-  const rt = ensureTodayDaily().relationshipRating;
-  document.getElementById("relTodayText").textContent = rt ? `Today’s relationship rating: ${rt}/5` : "Today’s relationship rating: not set.";
-
-  document.getElementById("stCleanTrade").textContent = computeStreak(isCleanTradeDay);
-  document.getElementById("stDial").textContent = computeStreak(didDial120);
-  document.getElementById("stPlunge").textContent = computeStreak(didColdPlunge);
-  document.getElementById("stHabitFree").textContent = computeStreak(isHabitFreeMorning);
-}
-
-function setBar(barId, lvl, xp){
-  const need = needForLevel(lvl);
-  const pct = Math.max(0, Math.min(100, (xp/need)*100));
-  document.getElementById(barId).style.width = pct + "%";
-  return need;
-}
-
-function renderTrading(){
-  document.getElementById("lockOverlay").style.display = state.locks.tradingHaltedToday ? "block" : "none";
-
-  const sel = getSelectedTradingDate();
-  fillTradingInputsFromDate(sel);
-
-  const logs = getSortedTradingLogs();
-  const stats = computeTradingStats(logs);
-
-  document.getElementById("equityNow").textContent = fmtMoney(stats.equity);
-  document.getElementById("statWr").textContent = (stats.winRate*100).toFixed(1) + "%";
-  document.getElementById("statPf").textContent = (stats.pf||0).toFixed(2);
-  document.getElementById("statExp").textContent = fmtMoney(stats.expectancy||0);
-  document.getElementById("statAvgWin").textContent = fmtMoney(stats.avgWin||0);
-  document.getElementById("statAvgLoss").textContent = fmtMoney(stats.avgLoss||0);
-  document.getElementById("statMdd").textContent = fmtMoney(stats.mdd||0);
-  document.getElementById("statGreen").textContent = stats.green || 0;
-  document.getElementById("statRed").textContent = stats.red || 0;
-  document.getElementById("statBest").textContent = fmtMoney(stats.best||0);
-  document.getElementById("statWorst").textContent = fmtMoney(stats.worst||0);
-  document.getElementById("statDays").textContent = stats.days || 0;
-  document.getElementById("statTrades").textContent = stats.trades || 0;
-
-  drawChart(stats.equitySeries || []);
-  buildCalendar(new Date());
-
-  const tbody = document.getElementById("logTable");
-  tbody.innerHTML = "";
-  logs.slice().reverse().forEach(l=>{
-    const ddTxt = (l.ddBuf === null || l.ddBuf === undefined) ? "" : "$"+fmtMoney(l.ddBuf);
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${l.date}</td>
-      <td>${l.wins||0}</td>
-      <td>${l.losses||0}</td>
-      <td>$${fmtMoney(l.grossProfit||0)}</td>
-      <td>$${fmtMoney(l.grossLoss||0)}</td>
-      <td>$${fmtMoney(l.net||0)}</td>
-      <td>${l.vios||0}</td>
-      <td>${ddTxt}</td>
-      <td>${l.halted ? "YES" : ""}</td>
+    html += `
+      <div class="card" style="padding:10px; margin-bottom:10px; background:rgba(255,255,255,.02)">
+        <div class="between">
+          <div>
+            <div style="font-weight:700">${escapeHtml(r.name)}</div>
+            <div class="small">Tier ${r.tier} • Requirements: ${reqBits.join(" + ") || "none"}</div>
+          </div>
+          <div class="row">
+            ${statusTag}
+            ${btn}
+          </div>
+        </div>
+      </div>
     `;
-    tbody.appendChild(tr);
   });
 
-  const sg = computeSizeGate();
-  document.getElementById("sizeGateBox").style.display = sg.unlocked ? "none" : "block";
-  document.getElementById("sizeGateOk").style.display = sg.unlocked ? "block" : "none";
-  document.getElementById("sizeGateText").textContent = sg.reason;
-}
+  $("rewardsList").innerHTML = html || `<div class="small">No rewards configured.</div>`;
 
-function render(){
-  resetIfNewDay();
-
-  const r = computeRank();
-  document.getElementById("overallRank").textContent = r.rank;
-  document.getElementById("rankGateText").innerHTML = r.gated
-    ? `<span class="warn">GATED</span> — weakest pillar <b>${r.weakest}</b>, needs <b>${r.minReq}</b>.`
-    : `<span class="ok">UNLOCKED</span> — rank can progress.`;
-
-  document.getElementById("pillTradeToday").innerHTML =
-    `<strong>Trading Today:</strong> ${state.locks.tradingHaltedToday ? '<span class="warn">HALTED</span>' : '<span class="ok">ALLOWED</span>'}`;
-  document.getElementById("pillTradeNext").innerHTML =
-    `<strong>Trading Next Day:</strong> ${state.locks.tradingHaltedNext ? '<span class="warn">HALTED</span>' : '<span class="ok">ALLOWED</span>'}`;
-  document.getElementById("pillPenalty").innerHTML =
-    `<strong>Penalty:</strong> ${state.locks.weekPenaltyActive ? '<span class="warn">ACTIVE</span>' : '<span class="ok">NONE</span>'}`;
-  document.getElementById("pillTilt").innerHTML =
-    `<strong>Tilt:</strong> ${state.locks.tiltYesToday ? '<span class="warn">YES</span>' : '<span class="ok">NO</span>'}`;
-
-  const sg = computeSizeGate();
-  document.getElementById("pillSize").innerHTML =
-    `<strong>Size Up:</strong> ${sg.unlocked ? '<span class="ok">UNLOCKED</span>' : '<span class="warn">LOCKED</span>'}`;
-
-  const t=state.pillars.trader,b=state.pillars.body,c=state.pillars.closer,f=state.pillars.family;
-
-  document.getElementById("lvlTrader").textContent=t.lvl;
-  document.getElementById("lvlBody").textContent=b.lvl;
-  document.getElementById("lvlCloser").textContent=c.lvl;
-  document.getElementById("lvlFamily").textContent=f.lvl;
-
-  document.getElementById("todayTrader").textContent=t.todayXP;
-  document.getElementById("todayBody").textContent=b.todayXP;
-  document.getElementById("todayCloser").textContent=c.todayXP;
-  document.getElementById("todayFamily").textContent=f.todayXP;
-
-  document.getElementById("cardLvlTrader").textContent=t.lvl;
-  document.getElementById("cardLvlBody").textContent=b.lvl;
-  document.getElementById("cardLvlCloser").textContent=c.lvl;
-  document.getElementById("cardLvlFamily").textContent=f.lvl;
-
-  document.getElementById("cardXpTrader").textContent=t.xp;
-  document.getElementById("cardXpBody").textContent=b.xp;
-  document.getElementById("cardXpCloser").textContent=c.xp;
-  document.getElementById("cardXpFamily").textContent=f.xp;
-
-  const needT=setBar("barTrader",t.lvl,t.xp);
-  const needB=setBar("barBody",b.lvl,b.xp);
-  const needC=setBar("barCloser",c.lvl,c.xp);
-  const needF=setBar("barFamily",f.lvl,f.xp);
-
-  document.getElementById("needTrader").textContent=needT;
-  document.getElementById("needBody").textContent=needB;
-  document.getElementById("needCloser").textContent=needC;
-  document.getElementById("needFamily").textContent=needF;
-
-  document.getElementById("xpTraderText").textContent = `${t.xp} / ${needT} XP`;
-  document.getElementById("xpBodyText").textContent = `${b.xp} / ${needB} XP`;
-  document.getElementById("xpCloserText").textContent = `${c.xp} / ${needC} XP`;
-  document.getElementById("xpFamilyText").textContent = `${f.xp} / ${needF} XP`;
-
-  document.getElementById("traderLockText").innerHTML = state.locks.tradingHaltedToday
-    ? `<span class="warn">Trader XP frozen today</span> (halted = no market interaction).`
-    : `<span class="ok">Trader XP active</span>.`;
-
-  if(!state.trading.selectedDate) state.trading.selectedDate = todayKey();
-
-  renderWeeklyAndStreaks();
-  renderTrading();
-  renderSales();
-  renderApex();
-  renderWow();
-}
-
-/* =========================
-   CSP-SAFE BUTTON WIRING
-   ========================= */
-const actions = {
-  awardWeeklyBonus: () => awardWeeklyBonus(),
-  setRel: (btn) => setRelationshipRating(Number(btn.dataset.rel||0)),
-  habitYesNow: () => habitYesNow(),
-  habitNo: () => habitNo(),
-  tiltYes: () => tiltYes(),
-  tiltNo: () => tiltNo(),
-  toggleHaltToday: () => toggleHaltToday(),
-  toggleHaltNext: () => toggleHaltNext(),
-
-  logBody: (btn) => logBody(btn.dataset.tag, Number(btn.dataset.xp||0)),
-  logCloser: (btn) => logCloser(btn.dataset.tag, Number(btn.dataset.xp||0)),
-  logFamily: (btn) => logFamily(btn.dataset.tag, Number(btn.dataset.xp||0)),
-
-  saveTradingDay: () => saveTradingDay(),
-  jumpToToday: () => jumpToToday(),
-  deleteTradingDay: () => deleteTradingDay(),
-
-  saveQuota: () => saveQuota(),
-  setQuota76000: () => setQuota76000(),
-  saveDialing: () => saveDialing(),
-  markDialed120: () => markDialed120(),
-
-  addDeal: () => addDeal(),
-  jumpSalesToday: () => jumpSalesToday(),
-  deleteDeal: (btn) => deleteDeal(Number(btn.dataset.idx)),
-
-  saveApex: () => saveApex(),
-  setApexGoal500: () => setApexGoal500(),
-
-  startWow: () => startWow(),
-  pauseWow: () => pauseWow(),
-  resetWow: () => resetWow(),
-
-  exportData: () => exportData(),
-  importData: () => importData(),
-  focusImport: () => document.getElementById("importBox").focus(),
-  hardResetAll: () => hardResetAll()
-};
-
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest("button[data-action]");
-  if(!btn) return;
-  const fn = actions[btn.dataset.action];
-  if(typeof fn === "function") fn(btn);
-});
-
-/* Tabs */
-document.querySelectorAll(".tab").forEach(t=>{
-  t.addEventListener("click", ()=>{
-    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-    document.querySelectorAll(".tabcontent").forEach(c=>c.classList.remove("active"));
-    t.classList.add("active");
-    document.getElementById(t.dataset.tab).classList.add("active");
+  // claim/unclaim handlers
+  document.querySelectorAll("button[data-claim]").forEach(b=>{
+    b.onclick = ()=>{
+      const id = b.getAttribute("data-claim");
+      const claimedNow = loadJSON("lifeGame_claimed_v1", {});
+      claimedNow[id] = { claimedOn: todayISO() };
+      saveJSON("lifeGame_claimed_v1", claimedNow);
+      renderRewards();
+    };
   });
-});
+  document.querySelectorAll("button[data-unclaim]").forEach(b=>{
+    b.onclick = ()=>{
+      const id = b.getAttribute("data-unclaim");
+      const claimedNow = loadJSON("lifeGame_claimed_v1", {});
+      delete claimedNow[id];
+      saveJSON("lifeGame_claimed_v1", claimedNow);
+      renderRewards();
+    };
+  });
+}
 
-/* init */
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+/** =========================
+ *  Locks + Settings UI
+ *  ========================= */
+function loadLocksUI(){
+  $("lockDebtTrend").checked = !!locks.lockDebtTrend;
+  $("lockNoChaos").checked = !!locks.lockNoChaos;
+  $("lockBufferHabit").checked = !!locks.lockBufferHabit;
+}
+function loadSettingsUI(){
+  $("setMaxTrades").value = settings.apexMaxTrades ?? 6;
+  $("setAfter200ExtraTrades").value = settings.after200ExtraTrades ?? 2;
+  $("setRewardsJson").value = JSON.stringify(settings.rewards || DEFAULT_SETTINGS.rewards, null, 2);
+}
+
+/** =========================
+ *  Events
+ *  ========================= */
+function bindEvents(){
+  $("btnSave").onclick = ()=>{
+    const rec = readForm();
+    days[rec.date] = rec;
+    saveJSON(LS_KEY, days);
+    renderPillStates(rec);
+    renderDashboard();
+  };
+
+  $("btnClearToday").onclick = ()=>{
+    clearForm();
+    // show neutral pills
+    const neutral = {status:"PARTIAL", fitTrain:false, fitProtein:false, fitSleep:false, apexMode:"trade", apexHardStopRespected:false, apexMaxTradesRespected:false, apexJournal:false, apexStrikes:0,
+      w2Dial:false,w2Learn:false,w2Needle:false, famTalk:false,famSupport:false,famPhoneFail:false,famRepair:false,familyOff:false, apexSoftStopHit:false,
+      apexExtendTrend:false,apexExtendRiskDown:false,apexExtendNoRevenge:false,apexExtendMaxTradesDown:false, apexRuleBreak:false
+    };
+    renderPillStates(neutral);
+  };
+
+  $("btnSaveLocks").onclick = ()=>{
+    locks = {
+      lockDebtTrend: $("lockDebtTrend").checked,
+      lockNoChaos: $("lockNoChaos").checked,
+      lockBufferHabit: $("lockBufferHabit").checked
+    };
+    saveJSON(LS_LOCKS, locks);
+    renderDashboard();
+  };
+
+  $("btnSaveSettings").onclick = ()=>{
+    const maxTrades = Number($("setMaxTrades").value || 6);
+    const after200 = Number($("setAfter200ExtraTrades").value || 2);
+    let rewards;
+    try{
+      rewards = JSON.parse($("setRewardsJson").value || "[]");
+      if (!Array.isArray(rewards)) throw new Error("Rewards must be an array");
+      // minimal validation
+      rewards.forEach(r=>{
+        if (!r.id || !r.name) throw new Error("Each reward needs id + name");
+        if (typeof r.tier !== "number") r.tier = 0;
+        if (typeof r.streakReq !== "number") r.streakReq = 0;
+      });
+    }catch(e){
+      alert("Settings not saved. Rewards JSON invalid:\n" + e.message);
+      return;
+    }
+    settings = { apexMaxTrades:maxTrades, after200ExtraTrades:after200, rewards };
+    saveJSON(LS_SETTINGS, settings);
+    alert("Saved.");
+    renderDashboard();
+  };
+
+  $("btnExport").onclick = ()=>{
+    const payload = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      days,
+      locks,
+      settings,
+      claimed: loadJSON("lifeGame_claimed_v1", {})
+    };
+    const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `life-game-export-${todayISO()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  $("btnImport").onclick = ()=>{
+    const inp = document.createElement("input");
+    inp.type = "file";
+    inp.accept = "application/json";
+    inp.onchange = ()=>{
+      const f = inp.files?.[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = ()=>{
+        try{
+          const data = JSON.parse(reader.result);
+          if (!data || data.version !== 1) throw new Error("Wrong file/version");
+          days = data.days || {};
+          locks = data.locks || DEFAULT_LOCKS;
+          settings = data.settings || DEFAULT_SETTINGS;
+          saveJSON(LS_KEY, days);
+          saveJSON(LS_LOCKS, locks);
+          saveJSON(LS_SETTINGS, settings);
+          saveJSON("lifeGame_claimed_v1", data.claimed || {});
+          loadLocksUI();
+          loadSettingsUI();
+          hydrateToday();
+          renderDashboard();
+          alert("Imported.");
+        }catch(e){
+          alert("Import failed:\n" + e.message);
+        }
+      };
+      reader.readAsText(f);
+    };
+    inp.click();
+  };
+
+  $("btnReset").onclick = ()=>{
+    const ok = confirm("Reset everything? This wipes all local data for this site.");
+    if (!ok) return;
+    localStorage.removeItem(LS_KEY);
+    localStorage.removeItem(LS_LOCKS);
+    localStorage.removeItem(LS_SETTINGS);
+    localStorage.removeItem("lifeGame_claimed_v1");
+    days = {};
+    locks = DEFAULT_LOCKS;
+    settings = DEFAULT_SETTINGS;
+    clearForm();
+    loadLocksUI();
+    loadSettingsUI();
+    renderDashboard();
+    alert("Reset done.");
+  };
+
+  // helpful auto-behavior: if trades entered, try to keep max-trades respected accurate
+  $("apexTrades").addEventListener("input", ()=>{
+    const trades = Number($("apexTrades").value || 0);
+    const apexMax = Number(settings.apexMaxTrades || 6);
+    if (trades <= apexMax) $("apexMaxTradesRespected").checked = true;
+  });
+
+  // If no-trade day, disable trade-constraint checkboxes that don't apply (but keep journal)
+  $("apexMode").addEventListener("change", ()=>{
+    const isNoTrade = $("apexMode").value === "no_trade";
+    ["apexHardStopRespected","apexMaxTradesRespected","apexSoftStopHit","apexExtendTrend","apexExtendRiskDown","apexExtendNoRevenge","apexExtendMaxTradesDown"]
+      .forEach(id => $(id).disabled = isNoTrade);
+    if (isNoTrade){
+      $("apexTrades").value = 0;
+      $("apexHardStopRespected").checked = false;
+      $("apexMaxTradesRespected").checked = false;
+      $("apexSoftStopHit").checked = false;
+      $("apexExtendTrend").checked = false;
+      $("apexExtendRiskDown").checked = false;
+      $("apexExtendNoRevenge").checked = false;
+      $("apexExtendMaxTradesDown").checked = false;
+    }
+  });
+}
+
+function hydrateToday(){
+  const t = todayISO();
+  // load last saved today if exists
+  if (days[t]) loadFormForDate(t);
+
+  // render pills based on current form or saved
+  const rec = days[t] || readForm();
+  renderPillStates(rec);
+}
+
 (function init(){
-  ensureTodayDaily();
-  if(!wowInterval) wowInterval = setInterval(tickWow, 300);
-  render();
+  // ensure settings keys exist
+  settings = Object.assign({}, DEFAULT_SETTINGS, settings);
+  if (!settings.rewards) settings.rewards = DEFAULT_SETTINGS.rewards;
+
+  // UI seed
+  loadLocksUI();
+  loadSettingsUI();
+  bindEvents();
+  hydrateToday();
+  renderDashboard();
 })();
+</script>
+</body>
+</html>
+
 </script>
 </body>
 </html>
